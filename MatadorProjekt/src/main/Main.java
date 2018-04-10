@@ -15,7 +15,6 @@ public class Main {
 	public static void main(String[] args) {
 		Game game = MiniMonopoly.createGame();
 		game.shuffleCardDeck();
-		connection.Connector con = new connection.Connector();
 		
 		GameController controller = new GameController(game);
 		controller.createPlayers();

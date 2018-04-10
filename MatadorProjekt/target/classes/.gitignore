@@ -1,9 +1,3 @@
-/cards/
-/controllers/
-/dk/
-/gameContent/
-/main/
-/designPatterns/
-/Connection/
 /connection/
-/META-INF/
+/main/
+/controllers/

@@ -3,6 +3,7 @@ package controllers;
 import java.awt.Color;
 import java.util.List;
 
+import connection.SQLMethods;
 import exceptions.PlayerBrokeException;
 import gameContent.Card;
 import gameContent.Game;
@@ -51,6 +52,8 @@ public class GameController {
 	private View view;
 	
     private boolean disposed = false;
+    
+	SQLMethods sql;
 	
 	/**
 	 * Constructor for a controller of a game.
@@ -60,7 +63,7 @@ public class GameController {
 	public GameController(Game game) {
 		super();
 		this.game = game;
-		
+		sql = new SQLMethods();
 		gui = new GUI();
 	}
 	
@@ -73,6 +76,7 @@ public class GameController {
 	public void createPlayers() {
 		// TODO the players should be created interactively
 		int NumberOfPlayers = gui.getUserInteger("Enter the amount of players (2-6)", 2, 6);
+		String color = "blue";
 		
 		for(int i = 0; i<NumberOfPlayers;i++) {
 			Player p = new Player();
@@ -81,27 +85,41 @@ public class GameController {
 			p.setName(name);
 			p.setCurrentPosition(game.getSpaces().get(0));
 			
+			
 			switch(i) {
 			case 0: 
 				p.setColor(Color.blue);
+				color = "Blue";
 				break;
 			case 1: 
 				p.setColor(Color.red);
+				color = "Red";
 				break;
 			case 2: 
-				p.setColor(Color.yellow);
+				p.setColor(Color.black);
+				color = "Black";
 				break;
 			case 3: 
-				p.setColor(Color.black);
+				p.setColor(Color.green);
+				color = "Green";
 				break;
 			case 4: 
-				p.setColor(Color.green);
+				p.setColor(Color.yellow);
+				color = "Yellow";
 				break;
 			case 5: 
 				p.setColor(Color.pink);
+				color = "Pink";
 				break;
 			}
 			game.addPlayer(p);
+			
+			//adds player to database
+			try {
+				sql.createPlayersInDB(p, i, color);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
