@@ -1,6 +1,6 @@
 package gameContent;
 
-import dk.dtu.compute.se.pisd.monopoly.mini.GameController;
+import controllers.GameController;
 import exceptions.PlayerBrokeException;
 
 /**

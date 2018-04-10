@@ -1,4 +1,4 @@
-package dk.dtu.compute.se.pisd.designpatterns;
+package designPatterns;
 
 /**
  * This is the observer of the observer design pattern roughly following

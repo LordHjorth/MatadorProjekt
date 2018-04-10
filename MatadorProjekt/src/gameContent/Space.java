@@ -1,7 +1,7 @@
 package gameContent;
 
-import dk.dtu.compute.se.pisd.designpatterns.Subject;
-import dk.dtu.compute.se.pisd.monopoly.mini.GameController;
+import controllers.GameController;
+import designPatterns.Subject;
 import exceptions.PlayerBrokeException;
 
 /**
@@ -10,7 +10,7 @@ import exceptions.PlayerBrokeException;
  * action taken when a player arrives on the space. In order
  * to use this part of the model with the MVC-pattern, this
  * class extends the
- * {@link dk.dtu.compute.se.pisd.designpatterns.Subject} of
+ * {@link designPatterns.Subject} of
  * the observer design pattern.
  * 
  * @author Ekkart Kindler, ekki@dtu.dk

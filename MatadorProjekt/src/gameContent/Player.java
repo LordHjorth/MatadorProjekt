@@ -7,14 +7,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import dk.dtu.compute.se.pisd.designpatterns.Subject;
+import designPatterns.Subject;
 
 /**
  * Represents a player and his current state in a Monopoly game.
  * This includes the player's position, owned money and properties
  * and chance cards. In order to use this part of the model with
  * the MVC-pattern, this class extends the
- * {@link dk.dtu.compute.se.pisd.designpatterns.Subject} of the observer
+ * {@link designPatterns.Subject} of the observer
  * design pattern.
  * 
  * @author Ekkart Kindler, ekki@dtu.dk

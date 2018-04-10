@@ -1,6 +1,6 @@
 package cards;
 
-import dk.dtu.compute.se.pisd.monopoly.mini.GameController;
+import controllers.GameController;
 import exceptions.PlayerBrokeException;
 import gameContent.Card;
 import gameContent.Player;

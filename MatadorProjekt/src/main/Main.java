@@ -1,7 +1,7 @@
 package main;
 
-import dk.dtu.compute.se.pisd.monopoly.mini.GameController;
-import dk.dtu.compute.se.pisd.monopoly.mini.MiniMonopoly;
+import controllers.GameController;
+import controllers.MiniMonopoly;
 import gameContent.Game;
 
 public class Main {

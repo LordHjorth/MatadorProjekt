@@ -1,11 +1,11 @@
-package dk.dtu.compute.se.pisd.monopoly.mini;
+package controllers;
 
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
-import dk.dtu.compute.se.pisd.designpatterns.Observer;
-import dk.dtu.compute.se.pisd.designpatterns.Subject;
+import designPatterns.Observer;
+import designPatterns.Subject;
 import gameContent.Game;
 import gameContent.Player;
 import gameContent.Space;

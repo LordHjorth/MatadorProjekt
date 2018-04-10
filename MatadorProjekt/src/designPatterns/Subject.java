@@ -1,4 +1,4 @@
-package dk.dtu.compute.se.pisd.designpatterns;
+package designPatterns;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -1,4 +1,4 @@
-package dk.dtu.compute.se.pisd.monopoly.mini;
+package controllers;
 
 import java.util.ArrayList;
 import java.util.List;
