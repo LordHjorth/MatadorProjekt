@@ -1,14 +1,8 @@
 package connection;
 
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
-
-import gameContent.Player;
 
 public class Connector {
 
@@ -24,8 +18,9 @@ public class Connector {
 	 * " Noob - ingen sql bandit at hente her!"); } catch (Exception e) {
 	 * System.err.print(e.getMessage() +
 	 * " Noob - nu er du bare en meget grim og dum abe :-)"); } return null; }
+	 * 
+	 * @author Gruppe 25
 	 */
-
 	public Connection getConnection() throws Exception {
 
 		String url = "jdbc:mysql://10.16.175.65:3306/" + "matadorspil" + "?useSSL=false";
@@ -34,15 +29,14 @@ public class Connector {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection conn = DriverManager.getConnection(url, username, password);
-
-			System.out.println("Succesfuld tilslutning");
+			System.out.println("SUCCESS!");
 			return conn;
 		} catch (SQLException e) {
-			System.err.print(e.getMessage() + " Noob - ingen sql bandit at hente her!");
+			System.err.print(e.getMessage());
 		} catch (Exception e) {
-			System.out.println(e + " lol");
+			System.out.println(e);
 		}
-		System.out.println("Tilslutningen er fejlet");
+		System.out.println("CONNECTION ERROR");
 		return null;
 	}
 }

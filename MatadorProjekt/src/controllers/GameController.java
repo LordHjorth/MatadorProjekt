@@ -53,7 +53,7 @@ public class GameController {
 	
     private boolean disposed = false;
     
-	SQLMethods sql;
+	SQLMethods sql; //added by gruppe 25
 	
 	/**
 	 * Constructor for a controller of a game.
@@ -63,7 +63,7 @@ public class GameController {
 	public GameController(Game game) {
 		super();
 		this.game = game;
-		sql = new SQLMethods();
+		sql = new SQLMethods(); //Added by gruppe25
 		gui = new GUI();
 	}
 	
@@ -72,6 +72,8 @@ public class GameController {
 	 * the participating players. Right now, the creation of players
 	 * is hard-coded. But this should be done by interacting with 
 	 * the user.
+	 * 
+	 *@author gruppe25 
 	 */
 	public void createPlayers() {
 		// TODO the players should be created interactively
