@@ -40,17 +40,16 @@ public class SQLMethods {
 	 */
 	public void createPlayersInDB(Player player, int ID, String color) throws Exception {
 		try {
-			// id, name1, color, prison, balance1, pardon, gameID
 			int playerID = ID + 1;
 			CallableStatement cst = con.prepareCall("{ call CreatePlayerID(?, ?, ?, ?, ?, ?, ?, ?) }");
-			cst.setInt("id", playerID);
-			cst.setString("name", player.getName());
-			cst.setString("color", color);
-			cst.setString("position", player.getCurrentPosition().toString());
-			cst.setBoolean("prison", player.isInPrison());
-			cst.setInt("balance", player.getBalance());
+			cst.setInt("id", playerID); //id
+			cst.setString("name", player.getName()); //name
+			cst.setString("color", color); //color
+			cst.setString("position", player.getCurrentPosition().toString()); //position
+			cst.setBoolean("prison", player.isInPrison()); // is in prison
+			cst.setInt("balance", player.getBalance()); // balance 
 			cst.setBoolean("pardon", false); // pardon needs implementation for Player objects
-			cst.setInt("gameID", 1);
+			cst.setInt("gameID", 1); //gameID
 			cst.execute();
 		} catch (Exception e) {
 			System.out.println(e);

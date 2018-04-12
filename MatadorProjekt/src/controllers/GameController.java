@@ -222,16 +222,16 @@ public class GameController {
 
 		boolean castDouble;
 		int doublesCount = 0;
-		
+
 		if (player.isInPrison()) {
 			if (gui.getUserLeftButtonPressed(
-				"Player " + player.getName() + " is in prison. Do you want to pay you out or cast a double",
-				"Pay 200", "roll dice") == true) {
-		player.setInPrison(false);
-		player.payMoney(200);
+					"Player " + player.getName() + " is in prison. Do you want to pay you out or cast a double",
+					"Pay 200", "roll dice") == true) {
+				player.setInPrison(false);
+				player.payMoney(200);
 			}
 		}
-		
+
 		do {
 			int die1 = (int) (1 + 3.0 * Math.random());
 			int die2 = (int) (1 + 3.0 * Math.random());
@@ -261,9 +261,8 @@ public class GameController {
 				List<Space> spaces = game.getSpaces();
 				int newPos = (pos + die1 + die2) % spaces.size();
 				Space space = spaces.get(newPos);
+				vdb.updateViewOfDB(game.getPlayers());
 				moveToSpace(player, space);
-				vdb.updateViewOfDB(player);
-				sql.updateViewEndTurn(player);
 				if (castDouble) {
 					gui.showMessage("Player " + player.getName() + " cast a double and makes another move.");
 				}
@@ -477,41 +476,48 @@ public class GameController {
 	 */
 	public void auction(Property property, Player player) {
 		// TODO auction needs to be implemented
-		gui.showMessage("Now, there would be an auction of " + property.getName() + " and the price will start at ." + property.getCost());
+		gui.showMessage("Now, there would be an auction of " + property.getName() + " and the price will start at ."
+				+ property.getCost());
 		List<Player> AuctionGrantedPlayers = new ArrayList<Player>(game.getPlayers());
-//		AuctionGrantedPlayers.remove(player); should be implemented later on
+		List<Player> NotGrantedPlayers = new ArrayList<Player>();
+		NotGrantedPlayers.add(game.getCurrentPlayer());
 		int bid = 0;
 		Player winner = null;
-		do {
-		for(Player biddingPlayer : AuctionGrantedPlayers) {
-			if(biddingPlayer.equals(player)) {
+		for (Player p : AuctionGrantedPlayers) {
+			System.out.println(p.getName());
+		}
+		System.out.println(AuctionGrantedPlayers.size());
+		for (Player biddingPlayer : AuctionGrantedPlayers) {
+			if (NotGrantedPlayers.contains(biddingPlayer) || biddingPlayer.isBroke()) {
 				continue;
-			}
-			else {
-				int minimum = property.getCost() > bid ? property.getCost() : bid; //makes sure to always use the most recent bid
-				String answer = gui.getUserSelection("Would "+ biddingPlayer.getName() + " like to bid? - the price is " + minimum, "Yes", "No");
-				if(answer.equals("Yes")) {
-					bid = gui.getUserInteger("Place your bid", minimum,  1000000000); //maximum bid of 1.000.000.000
+			} else {
+				int minimum = property.getCost() > bid + 1 ? property.getCost() : bid + 1; // makes sure to always use
+																							// the
+																							// most
+																							// recent bid
+				String answer = gui.getUserSelection(
+						"Would " + biddingPlayer.getName() + " like to bid? - the price is " + minimum, "Yes", "No");
+				if (answer.equals("Yes")) {
+					bid = gui.getUserInteger("Place your bid", minimum, 1000000000); // maximum bid of 1.000.000.000
 					winner = biddingPlayer;
+				} else {
+					NotGrantedPlayers.add(biddingPlayer);
 				}
-				else {
-					AuctionGrantedPlayers.remove(biddingPlayer);
-				}
-			}		
-		} 
-		}while(AuctionGrantedPlayers.size() < 1);
-		if(winner != null) {
+			}
+		}
+
+		if (winner != null) {
 			gui.showMessage(winner.getName() + " won the auction.");
 			try {
 				paymentToBank(winner, bid);
 				winner.addOwnedProperty(property);
 				gui.showMessage("You've succesfully bought the property " + property.getName());
 			} catch (PlayerBrokeException e) {
-				gui.showMessage("You haven't bought the property " + property.getName() + " You didn't have enough money");
+				gui.showMessage(
+						"You haven't bought the property " + property.getName() + " You didn't have enough money");
 				e.printStackTrace();
 			}
-		}
-		else {
+		} else {
 			gui.showMessage("No winner - auction has ended!");
 		}
 	}
