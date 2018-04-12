@@ -23,9 +23,9 @@ public class Connector {
 	 */
 	public static Connection getConnection() throws Exception {
 
-		String url = "jdbc:mysql://10.16.175.65:3306/" + "matadorspil" + "?useSSL=false";
-		String username = "gruppe25";
-		String password = "25";
+		String url = "jdbc:mysql://localhost/MatadorProjekt";
+		String username = "root";
+		String password = "123";
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection conn = DriverManager.getConnection(url, username, password);
