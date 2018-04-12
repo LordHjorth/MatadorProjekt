@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS `Car`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Car` (
   `color` varchar(10) CHARACTER SET utf8 NOT NULL,
-  `position` int(11) DEFAULT NULL,
+  `position` varchar(30) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (`color`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -35,7 +35,7 @@ CREATE TABLE `Car` (
 
 LOCK TABLES `Car` WRITE;
 /*!40000 ALTER TABLE `Car` DISABLE KEYS */;
-INSERT INTO `Car` VALUES ('Black',0),('Blue',0),('Green',0),('Pink',0),('Red',0),('Yellow',0);
+INSERT INTO `Car` VALUES ('Black','0'),('Blue','0'),('Green','0'),('Pink','0'),('Red','0'),('Yellow','0');
 /*!40000 ALTER TABLE `Car` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -84,7 +84,7 @@ CREATE TABLE `Player` (
   KEY `game_GameID_FK` (`gameID`),
   CONSTRAINT `Player_Info_CarColor_FK` FOREIGN KEY (`carColor`) REFERENCES `Car` (`color`),
   CONSTRAINT `game_GameID_FK` FOREIGN KEY (`gameID`) REFERENCES `Game` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -136,10 +136,11 @@ UNLOCK TABLES;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `CreatePlayerID`(IN id int, IN name nvarchar(30), IN color nvarchar(10), IN prison bit, IN balance int, IN pardon bit, IN gameID int)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `CreatePlayerID`(IN id int, IN name nvarchar(30), IN color nvarchar(10), IN position nvarchar(30), IN prison bit, IN balance int, IN pardon bit, IN gameID int)
 BEGIN
 
 INSERT INTO Player VALUES(id, name, color, prison, balance, pardon, gameID);
+UPDATE Car set Car.position = position where Car.color = color;
 
 END ;;
 DELIMITER ;
@@ -203,12 +204,14 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `UpdatePlayer`(IN name nvarchar(30), IN prison bit, IN balance int, IN pardon bit, IN gameID int)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `UpdatePlayer`(IN name nvarchar(30), IN prison bit, IN balance int, IN position nvarchar(30), IN pardon bit, IN gameID int)
 BEGIN
 
 UPDATE Player set Player.inPrison = prison, Player.balance = balance, Player.havePardon = pardon where Player.name = name;
 
-SELECT gameID, name, Car.position, balance, inPrison, havePardon, color FROM Player INNER JOIN Car on Player.carColor = Car.color;
+UPDATE Car set Car.position = position where color = (SELECT carColor FROM Player where Player.name = name);
+
+SELECT gameID, name, Car.position, balance, inPrison, havePardon, color FROM Player INNER JOIN Car on carColor = Car.color;
 
 END ;;
 DELIMITER ;
@@ -226,4 +229,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-04-12 10:17:56
+-- Dump completed on 2018-04-12 17:22:16
