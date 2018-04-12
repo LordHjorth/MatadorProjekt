@@ -28,6 +28,8 @@ public class Player extends Subject {
 	
 	private Space currentPosition;
 	
+	private int ID = 0;
+	
 	private int balance = 4000;
 	
 	private boolean inPrison = false;
@@ -264,6 +266,14 @@ public class Player extends Subject {
 		if (oldInPrison != inPrison) {
 			notifyChange();
 		}
+	}
+
+	public int getID() {
+		return ID;
+	}
+
+	public void setID(int iD) {
+		ID = iD;
 	}
 
 }

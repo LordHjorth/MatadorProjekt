@@ -2,22 +2,33 @@ package connection;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import gameContent.Player;
 
 /**
+ * The Class SQLMethods.
+ *
  * @author Gruppe 25
  */
 public class SQLMethods {
 	
 	/** The connector. */
 	Connector connector;
+	Connection con;
 	
 	/**
 	 * Instantiates a new SQL methods.
 	 */
 	public SQLMethods() {
 		connector = new Connector();
+		try {
+			con = connector.getConnection();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -30,7 +41,6 @@ public class SQLMethods {
 	 */
 	public void createPlayersInDB(Player player, int ID, String color) throws Exception {
 		try {
-			Connection con = connector.getConnection();
 			// id, name1, color, prison, balance1, pardon, gameID
 			int playerID = ID + 1;
 			CallableStatement cst = con.prepareCall("{ call CreatePlayerID(?, ?, ?, ?, ?, ?, ?) }");
@@ -47,8 +57,30 @@ public class SQLMethods {
 		} 
 	}
 	
+	/**
+	 * Update view when end turn.
+	 *
+	 * @param player the player
+	 * @return the result set
+	 */
+	public ResultSet updateViewEndTurn(Player player) {
+		try {
+			CallableStatement cst = con.prepareCall("{ call UpdatePlayer(?, ?, ?, ?, ?) }");
+			cst.setString("name", player.getName());
+			cst.setBoolean("prison", player.isInPrison());
+			cst.setInt("balance", player.getBalance());
+			cst.setBoolean("pardon", false); // pardon needs implementation for Player objects
+			cst.setInt("gameID", 1); //gameID is always 1 at the moment - only one game at a time
+			return cst.executeQuery();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	//TODO: 
 	//New game (see newGame_SQL.txt)
+	//Update players after each turn
 	//Move player
 	//Transaction
 	//
