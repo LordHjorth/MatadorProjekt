@@ -1,6 +1,7 @@
 package controllers;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.List;
 
 import connection.SQLMethods;
@@ -11,6 +12,8 @@ import gameContent.Game;
 import gameContent.Player;
 import gameContent.Property;
 import gameContent.Space;
+import gui_fields.GUI_Board;
+import gui_fields.GUI_Field;
 import gui_main.GUI;
 
 /**
@@ -371,7 +374,7 @@ public class GameController {
 			} catch (PlayerBrokeException e) {
 				// if the payment fails due to the player being broke,
 				// the an auction (among the other players is started
-				auction(property);
+				auction(property, player);
 				// then the current move is aborted by casting the
 				// PlayerBrokeException again
 				throw e;
@@ -383,7 +386,7 @@ public class GameController {
 
 		// In case the player does not buy the property an auction
 		// is started
-		auction(property);
+		auction(property, player);
 	}
 
 	/**
@@ -449,6 +452,7 @@ public class GameController {
 		}
 		gui.showMessage("Player " + player.getName() + " pays " + amount + "$ to the bank.");
 		player.payMoney(amount);
+
 	}
 
 	/**
@@ -457,9 +461,45 @@ public class GameController {
 	 * @param property
 	 *            the property which is for auction
 	 */
-	public void auction(Property property) {
+	public void auction(Property property, Player player) {
 		// TODO auction needs to be implemented
-		gui.showMessage("Now, there would be an auction of " + property.getName() + ".");
+		gui.showMessage("Now, there would be an auction of " + property.getName() + " and the price will start at ." + property.getCost());
+		List<Player> AuctionGrantedPlayers = new ArrayList<Player>(game.getPlayers());
+//		AuctionGrantedPlayers.remove(player); should be implemented later on
+		int bid = 0;
+		Player winner = null;
+		do {
+		for(Player biddingPlayer : AuctionGrantedPlayers) {
+			if(biddingPlayer.equals(player)) {
+				continue;
+			}
+			else {
+				int minimum = property.getCost() > bid ? property.getCost() : bid; //makes sure to always use the most recent bid
+				String answer = gui.getUserSelection("Would "+ biddingPlayer.getName() + " like to bid? - the price is " + minimum, "Yes", "No");
+				if(answer.equals("Yes")) {
+					bid = gui.getUserInteger("Place your bid", minimum,  1000000000); //maximum bid of 1.000.000.000
+					winner = biddingPlayer;
+				}
+				else {
+					AuctionGrantedPlayers.remove(biddingPlayer);
+				}
+			}		
+		} 
+		}while(AuctionGrantedPlayers.size() < 1);
+		if(winner != null) {
+			gui.showMessage(winner.getName() + " won the auction.");
+			try {
+				paymentToBank(winner, bid);
+				winner.addOwnedProperty(property);
+				gui.showMessage("You've succesfully bought the property " + property.getName());
+			} catch (PlayerBrokeException e) {
+				gui.showMessage("You haven't bought the property " + property.getName() + " You didn't have enough money");
+				e.printStackTrace();
+			}
+		}
+		else {
+			gui.showMessage("No winner - auction has ended!");
+		}
 	}
 
 	/**
