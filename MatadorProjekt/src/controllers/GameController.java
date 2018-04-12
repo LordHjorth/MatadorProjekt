@@ -77,7 +77,6 @@ public class GameController {
 		int NumberOfPlayers = gui.getUserInteger("Enter the amount of players (2-6)", 2, 6);
 		String color = "blue";
 		Object[][] data = new Object[NumberOfPlayers][];
-		Object[][] upData = new Object[NumberOfPlayers][];
 
 		for (int i = 0; i < NumberOfPlayers; i++) {
 			Player p = new Player();
