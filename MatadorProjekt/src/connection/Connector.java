@@ -21,7 +21,7 @@ public class Connector {
 	 * 
 	 * @author Gruppe 25
 	 */
-	public Connection getConnection() throws Exception {
+	public static Connection getConnection() throws Exception {
 
 		String url = "jdbc:mysql://10.16.175.65:3306/" + "matadorspil" + "?useSSL=false";
 		String username = "gruppe25";

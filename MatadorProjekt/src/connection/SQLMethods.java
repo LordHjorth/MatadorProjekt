@@ -4,6 +4,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import connection.Connector;
 
 import gameContent.Player;
 
@@ -15,16 +16,14 @@ import gameContent.Player;
 public class SQLMethods {
 	
 	/** The connector. */
-	Connector connector;
 	Connection con;
 	
 	/**
 	 * Instantiates a new SQL methods.
 	 */
 	public SQLMethods() {
-		connector = new Connector();
 		try {
-			con = connector.getConnection();
+			con = Connector.getConnection();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
