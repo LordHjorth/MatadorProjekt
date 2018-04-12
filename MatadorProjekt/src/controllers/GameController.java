@@ -246,12 +246,13 @@ public class GameController {
 				int newPos = (pos + die1 + die2) % spaces.size();
 				Space space = spaces.get(newPos);
 				moveToSpace(player, space);
+				vdb.updateViewOfDB(player);
+				sql.updateViewEndTurn(player);
 				if (castDouble) {
 					gui.showMessage("Player " + player.getName() + " cast a double and makes another move.");
 				}
 			}
 		} while (castDouble);
-		vdb.updateViewOfDB(player);
 	}
 
 	/**

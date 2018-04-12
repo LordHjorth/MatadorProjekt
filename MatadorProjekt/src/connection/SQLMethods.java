@@ -42,10 +42,11 @@ public class SQLMethods {
 		try {
 			// id, name1, color, prison, balance1, pardon, gameID
 			int playerID = ID + 1;
-			CallableStatement cst = con.prepareCall("{ call CreatePlayerID(?, ?, ?, ?, ?, ?, ?) }");
+			CallableStatement cst = con.prepareCall("{ call CreatePlayerID(?, ?, ?, ?, ?, ?, ?, ?) }");
 			cst.setInt("id", playerID);
 			cst.setString("name", player.getName());
 			cst.setString("color", color);
+			cst.setString("position", player.getCurrentPosition().toString());
 			cst.setBoolean("prison", player.isInPrison());
 			cst.setInt("balance", player.getBalance());
 			cst.setBoolean("pardon", false); // pardon needs implementation for Player objects
@@ -64,10 +65,11 @@ public class SQLMethods {
 	 */
 	public ResultSet updateViewEndTurn(Player player) {
 		try {
-			CallableStatement cst = con.prepareCall("{ call UpdatePlayer(?, ?, ?, ?, ?) }");
+			CallableStatement cst = con.prepareCall("{ call UpdatePlayer(?, ?, ?, ?, ?, ?) }");
 			cst.setString("name", player.getName());
 			cst.setBoolean("prison", player.isInPrison());
 			cst.setInt("balance", player.getBalance());
+			cst.setString("position", player.getCurrentPosition().getName());
 			cst.setBoolean("pardon", false); // pardon needs implementation for Player objects
 			cst.setInt("gameID", 1); //gameID is always 1 at the moment - only one game at a time
 			return cst.executeQuery();
