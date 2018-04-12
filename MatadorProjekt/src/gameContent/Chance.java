@@ -15,5 +15,12 @@ public class Chance extends Space {
 	public void doAction(GameController controller, Player player) throws PlayerBrokeException {
 		controller.takeChanceCard(player);
 	}
+	
+	private String Icon;
 
+	public String getIcon(){
+		Icon="?";
+		return Icon;
+		
+	}
 }

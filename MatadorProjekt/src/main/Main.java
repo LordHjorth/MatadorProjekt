@@ -13,12 +13,14 @@ public class Main {
 	 * @param args not used
 	 */
 	public static void main(String[] args) {
+		
 		Game game = MiniMonopoly.createGame();
 		game.shuffleCardDeck();
 		
 		GameController controller = new GameController(game);
-		controller.createPlayers();
 		controller.initializeGUI();
+		controller.createPlayers();
+		
 		
 		controller.play();
 	}

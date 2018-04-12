@@ -1,27 +1,27 @@
 package gameContent;
 
+import java.awt.Color;
+
 import controllers.GameController;
 import designPatterns.Subject;
 import exceptions.PlayerBrokeException;
 
 /**
  * Represents a space (field) of the Monopoly game. The method
- * {@link #doAction(GameController, Player)} implements the
- * action taken when a player arrives on the space. In order
- * to use this part of the model with the MVC-pattern, this
- * class extends the
- * {@link designPatterns.Subject} of
- * the observer design pattern.
+ * {@link #doAction(GameController, Player)} implements the action taken when a
+ * player arrives on the space. In order to use this part of the model with the
+ * MVC-pattern, this class extends the {@link designPatterns.Subject} of the
+ * observer design pattern.
  * 
  * @author Ekkart Kindler, ekki@dtu.dk
  *
  */
 public class Space extends Subject {
-	
+	private Color color;
 	private String name;
-	
+
 	private int index;
-	
+
 	/**
 	 * Returns the space's name.
 	 * 
@@ -34,7 +34,8 @@ public class Space extends Subject {
 	/**
 	 * Sets the space's name.
 	 * 
-	 * @param name the name
+	 * @param name
+	 *            the name
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -49,26 +50,39 @@ public class Space extends Subject {
 	public int getIndex() {
 		return index;
 	}
-	
+
 	/**
 	 * Sets the index of the space in the game.
 	 * 
-	 * @param index the index
+	 * @param index
+	 *            the index
 	 */
 	public void setIndex(int index) {
 		this.index = index;
 		notifyChange();
 	}
+
+	public void setColor(Color color) {
+		this.color = color;
+
+	}
+
+	public Color getColor() {
+
+		return color;
+	}
 	
 	/**
 	 * The action taken when a player arrives on that fields
 	 * 
-	 * @param controller the controller in charge of the game
-	 * @param player the involved player
-	 * @throws PlayerBrokeException when the action results in the player going bankrupt
+	 * @param controller
+	 *            the controller in charge of the game
+	 * @param player
+	 *            the involved player
+	 * @throws PlayerBrokeException
+	 *             when the action results in the player going bankrupt
 	 */
 	public void doAction(GameController controller, Player player) throws PlayerBrokeException {
 		// per default there is no action for a space
 	};
-
 }

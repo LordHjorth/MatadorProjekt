@@ -12,8 +12,10 @@ import gameContent.Game;
 import gameContent.Player;
 import gameContent.Property;
 import gameContent.Space;
-import gui_fields.GUI_Board;
-import gui_fields.GUI_Field;
+import gui_fields.GUI_Car;
+import gui_fields.GUI_Car.Pattern;
+import gui_fields.GUI_Car.Type;
+import gui_fields.GUI_Player;
 import gui_main.GUI;
 
 /**
@@ -64,7 +66,6 @@ public class GameController {
 		super();
 		this.game = game;
 		sql = new SQLMethods(); // Added by gruppe25
-		gui = new GUI();
 		vdb = new viewDB();
 	}
 
@@ -136,7 +137,8 @@ public class GameController {
 	 * by creating the GUI fields based on the underlying game's spaces (fields).
 	 */
 	public void initializeGUI() {
-		this.view = new View(game, gui);
+		this.view = new View(game);
+		gui = view.createGUI();
 	}
 
 	/**
@@ -217,8 +219,19 @@ public class GameController {
 	 *             if the player goes broke during the move
 	 */
 	public void makeMove(Player player) throws PlayerBrokeException {
+
 		boolean castDouble;
 		int doublesCount = 0;
+		
+		if (player.isInPrison()) {
+			if (gui.getUserLeftButtonPressed(
+				"Player " + player.getName() + " is in prison. Do you want to pay you out or cast a double",
+				"Pay 200", "roll dice") == true) {
+		player.setInPrison(false);
+		player.payMoney(200);
+			}
+		}
+		
 		do {
 			int die1 = (int) (1 + 3.0 * Math.random());
 			int die2 = (int) (1 + 3.0 * Math.random());

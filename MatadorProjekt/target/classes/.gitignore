@@ -1,5 +1,6 @@
-/connection/
-/main/
 /controllers/
-/META-INF/
 /gameContent/
+/properties/
+/main/
+/META-INF/
+/connection/

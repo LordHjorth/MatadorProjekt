@@ -25,7 +25,7 @@ public class Connector {
 
 		String url = "jdbc:mysql://localhost/MatadorProjekt";
 		String username = "root";
-		String password = "nic";
+		String password = "123";
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection conn = DriverManager.getConnection(url, username, password);

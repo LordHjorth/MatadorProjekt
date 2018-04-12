@@ -1,5 +1,6 @@
 package properties;
 
+
 import gameContent.Property;
 
 /**
@@ -11,7 +12,6 @@ import gameContent.Property;
  *
  */
 public class RealEstate extends Property{
-	
-	// TODO to be implemented
+
 
 }
