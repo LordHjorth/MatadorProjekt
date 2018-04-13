@@ -128,6 +128,7 @@ public class GameController {
 			data[i] = new Object[] { 1, p.getName(), 0, p.getBalance(), false, false, "" }; // gameID = 1 for now.
 		}
 		vdb.createViewOfDB(data); // adds player info to a view
+		view.createPlayers();
 	}
 
 	/**
