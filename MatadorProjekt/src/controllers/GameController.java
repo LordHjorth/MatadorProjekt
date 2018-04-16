@@ -3,6 +3,7 @@ package controllers;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import connection.SQLMethods;
 import connection.viewDB;
@@ -123,8 +124,7 @@ public class GameController {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			// "GameID", "Name", "Position", "Balance", "Prisoner", "Pardon available", "Car
-			// Color"
+			// "GameID", "Name", "Position", "Balance", "Prisoner", "Pardon available", "CarColor"
 			data[i] = new Object[] { 1, p.getName(), 0, p.getBalance(), false, false, "" }; // gameID = 1 for now.
 		}
 		vdb.createViewOfDB(data); // adds player info to a view
