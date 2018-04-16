@@ -4,6 +4,8 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+
 import connection.Connector;
 
 import gameContent.Player;
@@ -71,8 +73,19 @@ public class SQLMethods {
 			cst.setString("position", player.getCurrentPosition().getName());
 			cst.setBoolean("pardon", false); // pardon needs implementation for Player objects
 			cst.setInt("gameID", 1); //gameID is always 1 at the moment - only one game at a time
-			return cst.executeQuery();
+			cst.executeQuery();
 		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return showView();
+	}
+	
+	public ResultSet showView() {
+		try {
+			Statement st = con.createStatement();
+			return st.executeQuery("SELECT * FROM getViewOfGameStatus");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

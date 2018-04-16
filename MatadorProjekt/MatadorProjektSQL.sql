@@ -35,7 +35,7 @@ CREATE TABLE `Car` (
 
 LOCK TABLES `Car` WRITE;
 /*!40000 ALTER TABLE `Car` DISABLE KEYS */;
-INSERT INTO `Car` VALUES ('Black','0'),('Blue','0'),('Green','0'),('Pink','0'),('Red','0'),('Yellow','0');
+INSERT INTO `Car` VALUES ('Black','0'),('Blue','Trianglen'),('Green','0'),('Pink','0'),('Red','Hellerupvej'),('Yellow','0');
 /*!40000 ALTER TABLE `Car` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -93,6 +93,7 @@ CREATE TABLE `Player` (
 
 LOCK TABLES `Player` WRITE;
 /*!40000 ALTER TABLE `Player` DISABLE KEYS */;
+INSERT INTO `Player` VALUES (1,'asd','Blue','\0',5050,'\0',1),(2,'qwe','Red','\0',12700,'\0',1);
 /*!40000 ALTER TABLE `Player` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -122,6 +123,24 @@ LOCK TABLES `Property` WRITE;
 /*!40000 ALTER TABLE `Property` DISABLE KEYS */;
 /*!40000 ALTER TABLE `Property` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Temporary view structure for view `getviewofgamestatus`
+--
+
+DROP TABLE IF EXISTS `getviewofgamestatus`;
+/*!50001 DROP VIEW IF EXISTS `getviewofgamestatus`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE VIEW `getviewofgamestatus` AS SELECT 
+ 1 AS `gameID`,
+ 1 AS `name`,
+ 1 AS `position`,
+ 1 AS `balance`,
+ 1 AS `inPrison`,
+ 1 AS `havePardon`,
+ 1 AS `color`*/;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Dumping routines for database 'MatadorProjekt'
@@ -194,6 +213,34 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `resetDB` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `resetDB`()
+BEGIN
+
+delete from MatadorProjekt.Player where Player.id = 1;
+delete from MatadorProjekt.Player where Player.id = 2;
+delete from MatadorProjekt.Player where Player.id = 3;
+delete from MatadorProjekt.Player where Player.id = 4;
+delete from MatadorProjekt.Player where Player.id = 5;
+delete from MatadorProjekt.Player where Player.id = 6;
+
+UPDATE Car set position = '0';
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `UpdatePlayer` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -219,6 +266,24 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+--
+-- Final view structure for view `getviewofgamestatus`
+--
+
+/*!50001 DROP VIEW IF EXISTS `getviewofgamestatus`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `getviewofgamestatus` AS (select `player`.`gameID` AS `gameID`,`player`.`name` AS `name`,`car`.`position` AS `position`,`player`.`balance` AS `balance`,`player`.`inPrison` AS `inPrison`,`player`.`havePardon` AS `havePardon`,`car`.`color` AS `color` from (`player` join `car` on((`player`.`carColor` = `car`.`color`)))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -229,4 +294,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-04-12 17:22:16
+-- Dump completed on 2018-04-16 10:27:17
