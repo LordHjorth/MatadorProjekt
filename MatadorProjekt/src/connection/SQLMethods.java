@@ -78,6 +78,15 @@ public class SQLMethods {
 		return null;
 	}
 	
+	public void resetDB() {
+		try {
+			CallableStatement cst = con.prepareCall("{ call resetDB() }");
+			cst.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	//TODO: 
 	//New game (see newGame_SQL.txt)
 	//Update players after each turn

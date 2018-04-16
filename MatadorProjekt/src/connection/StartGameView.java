@@ -6,16 +6,22 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
+import controllers.GameController;
+import controllers.MiniMonopoly;
+import gameContent.Game;
+
 public class StartGameView {
 	
 	 JFrame frame;
 	 JButton Load;
 	 JButton New;
+	 SQLMethods sql;
 	 
 	 public StartGameView() {
 		 frame = new JFrame();
 		 Load = new JButton();
 		 New = new JButton();
+		 sql = new SQLMethods();
 	 }
 	
 	public void loadOrStartNewGame() {
@@ -48,11 +54,14 @@ public class StartGameView {
 	}
 	
 	public void LoadGame() {
-		System.out.println("LOAD");
+		System.out.println("LOAD GAME");
+		frame.setVisible(false);
 	}
 	
 	public void NewGame() {
-		System.out.println("NEW");
+		System.out.println("NEW GAME");
+		sql.resetDB();
+		frame.setVisible(false);
 	}
 
 }
