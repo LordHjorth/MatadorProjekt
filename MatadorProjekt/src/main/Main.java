@@ -1,5 +1,6 @@
 package main;
 
+import connection.StartGameView;
 import controllers.GameController;
 import controllers.MiniMonopoly;
 import gameContent.Game;
@@ -14,6 +15,9 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		
+		StartGameView s = new StartGameView();
+		s.loadOrStartNewGame();
+		/*
 		Game game = MiniMonopoly.createGame();
 		game.shuffleCardDeck();
 		
@@ -23,6 +27,7 @@ public class Main {
 		
 		
 		controller.play();
+		*/
 	}
 
 }
