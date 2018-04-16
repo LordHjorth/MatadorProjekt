@@ -18,7 +18,7 @@ import gameContent.Player;
 public class SQLMethods {
 	
 	/** The connector. */
-	Connection con;
+	private Connection con;
 	
 	/**
 	 * Instantiates a new SQL methods.

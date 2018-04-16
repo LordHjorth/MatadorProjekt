@@ -6,16 +6,13 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
-import controllers.GameController;
-import controllers.MiniMonopoly;
-import gameContent.Game;
 
 public class StartGameView {
 	
-	 JFrame frame;
-	 JButton Load;
-	 JButton New;
-	 SQLMethods sql;
+	 private JFrame frame;
+	 private JButton Load;
+	 private JButton New;
+	 private SQLMethods sql;
 	 
 	 public StartGameView() {
 		 frame = new JFrame();

@@ -13,11 +13,11 @@ import gameContent.Player;
 
 public class viewDB {
 
-	SQLMethods sql;
-	JFrame view;
-	JTable table;
-	DefaultTableModel model;
-	Object[] columns;
+	private SQLMethods sql;
+	private JFrame view;
+	private JTable table;
+	private DefaultTableModel model;
+	private Object[] columns;
 
 	public viewDB() {
 		view = new JFrame();

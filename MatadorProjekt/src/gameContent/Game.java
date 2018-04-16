@@ -24,6 +24,8 @@ public class Game extends Subject {
 	private List<Player> players = new ArrayList<Player>();
 	
 	private Player current;
+	
+	private final int MoneyForPassingGo = 2000;
 
 	/**
 	 * Returns a list of all the games spaces.
@@ -170,6 +172,13 @@ public class Game extends Subject {
 			throw new IllegalArgumentException("Player is not in the game!");
 		}
 		notifyChange();
+	}
+
+	/**
+	 * @return the passGo
+	 */
+	public int getMoneyForPassingGo() {
+		return MoneyForPassingGo;
 	}
 
 }

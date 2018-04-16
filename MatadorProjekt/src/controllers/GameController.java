@@ -3,7 +3,6 @@ package controllers;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import connection.SQLMethods;
 import connection.viewDB;
@@ -13,11 +12,6 @@ import gameContent.Game;
 import gameContent.Player;
 import gameContent.Property;
 import gameContent.Space;
-import gui_fields.GUI_Car;
-import gui_fields.GUI_Car.Pattern;
-import gui_fields.GUI_Car.Type;
-import gui_fields.GUI_Player;
-import gui_main.GUI;
 
 /**
  * The overall controller of a Monopoly game. It provides access to all basic
@@ -55,7 +49,7 @@ public class GameController {
 
 	private boolean disposed = false;
 
-	SQLMethods sql; // added by gruppe 25
+	private SQLMethods sql; // added by gruppe 25
 
 	/**
 	 * Constructor for a controller of a game.
@@ -289,9 +283,10 @@ public class GameController {
 		if (posOld > player.getCurrentPosition().getIndex()) {
 			// Note that this assumes that the game has more than 12 spaces here!
 			// TODO: the amount of 2000$ should not be a fixed constant here (could also
-			// be configured in the Game class.
-			gui.showMessage("Player " + player.getName() + " receives 2000$ for passing Go!");
-			this.paymentFromBank(player, 2000);
+			// be configured in the Game class. 
+			//- like this?
+			gui.showMessage("Player " + player.getName() + " receives " + game.getMoneyForPassingGo() + " $ for passing Go!");
+			this.paymentFromBank(player, game.getMoneyForPassingGo());
 		}
 		gui.showMessage(
 				"Player " + player.getName() + " arrives at " + space.getIndex() + ": " + space.getName() + ".");
