@@ -16,7 +16,7 @@ public class CardPayMoney extends Card {
 	public void setAmount(int amount) {
 		this.amount = amount;
 	}
-	
+	@Override
 	public void doAction(GameController controller, Player player) throws PlayerBrokeException {
 		try {
 			controller.paymentToBank(player, amount);

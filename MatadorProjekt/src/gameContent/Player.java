@@ -10,34 +10,32 @@ import java.util.Set;
 import designPatterns.Subject;
 
 /**
- * Represents a player and his current state in a Monopoly game.
- * This includes the player's position, owned money and properties
- * and chance cards. In order to use this part of the model with
- * the MVC-pattern, this class extends the
- * {@link designPatterns.Subject} of the observer
- * design pattern.
+ * Represents a player and his current state in a Monopoly game. This includes
+ * the player's position, owned money and properties and chance cards. In order
+ * to use this part of the model with the MVC-pattern, this class extends the
+ * {@link designPatterns.Subject} of the observer design pattern.
  * 
  * @author Ekkart Kindler, ekki@dtu.dk
  *
  */
 public class Player extends Subject {
-	
+
 	private String name;
-	
+
 	private Color color;
-	
+
 	private Space currentPosition;
-	
+
 	private int ID = 0;
-	
+
 	private int balance = 20000;
-	
+
 	private boolean inPrison = false;
-	
+
 	private boolean broke = false;
-	
+
 	private Set<Property> ownedProperties = new HashSet<Property>();
-	
+
 	private List<Card> ownedCards = new ArrayList<Card>();
 
 	/**
@@ -52,7 +50,8 @@ public class Player extends Subject {
 	/**
 	 * Sets the name of the player.
 	 * 
-	 * @param name the new name of the player
+	 * @param name
+	 *            the new name of the player
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -71,7 +70,8 @@ public class Player extends Subject {
 	/**
 	 * Sets the colour of the player.
 	 * 
-	 * @param color the new colour of the player.
+	 * @param color
+	 *            the new colour of the player.
 	 */
 	public void setColor(Color color) {
 		this.color = color;
@@ -90,7 +90,8 @@ public class Player extends Subject {
 	/**
 	 * Sets the new position of the player (the space it is located on).
 	 * 
-	 * @param position the new position
+	 * @param position
+	 *            the new position
 	 */
 	public void setCurrentPosition(Space position) {
 		this.currentPosition = position;
@@ -108,28 +109,31 @@ public class Player extends Subject {
 
 	/**
 	 * Sets the new account balance of the player.
-	 *  
-	 * @param balance the new balance
+	 * 
+	 * @param balance
+	 *            the new balance
 	 */
 	public void setBalance(int balance) {
 		this.balance = balance;
 		notifyChange();
 	}
-	
+
 	/**
 	 * Adds the given amount to the balance of the player.
 	 * 
-	 * @param amount the received amount
+	 * @param amount
+	 *            the received amount
 	 */
 	public void receiveMoney(int amount) {
 		balance = balance + amount;
 		notifyChange();
 	}
-	
+
 	/**
 	 * Removes the given amount from the balance of the player.
 	 * 
-	 * @param amount the payed amount
+	 * @param amount
+	 *            the payed amount
 	 */
 	public void payMoney(int amount) {
 		balance = balance - amount;
@@ -137,8 +141,8 @@ public class Player extends Subject {
 	}
 
 	/**
-	 * Returns a list of all properties the player currently owns as
-	 * an unmodifiable list.
+	 * Returns a list of all properties the player currently owns as an unmodifiable
+	 * list.
 	 * 
 	 * @return an unmodifiable list of all currently owned properties of the player
 	 */
@@ -147,31 +151,33 @@ public class Player extends Subject {
 	}
 
 	/**
-	 * Sets the list of owned properties to the provided list. Note that
-	 * the list is copied to avoid it to be changed without the player
-	 * being aware of it.
+	 * Sets the list of owned properties to the provided list. Note that the list is
+	 * copied to avoid it to be changed without the player being aware of it.
 	 * 
-	 * @param ownedProperties the new list of owned properties
+	 * @param ownedProperties
+	 *            the new list of owned properties
 	 */
 	public void setOwnedProperties(Set<Property> ownedProperties) {
 		this.ownedProperties = new HashSet<Property>(ownedProperties);
 		notifyChange();
 	}
-	
+
 	/**
 	 * Adds a property to the list of currently owned properties.
 	 * 
-	 * @param property the added property
+	 * @param property
+	 *            the added property
 	 */
 	public void addOwnedProperty(Property property) {
 		ownedProperties.add(property);
 		notifyChange();
 	}
-	
+
 	/**
 	 * Removes a property from the list of currently owned properties.
 	 * 
-	 * @param property the property to be removed
+	 * @param property
+	 *            the property to be removed
 	 * @return true, if the property was owned by the player
 	 */
 	public boolean removeOwnedProperty(Property property) {
@@ -179,7 +185,7 @@ public class Player extends Subject {
 		notifyChange();
 		return result;
 	}
-	
+
 	/**
 	 * Removes all properties from the player.
 	 */
@@ -187,11 +193,10 @@ public class Player extends Subject {
 		ownedProperties.clear();
 		notifyChange();
 	}
-	
 
 	/**
-	 * Returns a list of all cards currently owned by the player as
-	 * an unmodifiable list.
+	 * Returns a list of all cards currently owned by the player as an unmodifiable
+	 * list.
 	 * 
 	 * @return a list of all cards owned by the player
 	 */
@@ -200,28 +205,35 @@ public class Player extends Subject {
 	}
 
 	/**
-	 * Sets the currently owned cards of the player to the provided
-	 * list. Note that the provided list is copied.
+	 * Sets the currently owned cards of the player to the provided list. Note that
+	 * the provided list is copied.
 	 * 
-	 * @param ownedCards the new list of owned cards
+	 * @param ownedCards
+	 *            the new list of owned cards
 	 */
 	public void setOwnedCards(List<Card> ownedCards) {
 		this.ownedCards = new ArrayList<Card>(ownedCards);
 		notifyChange();
 	}
-	
+
 	/**
 	 * Removes a card from the owned cards.
 	 * 
-	 * @param card the card to be removed
+	 * @param card
+	 *            the card to be removed
 	 * @return returns true if the card was owned and is removed by the method
 	 */
-	public boolean removeOwnedCard(Card card) {
-		if (this.ownedCards.remove(card)) {
-			notifyChange();
-			return true;
+	public void removeOwnedCard() {
+		if (!ownedCards.isEmpty()) {
+			this.ownedCards.remove(ownedCards.size()-1);
 		}
-		return false;
+
+	}
+
+	public void setOwnedCard(Card card) {
+		if (this.ownedCards.add(card)) {
+			notifyChange();
+		}
 	}
 
 	/**
@@ -236,12 +248,13 @@ public class Player extends Subject {
 	/**
 	 * Sets the new broke status of the player.
 	 * 
-	 * @param broke the new broke status of the player
+	 * @param broke
+	 *            the new broke status of the player
 	 */
 	public void setBroke(boolean broke) {
 		boolean oldBroke = this.broke;
 		this.broke = broke;
-		if (oldBroke !=  broke) {
+		if (oldBroke != broke) {
 			notifyChange();
 		}
 	}
@@ -258,7 +271,8 @@ public class Player extends Subject {
 	/**
 	 * Sets the status whether the player is currently in prison.
 	 * 
-	 * @param inPrison the new prison status of the player
+	 * @param inPrison
+	 *            the new prison status of the player
 	 */
 	public void setInPrison(boolean inPrison) {
 		boolean oldInPrison = this.inPrison;
