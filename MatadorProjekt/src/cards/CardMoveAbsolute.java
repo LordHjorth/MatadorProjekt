@@ -12,7 +12,7 @@ import gameContent.Space;
  * @author Ekkart Kindler, ekki@dtu.dk
  * 
  */
-public class CardMove extends Card {
+public class CardMoveAbsolute extends Card {
 	
 	private Space target;
 
