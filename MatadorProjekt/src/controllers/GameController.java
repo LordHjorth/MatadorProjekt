@@ -600,7 +600,7 @@ public class GameController {
 		int k = 0;
 		for(Space s : game.getSpaces()) {
 			if(s instanceof Property) {
-				if(((Property) s).getCategory().equals(property.getCategory())) {
+				if(((Property) s).getCategory().equals(property.getCategory())) { //null pointer exception
 					k++;
 					Player owner = ((Property) s).getOwner();
 					if(owner != null) {
