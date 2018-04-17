@@ -30,7 +30,7 @@ public class Player extends Subject {
 	
 	private int ID = 0;
 	
-	private int balance = 20000;
+	private int balance = 2000000;
 	
 	private boolean inPrison = false;
 	

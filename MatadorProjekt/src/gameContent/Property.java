@@ -14,8 +14,13 @@ public class Property extends Space {
 	//TODO - add category for fields, so houses/hotels can be added.
 	private int cost;
 	private int rent;
+	private String category;
+	private int houses = 0;
+	private int houseCost = cost / 10;
+	public final String[] categories = {"Ships", "Brewery", "Vestegnen", "Valby", "Frederiksberg", "Hellerup", "Østerbro", "Kongens Nytorv", "Indre By", "København K"};
+
 	
-	private Player owner;
+	private Player owner = null;
 	
 
 	/**
@@ -52,7 +57,7 @@ public class Property extends Space {
 	 * @param rent the new rent for this property
 	 */
 	public void setRent(int rent) {
-		this.rent = rent;
+		this.rent = rent + rent * houses;
 		notifyChange();
 	}
 
@@ -64,6 +69,15 @@ public class Property extends Space {
 	 */
 	public Player getOwner() {
 		return owner;
+	}
+	
+	public boolean hasOwner() {
+		if(owner == null) {
+			return false;
+		}
+		else {
+			return true;
+		}
 	}
 
 	/**
@@ -77,11 +91,57 @@ public class Property extends Space {
 		notifyChange();
 	}
 
+	/**
+	 * @return the category
+	 */
+	public String getCategory() {
+		return category;
+	}
+
+	/**
+	 * @param category the category to set
+	 */
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	/**
+	 * @return the houses
+	 */
+	public int getHouses() {
+		return houses;
+	}
+
+	/**
+	 * @param houses, the houses to add
+	 */
+	public void addHouses(int houses) {
+		this.houses += houses;
+	}
+	
+	/**
+	 * @param houses, the houses to remove
+	 */
+	public void removeHouses(int houses) {
+		this.houses -= houses;
+	}
+
+	/**
+	 * @return the houseCost
+	 */
+	public int getHouseCost() {
+		return houseCost;
+	}
+
 	@Override
 	public void doAction(GameController controller, Player player) throws PlayerBrokeException {
 		if (owner == null) {
 			controller.offerToBuy(this, player);
-		} else if (!owner.equals(player)) {
+		} 
+		else if (owner.equals(player)) {
+			controller.buyHouse(player, this);
+		}
+		else if (!owner.equals(player)) {
 			// TODO also check whether the property is mortgaged
 			// TODO the computation of the actual rent could be delegated
 			//      the subclasses of Property, which can take the specific

@@ -19,6 +19,8 @@ public class Game extends Subject {
 	
 	private List<Space> spaces = new ArrayList<Space>();
 	
+	private List<Property> properties = new ArrayList<Property>();
+	
 	private List<Card> cardDeck = new ArrayList<Card>();
 	
 	private List<Player> players = new ArrayList<Player>();
@@ -48,6 +50,21 @@ public class Game extends Subject {
 		notifyChange();
 	}
 	
+	/**
+	 * @return the properties
+	 */
+	public List<Property> getProperties() {
+		return Collections.unmodifiableList(properties);
+	}
+
+	/**
+	 * @param properties the properties to set
+	 */
+	public void setProperties(List<Property> properties) {
+		this.properties = new ArrayList<Property>(properties);
+		notifyChange();
+	}
+
 	/**
 	 * Adds a space to the game at the end.
 	 * 

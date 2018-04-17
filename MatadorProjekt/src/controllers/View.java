@@ -11,6 +11,7 @@ import gameContent.Game;
 import gameContent.Jail;
 import gameContent.Parking;
 import gameContent.Player;
+import gameContent.Property;
 import gameContent.Space;
 import gameContent.Start;
 import gameContent.Tax;
@@ -51,6 +52,8 @@ public class View implements Observer {
 	private Map<Player, Integer> player2position = new HashMap<Player, Integer>();
 	private Map<Space, GUI_Field> space2GuiField = new HashMap<Space, GUI_Field>();
 
+	GUI_Field[] fields;
+
 	private boolean disposed = false;
 
 	/**
@@ -64,37 +67,44 @@ public class View implements Observer {
 	 */
 	public View(Game game) {
 		this.game = game;
+		
 
 	}
 
 	public GUI createGUI() {
 		if (gui == null) {
-			GUI_Field[] fields = new GUI_Field[game.getSpaces().size()];
+			fields = new GUI_Field[game.getSpaces().size()];
 			int i = 0;
 			for (Space space : game.getSpaces()) {
 
 				if (space instanceof RealEstate) {
-					String s = ((RealEstate) space).getCost() + "";
+					String cost = "Cost: " + ((RealEstate) space).getCost() + "";
+					String rent = "Rent: " + ((RealEstate) space).getRent() + "";
 					fields[i] = new GUI_Street();
 					fields[i].setTitle(space.getName());
-					fields[i].setSubText(s);
+					fields[i].setSubText(cost);
+					fields[i].setDescription(rent);
 					fields[i].setBackGroundColor(space.getColor());
 
 				} else if (space instanceof Brewery) {
-					String s = ((Brewery) space).getCost() + "";
+					String cost = "Cost: " + ((Brewery) space).getCost() + "";
+					String rent = "Rent: " + ((Brewery) space).getRent() + "";
 					fields[i] = new GUI_Brewery();
 					fields[i].setTitle(space.getName());
-					fields[i].setSubText(s);
+					fields[i].setSubText(cost);
+					fields[i].setDescription(rent);
 					fields[i].setBackGroundColor(space.getColor());
 
 				} else if (space instanceof Chance) {
 					fields[i] = new GUI_Chance(((Chance) space).getIcon(),space.getName(),"",Color.BLACK,Color.WHITE);
 
 				} else if (space instanceof Shipping) {
-					String s = ((Shipping) space).getCost() + "";
+					String cost = "Cost: " + ((Shipping) space).getCost() + "";
+					String rent = "Rent: " + ((Shipping) space).getRent() + "";
 					fields[i] = new GUI_Shipping();
 					fields[i].setTitle(space.getName());
-					fields[i].setSubText(s);
+					fields[i].setSubText(cost);
+					fields[i].setDescription(rent);
 					fields[i].setBackGroundColor(space.getColor());
 
 				} else if (space instanceof Start) {
@@ -145,6 +155,9 @@ public class View implements Observer {
 		if (!disposed) {
 			if (subject instanceof Player) {
 				updatePlayer((Player) subject);
+			}
+			if(subject instanceof Property) {
+				fields[((Property) subject).getIndex()].setDescription(((Property) subject).getRent() + "");;
 			}
 
 			// TODO update other subjects in the GUI

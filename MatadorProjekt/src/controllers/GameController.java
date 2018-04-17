@@ -3,12 +3,14 @@ package controllers;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import connection.SQLMethods;
 import connection.viewDB;
 import exceptions.PlayerBrokeException;
 import gameContent.Card;
 import gameContent.Game;
+import gameContent.Jail;
 import gameContent.Player;
 import gameContent.Property;
 import gameContent.Space;
@@ -41,7 +43,7 @@ import gameContent.Space;
 public class GameController {
 
 	private Game game;
-
+	private Jail jail;
 	private gui_main.GUI gui;
 
 	private View view;
@@ -228,8 +230,8 @@ public class GameController {
 		}
 
 		do {
-			int die1 = (int) (1 + 3.0 * Math.random());
-			int die2 = (int) (1 + 3.0 * Math.random());
+			int die1 = (int) (1 + 6.0 * Math.random());
+			int die2 = (int) (1 + 6.0 * Math.random());
 			castDouble = (die1 == die2);
 			gui.setDice(die1, die2);
 
@@ -304,8 +306,15 @@ public class GameController {
 	 */
 	public void gotoJail(Player player) {
 		// TODO the 10 should not be hard coded
-		player.setCurrentPosition(game.getSpaces().get(10));
+		List<Jail> jailFields = new ArrayList<>();
+		for(Space space : game.getSpaces()) {
+			if(space instanceof Jail) {
+				jailFields.add((Jail)space);
+			}
+		}
+		player.setCurrentPosition(jailFields.get(0));
 		player.setInPrison(true);
+		System.out.println(jailFields.get(0).getIndex() + "\t" + jailFields.get(0).getName());
 	}
 
 	/**
@@ -376,7 +385,6 @@ public class GameController {
 
 		String choice = gui.getUserSelection("Player " + player.getName() + ": Do you want to buy " + property.getName()
 				+ " for " + property.getCost() + "$?", "yes", "no");
-
 		if (choice.equals("yes")) {
 			try {
 				paymentToBank(player, property.getCost());
@@ -457,11 +465,9 @@ public class GameController {
 				playerBrokeToBank(player);
 				throw new PlayerBrokeException(player);
 			}
-
 		}
 		gui.showMessage("Player " + player.getName() + " pays " + amount + "$ to the bank.");
 		player.payMoney(amount);
-
 	}
 
 	/**
@@ -472,7 +478,7 @@ public class GameController {
 	 */
 	public void auction(Property property, Player player) {
 		// TODO auction needs to be implemented
-		gui.showMessage("Now, there would be an auction of " + property.getName() + " and the price will start at ."
+		gui.showMessage("Now, there would be an auction of " + property.getName() + " and the price will start at "
 				+ property.getCost());
 		List<Player> AuctionGrantedPlayers = new ArrayList<Player>(game.getPlayers());
 		List<Player> NotGrantedPlayers = new ArrayList<Player>();
@@ -487,10 +493,7 @@ public class GameController {
 			if (NotGrantedPlayers.contains(biddingPlayer) || biddingPlayer.isBroke()) {
 				continue;
 			} else {
-				int minimum = property.getCost() > bid + 1 ? property.getCost() : bid + 1; // makes sure to always use
-																							// the
-																							// most
-																							// recent bid
+				int minimum = property.getCost() > bid + 1 ? property.getCost() : bid + 1; // makes sure to always use the most recent bid
 				String answer = gui.getUserSelection(
 						"Would " + biddingPlayer.getName() + " like to bid? - the price is " + minimum, "Yes", "No");
 				if (answer.equals("Yes")) {
@@ -508,6 +511,7 @@ public class GameController {
 				paymentToBank(winner, bid);
 				winner.addOwnedProperty(property);
 				gui.showMessage("You've succesfully bought the property " + property.getName());
+				property.setOwner(winner);
 			} catch (PlayerBrokeException e) {
 				gui.showMessage(
 						"You haven't bought the property " + property.getName() + " You didn't have enough money");
@@ -575,6 +579,45 @@ public class GameController {
 
 		while (!player.getOwnedCards().isEmpty()) {
 			game.returnCardToDeck(player.getOwnedCards().get(0));
+		}
+	}
+	
+	//Method for buying houses - not done
+	public void buyHouse(Player player, Property property) {
+		int i = 0;
+		int k = 0;
+		for(Space s : game.getSpaces()) {
+			if(s instanceof Property) {
+				if(((Property) s).getCategory().equals(property.getCategory())) {
+					k++;
+					Player owner = ((Property) s).getOwner();
+					if(owner != null) {
+						if(owner.equals(player)){
+							i++;
+						} else {
+							break;
+						}
+					} else break;
+					
+				}
+			}
+		}
+
+//		System.out.println(((Property) s).getOwner().getName() + "- Random grund - " + s.getName());
+//		System.out.println(property.getOwner().getName() + "- Grunden - " + property.getName() + "\n");
+		
+		if(k==i) {
+			if(property.getHouses() >= 5) { //5 is the maximum number of houses - hotels is not an option at this point.
+				gui.showMessage("You can't buy any more houses.");
+			}
+			else {
+				int minimum = 1;
+				int maximum = 5 - property.getHouses();
+				int amount = gui.getUserInteger("How many houses du you want to buy? The price for one house is: " + property.getHouseCost(), minimum, maximum);
+				property.addHouses(amount);
+				property.setRent(property.getRent());
+				view.update(property);
+			}
 		}
 	}
 

@@ -85,7 +85,6 @@ public class SQLMethods {
 			Statement st = con.createStatement();
 			return st.executeQuery("SELECT * FROM getViewOfGameStatus");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

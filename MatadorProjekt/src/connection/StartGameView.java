@@ -6,6 +6,10 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
+import controllers.GameController;
+import controllers.MiniMonopoly;
+import gameContent.Game;
+
 
 public class StartGameView {
 	
@@ -41,6 +45,7 @@ public class StartGameView {
 		New.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) { 
 			    NewGame();
+				frame.dispose();
 			  } 
 		});
 		
@@ -55,10 +60,29 @@ public class StartGameView {
 		frame.setVisible(false);
 	}
 	
-	public void NewGame() {
-		System.out.println("NEW GAME");
-		sql.resetDB();
-		frame.setVisible(false);
+	public void NewGame() { //virker ikke
+		new Thread() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				super.run();
+				System.out.println("NEW GAME");
+
+				Game game = MiniMonopoly.createGame();
+				game.shuffleCardDeck();
+
+				GameController controller = new GameController(game);
+				controller.initializeGUI();
+				System.out.println("1");
+				controller.createPlayers();
+				System.out.println("2");
+				controller.play();
+				sql.resetDB();
+			}
+			
+		}.start();
+
 	}
 
 }

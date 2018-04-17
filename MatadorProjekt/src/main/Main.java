@@ -16,16 +16,16 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 
-//		StartGameView s = new StartGameView();
-//		s.loadOrStartNewGame();
+		StartGameView s = new StartGameView();
+		s.loadOrStartNewGame();
 
-		Game game = MiniMonopoly.createGame();
-		game.shuffleCardDeck();
-
-		GameController controller = new GameController(game);
-		controller.initializeGUI();
-		controller.createPlayers();
-
-		controller.play();
+//		Game game = MiniMonopoly.createGame();
+//		game.shuffleCardDeck();
+//
+//		GameController controller = new GameController(game);
+//		controller.initializeGUI();
+//		controller.createPlayers();
+//
+//		controller.play();
 	}
 }

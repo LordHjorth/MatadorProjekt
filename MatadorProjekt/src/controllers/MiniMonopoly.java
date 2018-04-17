@@ -19,7 +19,6 @@ import gameContent.Tax;
 import properties.Brewery;
 import properties.RealEstate;
 import properties.Shipping;
-import properties.Utility;
 
 /**
  * Main class for setting up and running a (Mini-)Monoploy game.
@@ -37,10 +36,8 @@ public class MiniMonopoly {
 	 * @return the initial game board and (not shuffled) deck of chance cards 
 	 */
 	public static Game createGame() {
-		// Create the initial Game set up (note that, in this simple
-		// setup, we use only 11 spaces). Note also that this setup
-		// could actually be loaded from a file or database instead
-		// of creating it programmatically.
+		// Create the initial Game set up
+		
 		Game game = new Game();
 		
 		Start go = new Start();
@@ -52,6 +49,7 @@ public class MiniMonopoly {
 		p.setCost(1200);
 		p.setRent(50);
 		p.setColor(new Color(75, 155, 225));
+		p.setCategory(p.categories[2]); //Vestegnen
 		game.addSpace(p);
 		
 		Chance chance = new Chance();
@@ -63,25 +61,27 @@ public class MiniMonopoly {
 		p.setCost(1200);
 		p.setRent(50);
 		game.addSpace(p);
+		p.setCategory(p.categories[2]); //Vestegnen
 		p.setColor(new Color(75, 155, 225));
 		
 		Tax t = new Tax();
 		t.setName("Betal indkomstskat");
 		game.addSpace(t);
 
-		Utility s = new Shipping();
+		Property s = new Shipping();
 		s.setName("Samsøfærgen");
 		s.setCost(4000);
 		s.setRent(500);
+		s.setCategory(s.categories[0]); //Ships
 		game.addSpace(s);
-		
 
 		p = new RealEstate();
 		p.setName("Roskildevej");
 		p.setCost(2000);
 		p.setRent(100);
-		game.addSpace(p);
+		p.setCategory(p.categories[3]); //Valby
 		p.setColor(new Color(255,130,102));
+		game.addSpace(p);
 		
 		chance = new Chance();
 		chance.setName("Chance");
@@ -91,15 +91,17 @@ public class MiniMonopoly {
 		p.setName("Valby Langgade");
 		p.setCost(2000);
 		p.setRent(100);
-		game.addSpace(p);
+		p.setCategory(p.categories[3]); //Valby
 		p.setColor(new Color(255,130,102));
+		game.addSpace(p);
 		
 		p = new RealEstate();
 		p.setName("Allégade");
 		p.setCost(2400);
 		p.setRent(150);
-		game.addSpace(p);
+		p.setCategory(p.categories[3]); //Valby
 		p.setColor(new Color(255,130,102));
+		game.addSpace(p);
 		
 		Space jail= new Jail();
 		jail.setName("Fængsel");
@@ -109,13 +111,15 @@ public class MiniMonopoly {
 		p.setName("Frederiksberg Allé");
 		p.setCost(2800);
 		p.setRent(200);
-		game.addSpace(p);
+		p.setCategory(p.categories[4]); //Frederiksberg
 		p.setColor(new Color(204,204,0));
+		game.addSpace(p);
 		
 		p = new Brewery();
 		p.setName("Tuborg");
 		p.setCost(3000);
 		p.setRent(300);
+		p.setCategory(p.categories[1]); //Brewery
 		game.addSpace(p);
 		
 		
@@ -123,30 +127,33 @@ public class MiniMonopoly {
 		p.setName("Bülowsvej");
 		p.setCost(2800);
 		p.setRent(200);
-		game.addSpace(p);
+		p.setCategory(p.categories[4]); //Frederiksberg
 		p.setColor(new Color(204,204,0));
-		
+		game.addSpace(p);
 		
 		p = new RealEstate();
 		p.setName("Gl. Kongevej");
 		p.setCost(3200);
 		p.setRent(250);
-		game.addSpace(p);
+		p.setCategory(p.categories[4]); //Frederiksberg
 		p.setColor(new Color(204,204,0));
+		game.addSpace(p);
 		
 		
 		s = new Shipping();
 		s.setName("Greenaa-Hundested");
 		s.setCost(4000);
 		s.setRent(500);
+		p.setCategory(p.categories[0]); //Ship
 		game.addSpace(s);
 		
 		p = new RealEstate();
 		p.setName("Berntoffsvej");
 		p.setCost(3600);
 		p.setRent(300);
-		game.addSpace(p);
+		p.setCategory(p.categories[5]); //Hellerup
 		p.setColor(Color.GRAY);
+		game.addSpace(p);
 		
 		
 		chance = new Chance();
@@ -157,15 +164,17 @@ public class MiniMonopoly {
 		p.setName("Hellerupvej");
 		p.setCost(3600);
 		p.setRent(300);
-		game.addSpace(p);
 		p.setColor(Color.GRAY);
+		p.setCategory(p.categories[5]); //Hellerup
+		game.addSpace(p);
 		
 		p = new RealEstate();
 		p.setName("Strandvejen");
 		p.setCost(4000);
 		p.setRent(350);
-		game.addSpace(p);
 		p.setColor(Color.GRAY);
+		p.setCategory(p.categories[5]); //Hellerup
+		game.addSpace(p);
 		
 		Space parking= new Parking();
 		parking.setName("Gratis Parkering");
@@ -175,10 +184,10 @@ public class MiniMonopoly {
 		p.setName("Trianglen");
 		p.setCost(4400);
 		p.setRent(400);
-		game.addSpace(p);
 		p.setColor(new Color(255,51,51));
+		p.setCategory(p.categories[6]); //Østerbro
+		game.addSpace(p);
 	
-		
 		chance = new Chance();
 		chance.setName("Chance");
 		game.addSpace(chance);
@@ -187,42 +196,48 @@ public class MiniMonopoly {
 		p.setName("Østerbrogade");
 		p.setCost(4400);
 		p.setRent(400);
-		game.addSpace(p);
 		p.setColor(new Color(255,51,51));
+		p.setCategory(p.categories[6]); //Østerbro
+		game.addSpace(p);
 		
 		
 		p = new RealEstate();
 		p.setName("Grønningen");
 		p.setCost(4800);
 		p.setRent(450);
-		game.addSpace(p);
 		p.setColor(new Color(255,51,51));
+		p.setCategory(p.categories[6]); //Østerbro
+		game.addSpace(p);
 		
 		
 		s = new Shipping();
 		s.setName("Molslinjen");
 		s.setCost(4000);
 		s.setRent(500);
+		p.setCategory(p.categories[0]); //Ship
 		game.addSpace(s);
 		
 		p = new RealEstate();
 		p.setName("Bredgade");
 		p.setCost(5200);
 		p.setRent(500);
-		game.addSpace(p);
 		p.setColor(Color.white);
+		p.setCategory(p.categories[7]); //Kgs. Nytorv
+		game.addSpace(p);
 		
 		p = new RealEstate();
 		p.setName("Kgs. Nytorv");
 		p.setCost(5200);
 		p.setRent(500);
-		game.addSpace(p);
 		p.setColor(Color.white);
+		p.setCategory(p.categories[7]); //Kgs. Nytorv
+		game.addSpace(p);
 		
 		p = new Brewery();
 		p.setName("Carlsberg");
 		p.setCost(3000);
 		p.setRent(300);
+		p.setCategory(p.categories[1]); //Brewery
 		game.addSpace(p);
 	
 		
@@ -230,8 +245,9 @@ public class MiniMonopoly {
 		p.setName("Østergade");
 		p.setCost(5600);
 		p.setRent(550);
-		game.addSpace(p);
 		p.setColor(Color.white);
+		p.setCategory(p.categories[7]); //Kgs. Nytorv
+		game.addSpace(p);
 		
 		Space gotoPrison = new Jail();
 		gotoPrison.setName("De fængsles");
@@ -241,8 +257,9 @@ public class MiniMonopoly {
 		p.setName("Amagertorv");
 		p.setCost(6000);
 		p.setRent(600);
-		game.addSpace(p);
 		p.setColor(new Color(255,255,102));
+		p.setCategory(p.categories[8]); //Indre By
+		game.addSpace(p);
 		
 		chance = new Chance();
 		chance.setName("Chance");
@@ -252,20 +269,23 @@ public class MiniMonopoly {
 		p.setName("Vimmelskaftet");
 		p.setCost(6000);
 		p.setRent(600);
-		game.addSpace(p);
 		p.setColor(new Color(255,255,102));
+		p.setCategory(p.categories[8]); //Indre By
+		game.addSpace(p);
 		
 		p = new RealEstate();
 		p.setName("Nygade");
 		p.setCost(6400);
 		p.setRent(650);
-		game.addSpace(p);
 		p.setColor(new Color(255,255,102));
+		p.setCategory(p.categories[8]); //Indre By
+		game.addSpace(p);
 		
 		s = new Shipping();
 		s.setName("Skandinavisk Linjetrafik");
 		s.setCost(4000);
 		s.setRent(500);
+		p.setCategory(p.categories[0]); //Ship By
 		game.addSpace(s);
 		
 		chance = new Chance();
@@ -277,6 +297,7 @@ public class MiniMonopoly {
 		p.setCost(7800);
 		p.setRent(700);
 		p.setColor(new Color(151,46,172));
+		p.setCategory(p.categories[9]); //København K
 		game.addSpace(p);
 		
 		t = new Tax();
@@ -289,6 +310,7 @@ public class MiniMonopoly {
 		p.setCost(8000);
 		p.setRent(750);
 		p.setColor(new Color(151,46,172));
+		p.setCategory(p.categories[9]); //København K
 		game.addSpace(p);
 		
 		

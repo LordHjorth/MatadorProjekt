@@ -2,7 +2,9 @@ package properties;
 
 import java.awt.Color;
 
-public class Shipping extends Utility {
+import gameContent.Property;
+
+public class Shipping extends Property {
 	private Color color = new Color(173, 216, 230);
 
 	public Color getColor() {
