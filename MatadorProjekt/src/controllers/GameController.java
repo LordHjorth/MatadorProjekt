@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import cards.PardonCard;
 import connection.SQLMethods;
 import connection.viewDB;
 import exceptions.PlayerBrokeException;
@@ -219,8 +220,16 @@ public class GameController {
 
 		boolean castDouble;
 		int doublesCount = 0;
-
+       
+        	
 		if (player.isInPrison()) {
+			if(!player.getOwnedCards().isEmpty()) {
+				if(gui.getUserLeftButtonPressed("Do you want to use your pardon card?", "Yes", "No")==true) {
+					player.setInPrison(false);
+					player.removeOwnedCard();
+					
+				}
+			}
 			if (gui.getUserLeftButtonPressed(
 					"Player " + player.getName() + " is in prison. Do you want to pay you out or cast a double",
 					"Pay 200", "roll dice") == true) {
@@ -329,7 +338,10 @@ public class GameController {
 		Card card = game.drawCardFromDeck();
 		gui.displayChanceCard(card.getText());
 		gui.showMessage("Player " + player.getName() + " draws a chance card.");
-
+		if(card instanceof PardonCard) {
+			player.setOwnedCard(card);
+			
+		}
 		try {
 			card.doAction(this, player);
 		} finally {

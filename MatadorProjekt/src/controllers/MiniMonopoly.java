@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cards.CardMove;
+import cards.CardPayMoney;
 import cards.CardReceiveMoneyFromBank;
-import cards.PayTax;
+import cards.Legat;
+import cards.PardonCard;
+import cards.PayPropertyTax;
 import gameContent.Card;
 import gameContent.Chance;
 import gameContent.Game;
@@ -312,24 +315,204 @@ public class MiniMonopoly {
 		p.setColor(new Color(151,46,172));
 		p.setCategory(p.categories[9]); //København K
 		game.addSpace(p);
-		
-		
-		//Chancecards
+
+		// Chancecards
 		List<Card> cards = new ArrayList<Card>();
-		
-		CardMove move = new CardMove();
-		move.setTarget(game.getSpaces().get(9));
-		move.setText("Move to All�gade!");
-		cards.add(move);
-		
-		PayTax tax = new PayTax();
-		tax.setText("Pay 10% income tax!");
-		cards.add(tax);
-		
+
+		CardReceiveMoneyFromBank a = new CardReceiveMoneyFromBank();
+		a.setText("Værdien af egen avl fra nyttehaven udgør kr. 200, som De modtager af banken.");
+		a.setAmount(200);
+		cards.add(a);
+		game.setCardDeck(cards);
+
+		CardPayMoney dentist = new CardPayMoney();
+		dentist.setText("De har modtaget Deres tandlægeregning. Betal kr. 2.000.");
+		dentist.setAmount(2000);
+		cards.add(dentist);
+		game.setCardDeck(cards);
+
+		PayPropertyTax propertytax = new PayPropertyTax();
+		propertytax.setText("Ejendomsskatterne er steget, ekstraudgifterne er: kr. 800 pr. hus, kr. 2.300 pr. hotel");
+		cards.add(propertytax);
+
+		CardPayMoney parkingTicket = new CardPayMoney();
+		parkingTicket.setText("De har måttet vedtage en parkeringsbøde. Betal kr. 200 i bøde.");
+		parkingTicket.setAmount(200);
+		cards.add(parkingTicket);
+		game.setCardDeck(cards);
+
 		CardReceiveMoneyFromBank b = new CardReceiveMoneyFromBank();
-		b.setText("You receive 100$ from the bank.");
-		b.setAmount(100);
+		b.setText("Kommunen har eftergivet et kvartals skat. Hæv i banken kr. 3.000.");
+		b.setAmount(3000);
 		cards.add(b);
+		game.setCardDeck(cards);
+
+
+		CardPayMoney carInsurance = new CardPayMoney();
+		carInsurance.setText("Betal Deres bilforsikring kr. 1.000.");
+		carInsurance.setAmount(1000);
+		cards.add(carInsurance);
+		game.setCardDeck(cards);
+
+		CardPayMoney ticket = new CardPayMoney();
+		ticket.setText("De har kørt frem for Fuld Stop. Betal kr. 1.000 i bøde.");
+		ticket.setAmount(1000);
+		cards.add(ticket);
+		game.setCardDeck(cards);
+
+		PardonCard pardonOne = new PardonCard();
+		pardonOne.setText(
+				"I anledning af kongens fødselsdag benådes De herved for fængsel. Dette kort kan opbevares, indtil De får brug for det, eller De kan sælge det. ");
+		cards.add(pardonOne);
+
+		PardonCard pardonTwo = new PardonCard();
+		pardonTwo.setText(
+				"I anledning af kongens fødselsdag benådes De herved for fængsel. Dette kort kan opbevares, indtil De får brug for det, eller De kan sælge det. ");
+		cards.add(pardonTwo);
+
+		CardPayMoney cigarats = new CardPayMoney();
+		cigarats.setText("De har været en tur i udlandet og haft for mange cigaratter med hjem. Betal told kr. 200.");
+		cigarats.setAmount(200);
+		cards.add(cigarats);
+		game.setCardDeck(cards);
+
+		CardReceiveMoneyFromBank c = new CardReceiveMoneyFromBank();
+		c.setText("De havde en række med elleve rigtige i tipning. Modtag kr. 1.000.");
+		c.setAmount(1000);
+		cards.add(c);
+		game.setCardDeck(cards);
+
+		CardPayMoney repair = new CardPayMoney();
+		repair.setText("Betal kr. 3.000 for reparation af Deres vogn.");
+		repair.setAmount(3000);
+		cards.add(repair);
+		game.setCardDeck(cards);
+
+		CardReceiveMoneyFromBank lottery = new CardReceiveMoneyFromBank();
+		lottery.setText("De har vundet i Klasselotteriet. Modtag kr. 500.");
+		lottery.setAmount(500);
+		cards.add(lottery);
+		game.setCardDeck(cards);
+
+//		CardMove moveBack = new CardMove();
+//		moveBack.setTarget(game.getSpaces().get(game.getCurrentPlayer().getCurrentPosition().getIndex() - 3));
+//		moveBack.setText("Ryk tre felter tilbage.");
+//		cards.add(moveBack);
+
+		CardReceiveMoneyFromBank bonds = new CardReceiveMoneyFromBank();
+		bonds.setText("Deres præmieobligation er kommet ud. De modtager kr. 1.000 af banken.");
+		bonds.setAmount(1000);
+		cards.add(bonds);
+		game.setCardDeck(cards);
+
+		CardReceiveMoneyFromBank equities = new CardReceiveMoneyFromBank();
+		equities.setText("Modtag udbytte af Deres aktier kr. 1.000.");
+		equities.setAmount(1000);
+		cards.add(equities);
+		game.setCardDeck(cards);
+
+		CardMove prison = new CardMove();
+		prison.setTarget(game.getSpaces().get(10));
+		prison.setText(
+				"Gå i fængsel. Ryk direkte til fængslet. Selv om De passerer Start, indkasserer De ikke kr. 4.000.");
+		cards.add(prison);
+
+		CardMove Rådhuspladsen = new CardMove();
+		Rådhuspladsen.setTarget(game.getSpaces().get(39));
+		Rådhuspladsen.setText("Tag ind på Rådhuspladsen.");
+		cards.add(Rådhuspladsen);
+
+		// TODO skal der oprettes en ny klasse??
+		// CardMove shipping = new CardMove();
+		// shipping.setTarget(game.getSpaces().get(39));
+		// shipping.setText("Ryk brikken frem til det nærmeste redderi og betal ejeren
+		// to gange den leje, han ellers er berettiget til. Hvis selskabet ikke ejes af
+		// nogen kan De købe det af banken.");
+		// cards.add(shipping);
+
+		CardMove Frederiksberg = new CardMove();
+		Frederiksberg.setTarget(game.getSpaces().get(11));
+		Frederiksberg.setText("Ryk frem til Frederiksberg Allé. Hvis De passerer Start, indkassér kr. 4.000.");
+		cards.add(Frederiksberg);
+
+		CardReceiveMoneyFromBank equitiesTwo = new CardReceiveMoneyFromBank();
+		equitiesTwo.setText("Modtag udbytte af Deres aktier kr. 1.000.");
+		equitiesTwo.setAmount(1000);
+		cards.add(equitiesTwo);
+		game.setCardDeck(cards);
+
+		// TODO modtager penge fra hver enkelt spiller
+		CardReceiveMoneyFromBank birthday = new CardReceiveMoneyFromBank();
+		birthday.setText("Det er deres fødselsdag. Modtag af hver medspiller kr. 200.");
+		birthday.setAmount(200);
+		cards.add(birthday);
+		game.setCardDeck(cards);
+
+		CardMove start = new CardMove();
+		start.setTarget(game.getSpaces().get(0));
+		start.setText("Ryk frem til Start.");
+		cards.add(start);
+
+		// Skal implementere metoder i klassen Legat
+		Legat legat = new Legat();
+		legat.setText(
+				"De modtager Matador-legatet for værdig trængende, stort kr. 40.000. Ved værdig trængende forstås, at Deres formue, d.v.s. Deres kontante penge + skøder + bygninger ikke overstiger kr. 15.000.");
+		cards.add(legat);
+
+		CardPayMoney repairTwo = new CardPayMoney();
+		repairTwo.setText("Betal kr. 3.000 for reparation af Deres vogn.");
+		repairTwo.setAmount(3000);
+		cards.add(repairTwo);
+		game.setCardDeck(cards);
+
+		CardReceiveMoneyFromBank salaryIncrease = new CardReceiveMoneyFromBank();
+		salaryIncrease.setText("Grundet dyrtiden har De fået gageforhøjelse. Modtag kr. 1.000.");
+		salaryIncrease.setAmount(1000);
+		cards.add(salaryIncrease);
+		game.setCardDeck(cards);
+
+		// TODO evt ny metode
+		// PayPropertyTax oilTax = new PayPropertyTax();
+		// oilTax.setText("Oliepriserne er steget, og De skal betale: kr. 500 pr. hus,
+		// kr. 2.000 pr. hotel.");
+		// cards.add(oilTax);
+
+		// TODO skal der oprettes en ny klasse??
+		// CardMove shippingOther = new CardMove();
+		// shippingOther.setTarget(game.getSpaces().get(39));
+		// shippingOther.setText("Tag med den nærmeste færge - Flyt brikken frem og hvis
+		// De passerer "Start" inkassér da kr. 4.000.");
+		// cards.add(shippingOther);
+
+		CardReceiveMoneyFromBank prize = new CardReceiveMoneyFromBank();
+		prize.setText("Deres præmieobligation er kommet ud. De modtager kr. 1.000 af banken.");
+		prize.setAmount(1000);
+		cards.add(prize);
+		game.setCardDeck(cards);
+
+		// TODO skal der oprettes en ny klasse??
+		// CardMove shipping = new CardMove();
+		// shipping.setTarget(game.getSpaces().get(39));
+		// shipping.setText("Ryk brikken frem til det nærmeste redderi og betal ejeren
+		// to gange den leje, han ellers er berettiget til. Hvis selskabet ikke ejes af
+		// nogen kan De købe det af banken.");
+		// cards.add(shipping);
+
+		CardMove grønningen = new CardMove();
+		grønningen.setTarget(game.getSpaces().get(24));
+		grønningen.setText("Ryk frem til Grønningen. Hvis De passerer Start, indkassér da kr. 4.000.");
+		cards.add(grønningen);
+
+		CardMove prisonTwo = new CardMove();
+		prisonTwo.setTarget(game.getSpaces().get(10));
+		prisonTwo.setText(
+				"Gå i fængsel. Ryk direkte til fængslet. Selv om De passerer Start, indkasserer De ikke kr. 4.000.");
+		cards.add(prisonTwo);
+
+		CardReceiveMoneyFromBank bank = new CardReceiveMoneyFromBank();
+		bank.setText("You receive 100$ from the bank.");
+		bank.setAmount(100);
+		cards.add(bank);
 		game.setCardDeck(cards);
 
 		return game;

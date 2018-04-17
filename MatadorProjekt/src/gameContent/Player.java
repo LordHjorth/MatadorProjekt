@@ -216,12 +216,17 @@ public class Player extends Subject {
 	 * @param card the card to be removed
 	 * @return returns true if the card was owned and is removed by the method
 	 */
-	public boolean removeOwnedCard(Card card) {
-		if (this.ownedCards.remove(card)) {
-			notifyChange();
-			return true;
+	public void removeOwnedCard() {
+		if (!ownedCards.isEmpty()) {
+			this.ownedCards.remove(ownedCards.size()-1);
 		}
-		return false;
+
+	}
+
+	public void setOwnedCard(Card card) {
+		if (this.ownedCards.add(card)) {
+			notifyChange();
+		}
 	}
 
 	/**
@@ -241,7 +246,7 @@ public class Player extends Subject {
 	public void setBroke(boolean broke) {
 		boolean oldBroke = this.broke;
 		this.broke = broke;
-		if (oldBroke !=  broke) {
+		if (oldBroke != broke) {
 			notifyChange();
 		}
 	}
