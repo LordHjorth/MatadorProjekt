@@ -106,7 +106,8 @@ public class MiniMonopoly {
 		p.setColor(new Color(255,130,102));
 		game.addSpace(p);
 		
-		Space jail= new Jail();
+		Jail jail= new Jail();
+		jail.setJail(false);
 		jail.setName("Fængsel");
 		game.addSpace(jail);
 		
@@ -252,7 +253,8 @@ public class MiniMonopoly {
 		p.setCategory(p.categories[7]); //Kgs. Nytorv
 		game.addSpace(p);
 		
-		Space gotoPrison = new Jail();
+		Jail gotoPrison = new Jail();
+		gotoPrison.setJail(true);
 		gotoPrison.setName("De fængsles");
 		game.addSpace(gotoPrison);
 		
@@ -412,9 +414,10 @@ public class MiniMonopoly {
 		game.setCardDeck(cards);
 
 		CardMove prison = new CardMove();
-		prison.setTarget(game.getSpaces().get(10));
+		prison.setTarget(game.getSpaces().get(30));
 		prison.setText(
 				"Gå i fængsel. Ryk direkte til fængslet. Selv om De passerer Start, indkasserer De ikke kr. 4.000.");
+		
 		cards.add(prison);
 
 		CardMove Rådhuspladsen = new CardMove();
@@ -504,7 +507,7 @@ public class MiniMonopoly {
 		cards.add(grønningen);
 
 		CardMove prisonTwo = new CardMove();
-		prisonTwo.setTarget(game.getSpaces().get(10));
+		prisonTwo.setTarget(game.getSpaces().get(30));
 		prisonTwo.setText(
 				"Gå i fængsel. Ryk direkte til fængslet. Selv om De passerer Start, indkasserer De ikke kr. 4.000.");
 		cards.add(prisonTwo);
