@@ -7,6 +7,7 @@ import java.util.List;
 import cards.CardMove;
 import cards.CardPayMoney;
 import cards.CardReceiveMoneyFromBank;
+import cards.GotoJail;
 import cards.Legat;
 import cards.PardonCard;
 import cards.PayPropertyTax;
@@ -411,11 +412,12 @@ public class MiniMonopoly {
 		cards.add(equities);
 		game.setCardDeck(cards);
 
-		CardMove prison = new CardMove();
-		prison.setTarget(game.getSpaces().get(10));
+		GotoJail prison = new GotoJail();
 		prison.setText(
 				"Gå i fængsel. Ryk direkte til fængslet. Selv om De passerer Start, indkasserer De ikke kr. 4.000.");
 		cards.add(prison);
+		cards.add(prison);
+		
 
 		CardMove Rådhuspladsen = new CardMove();
 		Rådhuspladsen.setTarget(game.getSpaces().get(39));
@@ -502,12 +504,6 @@ public class MiniMonopoly {
 		grønningen.setTarget(game.getSpaces().get(24));
 		grønningen.setText("Ryk frem til Grønningen. Hvis De passerer Start, indkassér da kr. 4.000.");
 		cards.add(grønningen);
-
-		CardMove prisonTwo = new CardMove();
-		prisonTwo.setTarget(game.getSpaces().get(10));
-		prisonTwo.setText(
-				"Gå i fængsel. Ryk direkte til fængslet. Selv om De passerer Start, indkasserer De ikke kr. 4.000.");
-		cards.add(prisonTwo);
 
 		CardReceiveMoneyFromBank bank = new CardReceiveMoneyFromBank();
 		bank.setText("You receive 100$ from the bank.");

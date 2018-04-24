@@ -74,6 +74,7 @@ public class SQLMethods {
 			cst.setBoolean("pardon", false); // pardon needs implementation for Player objects
 			cst.setInt("gameID", 1); //gameID is always 1 at the moment - only one game at a time
 			cst.executeQuery();
+			System.out.println(player.getCurrentPosition().getName());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
