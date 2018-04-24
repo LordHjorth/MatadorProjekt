@@ -107,7 +107,7 @@ public class MiniMonopoly {
 		p.setColor(new Color(255,130,102));
 		game.addSpace(p);
 		
-		Space jail= new Jail();
+		Jail jail= new Jail();
 		jail.setName("Fængsel");
 		game.addSpace(jail);
 		
@@ -253,8 +253,9 @@ public class MiniMonopoly {
 		p.setCategory(p.categories[7]); //Kgs. Nytorv
 		game.addSpace(p);
 		
-		Space gotoPrison = new Jail();
+		Jail gotoPrison = new Jail();
 		gotoPrison.setName("De fængsles");
+		gotoPrison.setJail(true);
 		game.addSpace(gotoPrison);
 		
 		p = new RealEstate();

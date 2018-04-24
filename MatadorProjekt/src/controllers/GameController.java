@@ -193,6 +193,7 @@ public class GameController {
 
 			current = (current + 1) % players.size();
 			game.setCurrentPlayer(players.get(current));
+			vdb.updateViewOfDB(game.getPlayers());
 			if (current == 0) {
 				String selection = gui.getUserSelection("A round is finished. Do you want to continue the game?", "yes",
 						"no");
@@ -267,7 +268,7 @@ public class GameController {
 				List<Space> spaces = game.getSpaces();
 				int newPos = (pos + die1 + die2) % spaces.size();
 				Space space = spaces.get(newPos);
-				vdb.updateViewOfDB(game.getPlayers());
+				
 				moveToSpace(player, space);
 				if (castDouble) {
 					gui.showMessage("Player " + player.getName() + " cast a double and makes another move.");
