@@ -2,9 +2,9 @@ package controllers;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-
+import java.util.Map;
 import cards.PardonCard;
 import connection.SQLMethods;
 import connection.viewDB;
@@ -15,6 +15,7 @@ import gameContent.Jail;
 import gameContent.Player;
 import gameContent.Property;
 import gameContent.Space;
+import properties.RealEstate;
 
 /**
  * The overall controller of a Monopoly game. It provides access to all basic
@@ -45,7 +46,7 @@ public class GameController {
 
 	private Game game;
 	private gui_main.GUI gui;
-
+	private Map<String, List<Property>> category2Properties = new HashMap<String, List<Property>>();
 	private View view;
 	private viewDB vdb;
 
@@ -64,6 +65,8 @@ public class GameController {
 		this.game = game;
 		sql = new SQLMethods(); // Added by gruppe25
 		vdb = new viewDB();
+		this.createcategoryList();
+
 	}
 
 	/**
@@ -120,7 +123,8 @@ public class GameController {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			// "GameID", "Name", "Position", "Balance", "Prisoner", "Pardon available", "CarColor"
+			// "GameID", "Name", "Position", "Balance", "Prisoner", "Pardon available",
+			// "CarColor"
 			data[i] = new Object[] { 1, p.getName(), 0, p.getBalance(), false, false, "" }; // gameID = 1 for now.
 		}
 		vdb.createViewOfDB(data); // adds player info to a view
@@ -220,14 +224,13 @@ public class GameController {
 
 		boolean castDouble;
 		int doublesCount = 0;
-       
-        	
+
 		if (player.isInPrison()) {
-			if(!player.getOwnedCards().isEmpty()) {
-				if(gui.getUserLeftButtonPressed("Do you want to use your pardon card?", "Yes", "No")==true) {
+			if (!player.getOwnedCards().isEmpty()) {
+				if (gui.getUserLeftButtonPressed("Do you want to use your pardon card?", "Yes", "No") == true) {
 					player.setInPrison(false);
 					player.removeOwnedCard();
-					
+
 				}
 			}
 			if (gui.getUserLeftButtonPressed(
@@ -267,7 +270,7 @@ public class GameController {
 				List<Space> spaces = game.getSpaces();
 				int newPos = (pos + die1 + die2) % spaces.size();
 				Space space = spaces.get(newPos);
-				
+
 				moveToSpace(player, space);
 				if (castDouble) {
 					gui.showMessage("Player " + player.getName() + " cast a double and makes another move.");
@@ -292,11 +295,12 @@ public class GameController {
 		player.setCurrentPosition(space);
 
 		if (posOld > player.getCurrentPosition().getIndex()) {
-			
+
 			// TODO: the amount of 2000$ should not be a fixed constant here (could also
-			// be configured in the Game class. 
-			//- like this?
-			gui.showMessage("Player " + player.getName() + " receives " + game.getMoneyForPassingGo() + " $ for passing Go!");
+			// be configured in the Game class.
+			// - like this?
+			gui.showMessage(
+					"Player " + player.getName() + " receives " + game.getMoneyForPassingGo() + " $ for passing Go!");
 			this.paymentFromBank(player, game.getMoneyForPassingGo());
 		}
 		gui.showMessage(
@@ -316,9 +320,9 @@ public class GameController {
 	public void gotoJail(Player player) {
 		// TODO the 10 should not be hard coded
 		List<Jail> jailFields = new ArrayList<>();
-		for(Space space : game.getSpaces()) {
-			if(space instanceof Jail) {
-				jailFields.add((Jail)space);
+		for (Space space : game.getSpaces()) {
+			if (space instanceof Jail) {
+				jailFields.add((Jail) space);
 			}
 		}
 		player.setCurrentPosition(jailFields.get(0));
@@ -338,9 +342,9 @@ public class GameController {
 		Card card = game.drawCardFromDeck();
 		gui.displayChanceCard(card.getText());
 		gui.showMessage("Player " + player.getName() + " draws a chance card.");
-		if(card instanceof PardonCard) {
+		if (card instanceof PardonCard) {
 			player.setOwnedCard(card);
-			
+
 		}
 		try {
 			card.doAction(this, player);
@@ -505,7 +509,8 @@ public class GameController {
 			if (NotGrantedPlayers.contains(biddingPlayer) || biddingPlayer.isBroke()) {
 				continue;
 			} else {
-				int minimum = property.getCost() > bid + 1 ? property.getCost() : bid + 1; // makes sure to always use the most recent bid
+				int minimum = property.getCost() > bid + 1 ? property.getCost() : bid + 1; // makes sure to always use
+																							// the most recent bid
 				String answer = gui.getUserSelection(
 						"Would " + biddingPlayer.getName() + " like to bid? - the price is " + minimum, "Yes", "No");
 				if (answer.equals("Yes")) {
@@ -593,44 +598,56 @@ public class GameController {
 			game.returnCardToDeck(player.getOwnedCards().get(0));
 		}
 	}
-	
-	//Method for buying houses - not done
-	public void buyHouse(Player player, Property property) {
-		int i = 0;
-		int k = 0;
-		for(Space s : game.getSpaces()) {
-			if(s instanceof Property) {
-				if(((Property) s).getCategory().equals(property.getCategory())) { //null pointer exception
-					k++;
-					Player owner = ((Property) s).getOwner();
-					if(owner != null) {
-						if(owner.equals(player)){
-							i++;
-						} else {
-							break;
-						}
-					} else break;
-					
-				}
-			}
-		}
 
-//		System.out.println(((Property) s).getOwner().getName() + "- Random grund - " + s.getName());
-//		System.out.println(property.getOwner().getName() + "- Grunden - " + property.getName() + "\n");
-		
-		if(k==i) {
-			if(property.getHouses() >= 5) { //5 is the maximum number of houses - hotels is not an option at this point.
-				gui.showMessage("You can't buy any more houses.");
+	// Method for buying houses - not done
+	public void buyHouseIfPossible(Player player, RealEstate realestate) {
+		List<Property> l = this.getAllPropertiesofCategory(realestate.getCategory());
+		for (Property property : l) {
+			if (!player.equals(property.getOwner())) {
+				gui.showMessage("You do not own all the properties.");
+				return;
 			}
-			else {
+
+			if (realestate.getHouses() >= 5) { // 5 is the maximum number of houses - hotels is not an option at this
+												// point.
+				gui.showMessage("You can't buy any more houses.");
+				return;
+			} else {
 				int minimum = 1;
-				int maximum = 5 - property.getHouses();
-				int amount = gui.getUserInteger("How many houses du you want to buy? The price for one house is: " + property.getHouseCost(), minimum, maximum);
-				property.addHouses(amount);
-				property.setRent(property.getRent());
-				view.update(property);
+				int maximum = 5 - realestate.getHouses();
+				int amount = gui.getUserInteger(
+						"How many houses du you want to buy? The price for one house is: " + realestate.getHouseCost(),
+						minimum, maximum);
+				realestate.addHouses(amount);
+				realestate.setRent(realestate.getRent());
+				try {
+					this.paymentToBank(player, realestate.getHouseCost() * amount);
+				} catch (PlayerBrokeException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				view.update(realestate);
 			}
 		}
+	}
+
+	private void createcategoryList() {
+		for (Space space : game.getSpaces()) {
+			if (space instanceof Property) {
+				Property property = (Property) space;
+				List<Property> list = category2Properties.get(property.getCategory());
+				if (list == null) {
+					list = new ArrayList<Property>();
+					category2Properties.put(property.getCategory(), list);
+				}
+				list.add(property);
+			}
+		}
+	}
+
+	private List<Property> getAllPropertiesofCategory(String category) {
+		return new ArrayList<Property>(category2Properties.get(category));
+
 	}
 
 	/**

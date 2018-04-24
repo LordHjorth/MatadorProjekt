@@ -15,11 +15,7 @@ public class Property extends Space {
 	private int cost;
 	private int rent;
 	private String category;
-	private int houses = 0;
-	private int houseCost = cost / 10;
 	public final String[] categories = {"Ships", "Brewery", "Vestegnen", "Valby", "Frederiksberg", "Hellerup", "Østerbro", "Kongens Nytorv", "Indre By", "København K"};
-
-	
 	private Player owner = null;
 	
 
@@ -57,7 +53,7 @@ public class Property extends Space {
 	 * @param rent the new rent for this property
 	 */
 	public void setRent(int rent) {
-		this.rent = rent + rent * houses;
+		this.rent = rent;
 		notifyChange();
 	}
 
@@ -108,39 +104,14 @@ public class Property extends Space {
 	/**
 	 * @return the houses
 	 */
-	public int getHouses() {
-		return houses;
-	}
-
-	/**
-	 * @param houses, the houses to add
-	 */
-	public void addHouses(int houses) {
-		this.houses += houses;
-	}
 	
-	/**
-	 * @param houses, the houses to remove
-	 */
-	public void removeHouses(int houses) {
-		this.houses -= houses;
-	}
-
-	/**
-	 * @return the houseCost
-	 */
-	public int getHouseCost() {
-		return houseCost;
-	}
 
 	@Override
 	public void doAction(GameController controller, Player player) throws PlayerBrokeException {
 		if (owner == null) {
 			controller.offerToBuy(this, player);
 		} 
-		else if (owner.equals(player)) {
-			controller.buyHouse(player, this);
-		}
+		
 		else if (!owner.equals(player)) {
 			// TODO also check whether the property is mortgaged
 			// TODO the computation of the actual rent could be delegated
