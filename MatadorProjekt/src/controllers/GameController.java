@@ -44,7 +44,6 @@ import gameContent.Space;
 public class GameController {
 
 	private Game game;
-	private Jail jail;
 	private gui_main.GUI gui;
 
 	private View view;
