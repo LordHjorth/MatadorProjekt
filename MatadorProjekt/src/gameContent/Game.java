@@ -25,7 +25,7 @@ public class Game extends Subject {
 	
 	private Player current;
 	
-	private final int MoneyForPassingGo = 2000;
+	private final int MoneyForPassingGo = 4000;
 
 	/**
 	 * Returns a list of all the games spaces.

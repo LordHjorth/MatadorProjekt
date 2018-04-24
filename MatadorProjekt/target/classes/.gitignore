@@ -1,7 +1,4 @@
-/controllers/
-/gameContent/
-/properties/
-/main/
-/META-INF/
 /connection/
-/cards/
+/META-INF/
+/gameContent/
+/controllers/

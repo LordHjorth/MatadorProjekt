@@ -13,7 +13,7 @@ public class Connector {
 
 		String url = "jdbc:mysql://localhost/MatadorProjekt";
 		String username = "root";
-		String password = "123";
+		String password = "root";
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection conn = DriverManager.getConnection(url, username, password);

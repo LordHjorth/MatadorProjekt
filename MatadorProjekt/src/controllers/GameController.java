@@ -292,7 +292,7 @@ public class GameController {
 		player.setCurrentPosition(space);
 
 		if (posOld > player.getCurrentPosition().getIndex()) {
-			// Note that this assumes that the game has more than 12 spaces here!
+			
 			// TODO: the amount of 2000$ should not be a fixed constant here (could also
 			// be configured in the Game class. 
 			//- like this?
