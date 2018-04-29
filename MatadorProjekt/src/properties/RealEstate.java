@@ -13,9 +13,9 @@ import gameContent.Property;
  *
  */
 public class RealEstate extends Property {
-	int cost = super.getCost();
+
 	private int houses = 0;
-	private int houseCost = cost / 10;
+	private int houseCost;
 	private int rent;
 
 	public int getHouses() {
@@ -47,9 +47,15 @@ public class RealEstate extends Property {
 		return houseCost;
 	}
 
+	public void setHouseCost() {
+		this.houseCost = this.cost / 10;
+
+	}
+
 	@Override
 	public void setRent(int rent) {
-
+		this.rent = rent;
+		notifyChange();
 	}
 
 	public void updateRent(int houses) {
@@ -62,6 +68,7 @@ public class RealEstate extends Property {
 
 	}
 
+	@Override
 	public int getRent() {
 		return rent;
 	}
@@ -70,19 +77,23 @@ public class RealEstate extends Property {
 	public void doAction(GameController controller, Player player) throws PlayerBrokeException {
 		if (this.getOwner() == null) {
 			controller.offerToBuy(this, player);
+
 		}
 
 		else if (!this.getOwner().equals(player)) {
 			// TODO also check whether the property is mortgaged
 			// TODO the computation of the actual rent could be delegated
-			// the subclasses of Property, which can take the specific
-			// individual conditions into account. Note that the
-			// groups of properties (which are not part of the model
-			// yet also need to be taken into account).
-			controller.payment(player, this.getRent(), this.getOwner());
+
+			if (controller.checkOwnershipOfCategory(owner, this))
+				controller.payment(player, this.getRent() * 2, this.getOwner());
+			else {
+				controller.payment(player, this.getRent(), this.getOwner());
+			}
+
 		}
-		
-		controller.buyHouseIfPossible(player, this);
+		if (this.getOwner().equals(player) && controller.checkOwnershipOfCategory(player, this)&&!(this.getHouses()==5)) {
+			controller.buyHouse(player, this);
+		}
 	}
 
 }

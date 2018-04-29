@@ -67,18 +67,13 @@ public class StartGameView {
 			public void run() {
 				// TODO Auto-generated method stub
 				super.run();
-				System.out.println("NEW GAME");
 
 				Game game = MiniMonopoly.createGame();
 				game.shuffleCardDeck();
 
 				GameController controller = new GameController(game);
-
 				controller.initializeGUI();
-				
-				System.out.println("1");
 				controller.createPlayers();
-				System.out.println("2");
 				controller.play();
 				sql.resetDB();
 			}

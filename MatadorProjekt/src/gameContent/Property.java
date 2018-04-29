@@ -12,11 +12,11 @@ import exceptions.PlayerBrokeException;
 public class Property extends Space {
 	
 	//TODO - add category for fields, so houses/hotels can be added.
-	private int cost;
-	private int rent;
-	private String category;
+	protected int cost;
+	protected int rent;
+	protected String category;
 	public final String[] categories = {"Ships", "Brewery", "Vestegnen", "Valby", "Frederiksberg", "Hellerup", "Østerbro", "Kongens Nytorv", "Indre By", "København K"};
-	private Player owner = null;
+	protected Player owner = null;
 	
 
 	/**
@@ -43,6 +43,7 @@ public class Property extends Space {
 	 * 
 	 * @return the rent for this property
 	 */
+	
 	public int getRent() {
 		return rent;
 	}

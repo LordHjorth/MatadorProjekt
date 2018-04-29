@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import cards.PardonCard;
 import connection.SQLMethods;
 import connection.viewDB;
@@ -49,7 +50,7 @@ public class GameController {
 	private Map<String, List<Property>> category2Properties = new HashMap<String, List<Property>>();
 	private View view;
 	private viewDB vdb;
-
+	private int diethrow;
 	private boolean disposed = false;
 
 	private SQLMethods sql; // added by gruppe 25
@@ -228,12 +229,20 @@ public class GameController {
 		if (player.isInPrison()) {
 			if (!player.getOwnedCards().isEmpty()) {
 				if (gui.getUserLeftButtonPressed("Do you want to use your pardon card?", "Yes", "No") == true) {
+					int die1 = (int) (1 + 6.0 * Math.random());
+					int die2 = (int) (1 + 6.0 * Math.random());
 					player.setInPrison(false);
 					player.removeOwnedCard();
+					int pos = player.getCurrentPosition().getIndex();
+					List<Space> spaces = game.getSpaces();
+					int newPos = (pos + die1 + die2) % spaces.size();
+					this.setDieThrow(die1, die2);
+					Space space = spaces.get(newPos);
+
+					moveToSpace(player, space);
 
 				}
-			}
-			if (gui.getUserLeftButtonPressed(
+			} else if (gui.getUserLeftButtonPressed(
 					"Player " + player.getName() + " is in prison. Do you want to pay you out or cast a double",
 					"Pay 200", "roll dice") == true) {
 				player.setInPrison(false);
@@ -246,6 +255,7 @@ public class GameController {
 			int die2 = (int) (1 + 6.0 * Math.random());
 			castDouble = (die1 == die2);
 			gui.setDice(die1, die2);
+			this.setDieThrow(die1, die2);
 
 			if (player.isInPrison() && castDouble) {
 				player.setInPrison(false);
@@ -300,7 +310,7 @@ public class GameController {
 			// be configured in the Game class.
 			// - like this?
 			gui.showMessage(
-					"Player " + player.getName() + " receives " + game.getMoneyForPassingGo() + " $ for passing Go!");
+					"Player " + player.getName() + " receives " + game.getMoneyForPassingGo() + " kr. for passing Go!");
 			this.paymentFromBank(player, game.getMoneyForPassingGo());
 		}
 		gui.showMessage(
@@ -318,7 +328,6 @@ public class GameController {
 	 *            the player going to jail
 	 */
 	public void gotoJail(Player player) {
-		// TODO the 10 should not be hard coded
 		List<Jail> jailFields = new ArrayList<>();
 		for (Space space : game.getSpaces()) {
 			if (space instanceof Jail) {
@@ -493,7 +502,6 @@ public class GameController {
 	 *            the property which is for auction
 	 */
 	public void auction(Property property, Player player) {
-		// TODO auction needs to be implemented
 		gui.showMessage("Now, there would be an auction of " + property.getName() + " and the price will start at "
 				+ property.getCost());
 		List<Player> AuctionGrantedPlayers = new ArrayList<Player>(game.getPlayers());
@@ -600,17 +608,15 @@ public class GameController {
 	}
 
 	// Method for buying houses - not done
-	public void buyHouseIfPossible(Player player, RealEstate realestate) {
-		List<Property> l = this.getAllPropertiesofCategory(realestate.getCategory());
-		for (Property property : l) {
-			if (!player.equals(property.getOwner())) {
-				gui.showMessage("You do not own all the properties.");
-				return;
-			}
+	public void buyHouse(Player player, RealEstate realestate) {
+		String choice = gui.getUserSelection(
+				"Player " + player.getName() + ": Do you want to buy houses? at " + realestate.getName(), "yes", "no");
+		if (choice.equals("yes")) {
 
-			if (realestate.getHouses() >= 5) { // 5 is the maximum number of houses - hotels is not an option at this
+			if (realestate.getHouses() >= 5) { // 5 is the maximum number of houses - hotels is not an option at
+												// this
 												// point.
-				gui.showMessage("You can't buy any more houses.");
+				gui.showMessage("You can't buy anymore houses.");
 				return;
 			} else {
 				int minimum = 1;
@@ -618,12 +624,12 @@ public class GameController {
 				int amount = gui.getUserInteger(
 						"How many houses du you want to buy? The price for one house is: " + realestate.getHouseCost(),
 						minimum, maximum);
+
 				realestate.addHouses(amount);
-				realestate.setRent(realestate.getRent());
+				realestate.updateRent(amount);
 				try {
 					this.paymentToBank(player, realestate.getHouseCost() * amount);
 				} catch (PlayerBrokeException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				view.update(realestate);
@@ -648,6 +654,36 @@ public class GameController {
 	private List<Property> getAllPropertiesofCategory(String category) {
 		return new ArrayList<Property>(category2Properties.get(category));
 
+	}
+
+	public int checkOwnershipAmount(Player player, Property p) {
+		List<Property> prop = this.getAllPropertiesofCategory(p.getCategory());
+		int i = 0;
+		for (Property property : prop) {
+			if (player.equals(property.getOwner())) {
+				i++;
+			}
+		}
+		return i;
+	}
+
+	public boolean checkOwnershipOfCategory(Player player, Property realestate) {
+		List<Property> l = this.getAllPropertiesofCategory(realestate.getCategory());
+		for (Property property : l) {
+			if (!player.equals(property.getOwner())) {
+				gui.showMessage("You do not own all the properties.");
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private void setDieThrow(int i, int j) {
+		this.diethrow = i + j;
+	}
+
+	public int getDieThrow() {
+		return diethrow;
 	}
 
 	/**

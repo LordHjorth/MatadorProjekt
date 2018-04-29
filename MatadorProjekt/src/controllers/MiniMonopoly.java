@@ -16,7 +16,6 @@ import gameContent.Chance;
 import gameContent.Game;
 import gameContent.Jail;
 import gameContent.Parking;
-import gameContent.Property;
 import gameContent.Space;
 import gameContent.Start;
 import gameContent.Tax;
@@ -48,10 +47,11 @@ public class MiniMonopoly {
 		go.setName("Start");
 		game.addSpace(go);
 		
-		Property p = new RealEstate();
+		RealEstate p = new RealEstate();
 		p.setName("Rødovrevej");
 		p.setCost(1200);
 		p.setRent(50);
+		p.setHouseCost();
 		p.setColor(new Color(75, 155, 225));
 		p.setCategory(p.categories[2]); //Vestegnen
 		game.addSpace(p);
@@ -64,18 +64,20 @@ public class MiniMonopoly {
 		p.setName("Hvidovrevej");
 		p.setCost(1200);
 		p.setRent(50);
-		game.addSpace(p);
+		p.setHouseCost();
 		p.setCategory(p.categories[2]); //Vestegnen
 		p.setColor(new Color(75, 155, 225));
+		game.addSpace(p);
 		
 		Tax t = new Tax();
 		t.setName("Betal indkomstskat");
 		game.addSpace(t);
 
-		Property s = new Shipping();
+		Shipping s = new Shipping();
 		s.setName("Samsøfærgen");
 		s.setCost(4000);
 		s.setRent(500);
+		p.setHouseCost();
 		s.setCategory(s.categories[0]); //Ships
 		game.addSpace(s);
 
@@ -83,6 +85,7 @@ public class MiniMonopoly {
 		p.setName("Roskildevej");
 		p.setCost(2000);
 		p.setRent(100);
+		p.setHouseCost();
 		p.setCategory(p.categories[3]); //Valby
 		p.setColor(new Color(255,130,102));
 		game.addSpace(p);
@@ -95,6 +98,7 @@ public class MiniMonopoly {
 		p.setName("Valby Langgade");
 		p.setCost(2000);
 		p.setRent(100);
+		p.setHouseCost();
 		p.setCategory(p.categories[3]); //Valby
 		p.setColor(new Color(255,130,102));
 		game.addSpace(p);
@@ -103,6 +107,7 @@ public class MiniMonopoly {
 		p.setName("Allégade");
 		p.setCost(2400);
 		p.setRent(150);
+		p.setHouseCost();
 		p.setCategory(p.categories[3]); //Valby
 		p.setColor(new Color(255,130,102));
 		game.addSpace(p);
@@ -115,22 +120,24 @@ public class MiniMonopoly {
 		p.setName("Frederiksberg Allé");
 		p.setCost(2800);
 		p.setRent(200);
+		p.setHouseCost();
 		p.setCategory(p.categories[4]); //Frederiksberg
 		p.setColor(new Color(204,204,0));
 		game.addSpace(p);
 		
-		p = new Brewery();
-		p.setName("Tuborg");
-		p.setCost(3000);
-		p.setRent(300);
-		p.setCategory(p.categories[1]); //Brewery
-		game.addSpace(p);
+		Brewery b = new Brewery();
+		b.setName("Tuborg");
+		b.setCost(3000);
+		b.setRent(100);
+		b.setCategory(b.categories[1]); //Brewery
+		game.addSpace(b);
 		
 		
 		p = new RealEstate();
 		p.setName("Bülowsvej");
 		p.setCost(2800);
 		p.setRent(200);
+		p.setHouseCost();
 		p.setCategory(p.categories[4]); //Frederiksberg
 		p.setColor(new Color(204,204,0));
 		game.addSpace(p);
@@ -139,6 +146,7 @@ public class MiniMonopoly {
 		p.setName("Gl. Kongevej");
 		p.setCost(3200);
 		p.setRent(250);
+		p.setHouseCost();
 		p.setCategory(p.categories[4]); //Frederiksberg
 		p.setColor(new Color(204,204,0));
 		game.addSpace(p);
@@ -148,13 +156,14 @@ public class MiniMonopoly {
 		s.setName("Greenaa-Hundested");
 		s.setCost(4000);
 		s.setRent(500);
-		p.setCategory(p.categories[0]); //Ship
+		s.setCategory(s.categories[0]); //Ship
 		game.addSpace(s);
 		
 		p = new RealEstate();
 		p.setName("Berntoffsvej");
 		p.setCost(3600);
 		p.setRent(300);
+		p.setHouseCost();
 		p.setCategory(p.categories[5]); //Hellerup
 		p.setColor(Color.GRAY);
 		game.addSpace(p);
@@ -168,6 +177,7 @@ public class MiniMonopoly {
 		p.setName("Hellerupvej");
 		p.setCost(3600);
 		p.setRent(300);
+		p.setHouseCost();
 		p.setColor(Color.GRAY);
 		p.setCategory(p.categories[5]); //Hellerup
 		game.addSpace(p);
@@ -176,6 +186,7 @@ public class MiniMonopoly {
 		p.setName("Strandvejen");
 		p.setCost(4000);
 		p.setRent(350);
+		p.setHouseCost();
 		p.setColor(Color.GRAY);
 		p.setCategory(p.categories[5]); //Hellerup
 		game.addSpace(p);
@@ -188,6 +199,7 @@ public class MiniMonopoly {
 		p.setName("Trianglen");
 		p.setCost(4400);
 		p.setRent(400);
+		p.setHouseCost();
 		p.setColor(new Color(255,51,51));
 		p.setCategory(p.categories[6]); //Østerbro
 		game.addSpace(p);
@@ -200,6 +212,7 @@ public class MiniMonopoly {
 		p.setName("Østerbrogade");
 		p.setCost(4400);
 		p.setRent(400);
+		p.setHouseCost();
 		p.setColor(new Color(255,51,51));
 		p.setCategory(p.categories[6]); //Østerbro
 		game.addSpace(p);
@@ -209,6 +222,7 @@ public class MiniMonopoly {
 		p.setName("Grønningen");
 		p.setCost(4800);
 		p.setRent(450);
+		p.setHouseCost();
 		p.setColor(new Color(255,51,51));
 		p.setCategory(p.categories[6]); //Østerbro
 		game.addSpace(p);
@@ -218,13 +232,14 @@ public class MiniMonopoly {
 		s.setName("Molslinjen");
 		s.setCost(4000);
 		s.setRent(500);
-		p.setCategory(p.categories[0]); //Ship
+		s.setCategory(s.categories[0]); //Ship
 		game.addSpace(s);
 		
 		p = new RealEstate();
 		p.setName("Bredgade");
 		p.setCost(5200);
 		p.setRent(500);
+		p.setHouseCost();
 		p.setColor(Color.white);
 		p.setCategory(p.categories[7]); //Kgs. Nytorv
 		game.addSpace(p);
@@ -233,22 +248,24 @@ public class MiniMonopoly {
 		p.setName("Kgs. Nytorv");
 		p.setCost(5200);
 		p.setRent(500);
+		p.setHouseCost();
 		p.setColor(Color.white);
 		p.setCategory(p.categories[7]); //Kgs. Nytorv
 		game.addSpace(p);
 		
-		p = new Brewery();
-		p.setName("Carlsberg");
-		p.setCost(3000);
-		p.setRent(300);
-		p.setCategory(p.categories[1]); //Brewery
-		game.addSpace(p);
+		b = new Brewery();
+		b.setName("Carlsberg");
+		b.setCost(3000);
+		b.setRent(100);
+		b.setCategory(b.categories[1]); //Brewery
+		game.addSpace(b);
 	
 		
 		p = new RealEstate();
 		p.setName("Østergade");
 		p.setCost(5600);
 		p.setRent(550);
+		p.setHouseCost();
 		p.setColor(Color.white);
 		p.setCategory(p.categories[7]); //Kgs. Nytorv
 		game.addSpace(p);
@@ -262,6 +279,7 @@ public class MiniMonopoly {
 		p.setName("Amagertorv");
 		p.setCost(6000);
 		p.setRent(600);
+		p.setHouseCost();
 		p.setColor(new Color(255,255,102));
 		p.setCategory(p.categories[8]); //Indre By
 		game.addSpace(p);
@@ -274,6 +292,7 @@ public class MiniMonopoly {
 		p.setName("Vimmelskaftet");
 		p.setCost(6000);
 		p.setRent(600);
+		p.setHouseCost();
 		p.setColor(new Color(255,255,102));
 		p.setCategory(p.categories[8]); //Indre By
 		game.addSpace(p);
@@ -282,6 +301,7 @@ public class MiniMonopoly {
 		p.setName("Nygade");
 		p.setCost(6400);
 		p.setRent(650);
+		p.setHouseCost();
 		p.setColor(new Color(255,255,102));
 		p.setCategory(p.categories[8]); //Indre By
 		game.addSpace(p);
@@ -290,7 +310,7 @@ public class MiniMonopoly {
 		s.setName("Skandinavisk Linjetrafik");
 		s.setCost(4000);
 		s.setRent(500);
-		p.setCategory(p.categories[0]); //Ship By
+		s.setCategory(s.categories[0]); //Ship By
 		game.addSpace(s);
 		
 		chance = new Chance();
@@ -301,6 +321,7 @@ public class MiniMonopoly {
 		p.setName("Frederiksberg gade");
 		p.setCost(7800);
 		p.setRent(700);
+		p.setHouseCost();
 		p.setColor(new Color(151,46,172));
 		p.setCategory(p.categories[9]); //København K
 		game.addSpace(p);
@@ -314,6 +335,7 @@ public class MiniMonopoly {
 		p.setName("Rådhuspladsen");
 		p.setCost(8000);
 		p.setRent(750);
+		p.setHouseCost();
 		p.setColor(new Color(151,46,172));
 		p.setCategory(p.categories[9]); //København K
 		game.addSpace(p);
@@ -334,7 +356,7 @@ public class MiniMonopoly {
 		game.setCardDeck(cards);
 
 		PayPropertyTax propertytax = new PayPropertyTax();
-		propertytax.setText("Ejendomsskatterne er steget, ekstraudgifterne er: kr. 800 pr. hus, kr. 2.300 pr. hotel");
+		propertytax.setText("Ejendomsskatterne er steget, ekstraudgifterne er: kr. 800 pr. hus");
 		cards.add(propertytax);
 
 		CardPayMoney parkingTicket = new CardPayMoney();
@@ -343,10 +365,10 @@ public class MiniMonopoly {
 		cards.add(parkingTicket);
 		game.setCardDeck(cards);
 
-		CardReceiveMoneyFromBank b = new CardReceiveMoneyFromBank();
-		b.setText("Kommunen har eftergivet et kvartals skat. Hæv i banken kr. 3.000.");
-		b.setAmount(3000);
-		cards.add(b);
+		CardReceiveMoneyFromBank receive = new CardReceiveMoneyFromBank();
+		receive.setText("Kommunen har eftergivet et kvartals skat. Hæv i banken kr. 3.000.");
+		receive.setAmount(3000);
+		cards.add(receive);
 		game.setCardDeck(cards);
 
 
