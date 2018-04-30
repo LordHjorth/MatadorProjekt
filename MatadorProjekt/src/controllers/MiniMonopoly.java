@@ -11,6 +11,7 @@ import cards.GotoJail;
 import cards.Legat;
 import cards.PardonCard;
 import cards.PayPropertyTax;
+import cards.Relativemove;
 import gameContent.Card;
 import gameContent.Chance;
 import gameContent.Game;
@@ -342,13 +343,20 @@ public class MiniMonopoly {
 
 		// Chancecards
 		List<Card> cards = new ArrayList<Card>();
-
+		
+		Relativemove moveBack = new Relativemove();
+		moveBack.setAmountTomove(-3);
+		moveBack.setText("Ryk tre felter tilbage.");
+		cards.add(moveBack);
+		
+		
 		CardReceiveMoneyFromBank a = new CardReceiveMoneyFromBank();
 		a.setText("Værdien af egen avl fra nyttehaven udgør kr. 200, som De modtager af banken.");
 		a.setAmount(200);
 		cards.add(a);
 		game.setCardDeck(cards);
 
+		
 		CardPayMoney dentist = new CardPayMoney();
 		dentist.setText("De har modtaget Deres tandlægeregning. Betal kr. 2.000.");
 		dentist.setAmount(2000);
@@ -395,7 +403,7 @@ public class MiniMonopoly {
 		cards.add(pardonTwo);
 
 		CardPayMoney cigarats = new CardPayMoney();
-		cigarats.setText("De har været en tur i udlandet og haft for mange cigaratter med hjem. Betal told kr. 200.");
+		cigarats.setText("De har været en tur i udlandet og haft for mange cigaretter med hjem. Betal told kr. 200.");
 		cigarats.setAmount(200);
 		cards.add(cigarats);
 		game.setCardDeck(cards);
@@ -417,11 +425,6 @@ public class MiniMonopoly {
 		lottery.setAmount(500);
 		cards.add(lottery);
 		game.setCardDeck(cards);
-
-//		CardMove moveBack = new CardMove();
-//		moveBack.setTarget(game.getSpaces().get(game.getCurrentPlayer().getCurrentPosition().getIndex() - 3));
-//		moveBack.setText("Ryk tre felter tilbage.");
-//		cards.add(moveBack);
 
 		CardReceiveMoneyFromBank bonds = new CardReceiveMoneyFromBank();
 		bonds.setText("Deres præmieobligation er kommet ud. De modtager kr. 1.000 af banken.");
@@ -488,13 +491,11 @@ public class MiniMonopoly {
 		repairTwo.setText("Betal kr. 3.000 for reparation af Deres vogn.");
 		repairTwo.setAmount(3000);
 		cards.add(repairTwo);
-		game.setCardDeck(cards);
 
 		CardReceiveMoneyFromBank salaryIncrease = new CardReceiveMoneyFromBank();
 		salaryIncrease.setText("Grundet dyrtiden har De fået gageforhøjelse. Modtag kr. 1.000.");
 		salaryIncrease.setAmount(1000);
 		cards.add(salaryIncrease);
-		game.setCardDeck(cards);
 
 		// TODO evt ny metode
 		// PayPropertyTax oilTax = new PayPropertyTax();
@@ -513,7 +514,6 @@ public class MiniMonopoly {
 		prize.setText("Deres præmieobligation er kommet ud. De modtager kr. 1.000 af banken.");
 		prize.setAmount(1000);
 		cards.add(prize);
-		game.setCardDeck(cards);
 
 		// TODO skal der oprettes en ny klasse??
 		// CardMove shipping = new CardMove();
@@ -532,6 +532,7 @@ public class MiniMonopoly {
 		bank.setText("You receive 100$ from the bank.");
 		bank.setAmount(100);
 		cards.add(bank);
+	
 		game.setCardDeck(cards);
 
 		return game;

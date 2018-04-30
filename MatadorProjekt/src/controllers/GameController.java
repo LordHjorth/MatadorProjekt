@@ -251,8 +251,8 @@ public class GameController {
 		}
 
 		do {
-			int die1 = (int) (1 + 6.0 * Math.random());
-			int die2 = (int) (1 + 6.0 * Math.random());
+			int die1 = 1; // (int) (1 + 6.0 * Math.random());
+			int die2 = 1; //(int) (1 + 6.0 * Math.random());
 			castDouble = (die1 == die2);
 			gui.setDice(die1, die2);
 			this.setDieThrow(die1, die2);
@@ -686,6 +686,14 @@ public class GameController {
 		return diethrow;
 	}
 
+	
+	public List<Space> getSpaces(){
+		
+		return game.getSpaces();
+	}
+	
+	
+	
 	/**
 	 * Method for disposing of this controller and cleaning up its resources.
 	 */
