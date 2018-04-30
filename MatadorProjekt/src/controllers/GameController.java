@@ -1,6 +1,8 @@
 package controllers;
 
 import java.awt.Color;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -133,6 +135,68 @@ public class GameController {
 	}
 
 	/**
+	 * Load players from DB to game logic and gui.
+	 */
+	public void LoadPlayers() {
+		int AmountOfPlayers = sql.getNumberOfPlayers();
+		ResultSet rs = sql.LoadPlayers();
+		Object[][] data = new Object[AmountOfPlayers][];
+		int i = 0;
+
+		try {
+			while (!rs.equals(null) && rs.next()) {
+				Player p = new Player();
+				p.setID(rs.getInt("id"));
+				p.setName(rs.getString("name"));
+				p.setBalance(rs.getInt("balance"));
+
+				String position = rs.getString("position");
+				p.setCurrentPosition(game.getSpaces().get(rs.getInt("PosIndex")));
+				p.setInPrison(rs.getBoolean("inPrison"));
+
+				/*
+				 * - Not sure how to add a pardon card. if(rs.getBoolean("havePardon")==true) {
+				 * 
+				 * p.setOwnedCard(card); }
+				 */
+
+				String color = rs.getString("carColor");
+				switch (color) {
+				case "Blue":
+					p.setColor(Color.blue);
+					break;
+				case "Red":
+					p.setColor(Color.red);
+					break;
+				case "Black":
+					p.setColor(Color.black);
+					break;
+				case "Green":
+					p.setColor(Color.green);
+					break;
+				case "Yellow":
+					p.setColor(Color.yellow);
+					break;
+				case "Pink":
+					p.setColor(Color.pink);
+					break;
+				}
+				game.addPlayer(p);
+				data[i] = new Object[] { 1, p.getName(), 0, p.getBalance(), p.isInPrison(), false, color }; // gameID =
+																											// 1 for
+																											// now.
+				i++;
+
+			}
+			vdb.createViewOfDB(data); // adds player info to a view
+			view.createPlayers();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
 	 * This method will initialize the GUI. It should be called after the players of
 	 * the game are created. As of now, the initialization assumes that the spaces
 	 * of the game fit to the fields of the GUI; this could eventually be changed,
@@ -251,8 +315,8 @@ public class GameController {
 		}
 
 		do {
-			int die1 = 1; // (int) (1 + 6.0 * Math.random());
-			int die2 = 1; //(int) (1 + 6.0 * Math.random());
+			int die1 = (int) (1 + 6.0 * Math.random());
+			int die2 = (int) (1 + 6.0 * Math.random());
 			castDouble = (die1 == die2);
 			gui.setDice(die1, die2);
 			this.setDieThrow(die1, die2);
@@ -686,14 +750,11 @@ public class GameController {
 		return diethrow;
 	}
 
-	
-	public List<Space> getSpaces(){
-		
+	public List<Space> getSpaces() {
+
 		return game.getSpaces();
 	}
-	
-	
-	
+
 	/**
 	 * Method for disposing of this controller and cleaning up its resources.
 	 */
