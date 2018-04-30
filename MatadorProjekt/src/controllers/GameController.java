@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import cards.PardonCard;
+import connection.PropertyView;
 import connection.SQLMethods;
 import connection.viewDB;
 import exceptions.PlayerBrokeException;
@@ -52,6 +53,7 @@ public class GameController {
 	private Map<String, List<Property>> category2Properties = new HashMap<String, List<Property>>();
 	private View view;
 	private viewDB vdb;
+	private PropertyView pView;
 	private int diethrow;
 	private boolean disposed = false;
 
@@ -69,6 +71,7 @@ public class GameController {
 		sql = new SQLMethods(); // Added by gruppe25
 		vdb = new viewDB();
 		this.createcategoryList();
+		pView = new PropertyView();
 
 	}
 
@@ -130,6 +133,7 @@ public class GameController {
 			// "CarColor"
 			data[i] = new Object[] { 1, p.getName(), 0, p.getBalance(), false, false, "" }; // gameID = 1 for now.
 		}
+		pView.createPropertyView();
 		vdb.createViewOfDB(data); // adds player info to a view
 		view.createPlayers();
 	}
@@ -189,6 +193,7 @@ public class GameController {
 
 			}
 			vdb.createViewOfDB(data); // adds player info to a view
+			pView.createPropertyView();
 			view.createPlayers();
 
 		} catch (SQLException e) {
