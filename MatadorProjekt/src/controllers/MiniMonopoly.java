@@ -201,7 +201,7 @@ public class MiniMonopoly {
 		p.setCost(4400);
 		p.setRent(400);
 		p.setHouseCost();
-		p.setColor(new Color(255,51,51));
+		p.setColor(new Color(255,105,180));
 		p.setCategory(p.categories[6]); //Østerbro
 		game.addSpace(p);
 	
@@ -214,7 +214,7 @@ public class MiniMonopoly {
 		p.setCost(4400);
 		p.setRent(400);
 		p.setHouseCost();
-		p.setColor(new Color(255,51,51));
+		p.setColor(new Color(255,105,180));
 		p.setCategory(p.categories[6]); //Østerbro
 		game.addSpace(p);
 		
@@ -224,7 +224,7 @@ public class MiniMonopoly {
 		p.setCost(4800);
 		p.setRent(450);
 		p.setHouseCost();
-		p.setColor(new Color(255,51,51));
+		p.setColor(new Color(255,105,180));
 		p.setCategory(p.categories[6]); //Østerbro
 		game.addSpace(p);
 		

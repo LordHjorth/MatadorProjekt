@@ -57,7 +57,7 @@ public class GameController {
 	private int diethrow;
 	private boolean disposed = false;
 
-	private SQLMethods sql; // added by gruppe 25
+	private SQLMethods sql; // added by gruppe B
 
 	/**
 	 * Constructor for a controller of a game.
@@ -68,7 +68,7 @@ public class GameController {
 	public GameController(Game game) {
 		super();
 		this.game = game;
-		sql = new SQLMethods(); // Added by gruppe25
+		sql = new SQLMethods(); // Added by gruppe B
 		vdb = new viewDB();
 		this.createcategoryList();
 		pView = new PropertyView();
@@ -491,7 +491,9 @@ public class GameController {
 				throw e;
 			}
 			player.addOwnedProperty(property);
+			view.setBorderColor(player,property);
 			property.setOwner(player);
+			
 			return;
 		}
 
@@ -606,6 +608,7 @@ public class GameController {
 				winner.addOwnedProperty(property);
 				gui.showMessage("You've succesfully bought the property " + property.getName());
 				property.setOwner(winner);
+				view.setBorderColor(winner,property);
 			} catch (PlayerBrokeException e) {
 				gui.showMessage(
 						"You haven't bought the property " + property.getName() + " You didn't have enough money");

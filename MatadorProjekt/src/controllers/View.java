@@ -203,6 +203,13 @@ public class View implements Observer {
 			}
 		}
 	}
+	
+	public void setBorderColor(Player player,Property property){
+		int i= property.getIndex();
+		GUI_Field[] field=this.gui.getFields();
+		field[i].setForeGroundColor(player.getColor());
+		updatePlayer(player);
+	}
 
 	void dispose() {
 		if (!disposed) {
