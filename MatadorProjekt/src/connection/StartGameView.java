@@ -36,6 +36,7 @@ public class StartGameView {
 		Load.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) { 
 			    LoadGame();
+			    frame.dispose();
 			  } 
 		});
 		
@@ -56,8 +57,37 @@ public class StartGameView {
 	}
 	
 	public void LoadGame() {
-		System.out.println("LOAD GAME");
-		frame.setVisible(false);
+		
+		new Thread() {
+			
+			@Override
+			public void run() {
+				
+				super.run();
+				System.out.println("LOAD GAME");
+				
+				Game game = MiniMonopoly.createGame();
+				game.shuffleCardDeck();
+				
+				GameController controller = new GameController(game);
+				controller.initializeGUI();
+				System.out.println("1");
+				controller.LoadPlayers();
+				System.out.println("2");
+				controller.play();
+				System.out.println("3");
+				
+				/*
+				 * TODO: new CreatePlayers in GameController as LoadPlayers - get data from DB
+				 * 				- get number of players (getNumberOfPlayers - returns an int with number of players
+				 * 				- get Colors, ID, Name, Position, Pardon, Prison, Balance (LoadPlayers)
+				 * 				- implement Properties.
+				 */
+				
+			}
+			
+			
+		}.start();
 	}
 	
 	public void NewGame() { //virker ikke
@@ -67,6 +97,8 @@ public class StartGameView {
 			public void run() {
 				// TODO Auto-generated method stub
 				super.run();
+
+				sql.resetDB();
 				System.out.println("NEW GAME");
 
 				Game game = MiniMonopoly.createGame();
@@ -78,7 +110,6 @@ public class StartGameView {
 				controller.createPlayers();
 				System.out.println("2");
 				controller.play();
-				sql.resetDB();
 			}
 			
 		}.start();
@@ -86,3 +117,4 @@ public class StartGameView {
 	}
 
 }
+

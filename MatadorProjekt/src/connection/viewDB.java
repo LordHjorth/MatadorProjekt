@@ -21,8 +21,8 @@ public class viewDB {
 
 	public viewDB() {
 		view = new JFrame();
-		columns = new Object[] { "GameID", "Name", "Position", "Balance", "Prisoner", "Pardon", "Color" };
 		sql = new SQLMethods();
+		columns = new Object[] { sql.GAME_ID, sql.NAME, sql.POSITION, sql.BALANCE, sql.IN_PRISON, sql.PARDON, sql.COLOR };
 	}
 
 	public void createViewOfDB(Object[][] data) {
@@ -46,11 +46,11 @@ public class viewDB {
 				rs.absolute(player.getID());
 				// model.setValueAt(rs.getInt(1), player.getID()-1, 0); //GameID
 				// model.setValueAt(rs.getString(2), player.getID()-1, 1); //Name
-				model.setValueAt(rs.getString(3), player.getID() - 1, 2); // Position
-				model.setValueAt(rs.getInt(4), player.getID() - 1, 3); // Balance
-				model.setValueAt(rs.getBoolean(5), player.getID() - 1, 4); // Prison
-				model.setValueAt(rs.getBoolean(6), player.getID() - 1, 5); // pardon needs implementation
-				model.setValueAt(rs.getString(7), player.getID() - 1, 6); // Color
+				model.setValueAt(rs.getString(sql.POSITION), player.getID() - 1, 2); // Position
+				model.setValueAt(rs.getInt(sql.BALANCE), player.getID() - 1, 3); // Balance
+				model.setValueAt(rs.getBoolean(sql.IN_PRISON), player.getID() - 1, 4); // Prison
+				model.setValueAt(rs.getBoolean(sql.PARDON), player.getID() - 1, 5); // pardon needs implementation
+				model.setValueAt(rs.getString(sql.COLOR), player.getID() - 1, 6); // Color
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
