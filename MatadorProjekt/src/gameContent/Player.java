@@ -231,6 +231,11 @@ public class Player extends Subject {
 		notifyChange();
 	}
 	
+	public int amountOfPardonCards() {
+		return ownedCards.size();
+		
+	}
+	
 	/**
 	 * Removes a card from the owned cards.
 	 * 

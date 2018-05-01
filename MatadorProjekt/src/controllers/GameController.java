@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import cards.PardonCard;
-import connection.PropertyView;
 import connection.SQLMethods;
 import connection.viewDB;
 import exceptions.PlayerBrokeException;
@@ -53,7 +52,6 @@ public class GameController {
 	private Map<String, List<Property>> category2Properties = new HashMap<String, List<Property>>();
 	private View view;
 	private viewDB vdb;
-	private PropertyView pView;
 	private int diethrow;
 	private boolean disposed = false;
 
@@ -71,7 +69,6 @@ public class GameController {
 		sql = new SQLMethods(); // Added by gruppe B
 		vdb = new viewDB();
 		this.createcategoryList();
-		pView = new PropertyView();
 
 	}
 
@@ -133,7 +130,6 @@ public class GameController {
 			// "CarColor"
 			data[i] = new Object[] { 1, p.getName(), 0, p.getBalance(), false, false, "" }; // gameID = 1 for now.
 		}
-		pView.createPropertyView();
 		vdb.createViewOfDB(data); // adds player info to a view
 		view.createPlayers();
 	}
@@ -153,8 +149,6 @@ public class GameController {
 				p.setID(rs.getInt("id"));
 				p.setName(rs.getString("name"));
 				p.setBalance(rs.getInt("balance"));
-
-				String position = rs.getString("position");
 				p.setCurrentPosition(game.getSpaces().get(rs.getInt("PosIndex")));
 				p.setInPrison(rs.getBoolean("inPrison"));
 
@@ -193,7 +187,6 @@ public class GameController {
 
 			}
 			vdb.createViewOfDB(data); // adds player info to a view
-			pView.createPropertyView();
 			view.createPlayers();
 
 		} catch (SQLException e) {
@@ -266,7 +259,7 @@ public class GameController {
 
 			current = (current + 1) % players.size();
 			game.setCurrentPlayer(players.get(current));
-			vdb.updateViewOfDB(game.getPlayers());
+			vdb.updatePlayerView(game.getPlayers());
 			if (current == 0) {
 				String selection = gui.getUserSelection("A round is finished. Do you want to continue the game?", "yes",
 						"no");
@@ -493,7 +486,8 @@ public class GameController {
 			player.addOwnedProperty(property);
 			view.setBorderColor(player, property);
 			property.setOwner(player);
-
+			vdb.updPropertyView(property, player);
+			sql.addPropertyToPlayer(property, player);
 			return;
 		}
 
@@ -606,6 +600,8 @@ public class GameController {
 			try {
 				paymentToBank(winner, bid);
 				winner.addOwnedProperty(property);
+				vdb.updPropertyView(property, winner);
+				sql.addPropertyToPlayer(property, player);
 				gui.showMessage("You've succesfully bought the property " + property.getName());
 				property.setOwner(winner);
 				view.setBorderColor(winner, property);
@@ -716,6 +712,8 @@ public class GameController {
 				realestate.updateRent(amount);
 				try {
 					this.paymentToBank(player, realestate.getHouseCost() * amount);
+					sql.updateHouses(realestate, amount);
+					vdb.updPropertyView(realestate, player);
 				} catch (PlayerBrokeException e) {
 					e.printStackTrace();
 				}

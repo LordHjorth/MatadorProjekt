@@ -10,6 +10,7 @@ import connection.Connector;
 
 import gameContent.Player;
 import gameContent.Property;
+import properties.RealEstate;
 
 /**
  * The Class SQLMethods.
@@ -95,6 +96,11 @@ public class SQLMethods {
 		return showView();
 	}
 	
+	/**
+	 * Show view.
+	 *
+	 * @return the result set
+	 */
 	public ResultSet showView() {
 		try {
 			Statement st = con.createStatement();
@@ -105,6 +111,9 @@ public class SQLMethods {
 		return null;
 	}
 	
+	/**
+	 * Reset DB.
+	 */
 	public void resetDB() {
 		try {
 			CallableStatement cst = con.prepareCall("{ call resetDB() }");
@@ -114,6 +123,11 @@ public class SQLMethods {
 		}
 	}
 	
+	/**
+	 * Gets the number of players.
+	 *
+	 * @return the number of players
+	 */
 	public int getNumberOfPlayers() {
 		try {
 			Statement st = con.createStatement();
@@ -126,6 +140,11 @@ public class SQLMethods {
 		return 0;
 	}
 	
+	/**
+	 * Load players.
+	 *
+	 * @return the result set
+	 */
 	public ResultSet LoadPlayers() {
 		try {
 			Statement st = con.createStatement();
@@ -136,19 +155,35 @@ public class SQLMethods {
 		return null;
 	}
 	
+	/**
+	 * Adds the property to player.
+	 *
+	 * @param prop the prop
+	 * @param player the player
+	 */
 	public void addPropertyToPlayer(Property prop, Player player) {
+		int houses = 0;
 		try {																	//Property ID, Property Name, Player ID, Player Name
-			CallableStatement cst = con.prepareCall("{ call AddNewPropertyToPlayer(?,?,?,?) }");
+			CallableStatement cst = con.prepareCall("{ call AddNewPropertyToPlayer(?,?,?,?, ?) }");
 			cst.setInt(PROPERTY_ID, prop.getIndex());
 			cst.setString(PROPERTY_NAME, prop.getName());
 			cst.setInt(PLAYER_ID, player.getID());
 			cst.setString(NAME, player.getName());
+			if(prop instanceof RealEstate) {
+				houses = ((RealEstate) prop).getHouses();
+			}
+			cst.setInt(HOUSES, houses);
 			cst.execute();
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
+	/**
+	 * Gets the property by player.
+	 *
+	 * @return the property by player
+	 */
 	public ResultSet getPropertyByPlayer() {
 		try {
 			Statement st = con.createStatement();
@@ -157,6 +192,24 @@ public class SQLMethods {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	/**
+	 * Update houses.
+	 *
+	 * @param prop the prop
+	 * @param houses the houses
+	 */
+	public void updateHouses(Property prop, int houses) {
+		try {
+			CallableStatement cst = con.prepareCall(" { call updateHouses(?,?) } ");
+			System.out.println(prop.getName() + " - " + prop.getIndex() + " - " + houses);
+			cst.setInt(PROPERTY_ID, prop.getIndex());
+			cst.setInt(HOUSES, houses);
+			cst.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	//TODO: 
