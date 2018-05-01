@@ -1,5 +1,7 @@
 package cards;
-
+/**
+ * @author emil_
+ */
 import java.util.List;
 
 import controllers.GameController;

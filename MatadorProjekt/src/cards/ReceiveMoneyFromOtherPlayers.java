@@ -1,4 +1,7 @@
 package cards;
+/**
+ * @author emil_
+ */
 
 import controllers.GameController;
 import exceptions.PlayerBrokeException;

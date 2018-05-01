@@ -182,25 +182,6 @@ public class Player extends Subject {
 		notifyChange();
 		return result;
 	}
-	/**
-	 * @author emil_
-	 * Method used in order to test the method controller.getPlayerValue.
-	 * @param property
-	 * @return property
-	 */
-
-	
-	public Property getProperty(Property property) {
-		if(ownedProperties.contains(property)) {
-			for(Property prop:ownedProperties) {
-				if(prop.equals(property))
-					return prop;
-			}
-		}
-		 
-		return null;
-		
-	}
 	
 	/**
 	 * Removes all properties from the player.

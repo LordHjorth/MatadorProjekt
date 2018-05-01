@@ -398,7 +398,7 @@ public class GameController {
 		}
 		player.setCurrentPosition(jailFields.get(0));
 		player.setInPrison(true);
-		System.out.println(jailFields.get(0).getIndex() + "\t" + jailFields.get(0).getName());
+		
 	}
 
 	/**
@@ -574,10 +574,8 @@ public class GameController {
 		NotGrantedPlayers.add(game.getCurrentPlayer());
 		int bid = 0;
 		Player winner = null;
-		for (Player p : AuctionGrantedPlayers) {
-			System.out.println(p.getName());
-		}
-		System.out.println(AuctionGrantedPlayers.size());
+	
+		
 		for (Player biddingPlayer : AuctionGrantedPlayers) {
 			if (NotGrantedPlayers.contains(biddingPlayer) || biddingPlayer.isBroke()) {
 				continue;
@@ -601,7 +599,7 @@ public class GameController {
 				paymentToBank(winner, bid);
 				winner.addOwnedProperty(property);
 				vdb.updPropertyView(property, winner);
-				sql.addPropertyToPlayer(property, player);
+				sql.addPropertyToPlayer(property, winner);
 				gui.showMessage("You've succesfully bought the property " + property.getName());
 				property.setOwner(winner);
 				view.setBorderColor(winner, property);
@@ -665,7 +663,7 @@ public class GameController {
 
 		for (Property property : player.getOwnedProperties()) {
 			if (property instanceof RealEstate) {
-				RealEstate realtemp = (RealEstate) player.getProperty(property);
+				RealEstate realtemp = (RealEstate) property;
 				realtemp.removeAllHouses();
 			}
 		}

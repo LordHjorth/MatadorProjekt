@@ -42,7 +42,9 @@ public class MiniMonopoly {
 	 */
 	public static Game createGame() {
 		// Create the initial Game set up
-
+/**
+ * @author Simone_
+ */
 		Game game = new Game();
 
 		Start go = new Start();
@@ -335,8 +337,28 @@ public class MiniMonopoly {
 		p.setCategory(p.categories[9]); // København K
 		game.addSpace(p);
 
-		// Chancecards
+		
+		/**
+		 * Chancecards
+		 * @monica_
+		 */
+		
 		List<Card> cards = new ArrayList<Card>();
+		
+		PayPropertyTax propertytax = new PayPropertyTax();
+		propertytax.setText("Ejendomsskatterne er steget, ekstraudgifterne er: kr. 800 pr. hus");
+		propertytax.setAmount(800);
+		cards.add(propertytax);
+		
+		PayPropertyTax oil = new PayPropertyTax();
+		oil.setText("Oliepriserne er steget, betal kr. 500 pr. hus");
+		oil.setAmount(500);
+		cards.add(oil);
+
+		ReceiveMoneyFromOtherPlayers birthday = new ReceiveMoneyFromOtherPlayers();
+		birthday.setText("Det er deres fødselsdag. Modtag af hver medspiller kr. 200.");
+		birthday.setAmount(200);
+		cards.add(birthday);
 
 		CardMoveToShipping shipping = new CardMoveToShipping();
 		shipping.setText(
@@ -365,10 +387,6 @@ public class MiniMonopoly {
 		dentist.setText("De har modtaget Deres tandlægeregning. Betal kr. 2.000.");
 		dentist.setAmount(2000);
 		cards.add(dentist);
-
-		PayPropertyTax propertytax = new PayPropertyTax();
-		propertytax.setText("Ejendomsskatterne er steget, ekstraudgifterne er: kr. 800 pr. hus");
-		cards.add(propertytax);
 
 		CardPayMoney parkingTicket = new CardPayMoney();
 		parkingTicket.setText("De har måttet vedtage en parkeringsbøde. Betal kr. 200 i bøde.");
@@ -447,12 +465,6 @@ public class MiniMonopoly {
 		equitiesTwo.setAmount(1000);
 		cards.add(equitiesTwo);
 
-		// TODO modtager penge fra hver enkelt spiller
-		ReceiveMoneyFromOtherPlayers birthday = new ReceiveMoneyFromOtherPlayers();
-		birthday.setText("Det er deres fødselsdag. Modtag af hver medspiller kr. 200.");
-		birthday.setAmount(200);
-		cards.add(birthday);
-
 		CardMove start = new CardMove();
 		start.setTarget(game.getSpaces().get(0));
 		start.setText("Ryk frem til Start.");
@@ -477,11 +489,6 @@ public class MiniMonopoly {
 		grønningen.setTarget(game.getSpaces().get(24));
 		grønningen.setText("Ryk frem til Grønningen. Hvis De passerer Start, indkassér da kr. 4.000.");
 		cards.add(grønningen);
-
-		CardReceiveMoneyFromBank bank = new CardReceiveMoneyFromBank();
-		bank.setText("You receive 100$ from the bank.");
-		bank.setAmount(100);
-		cards.add(bank);
 
 		game.setCardDeck(cards);
 
