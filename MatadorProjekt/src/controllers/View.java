@@ -70,6 +70,11 @@ public class View implements Observer {
 		
 
 	}
+	/**
+	 * @author emil_, Simone_,Monica_
+	 * This method creates the gui, from the already 
+	 * @return the gui
+	 */
 
 	public GUI createGUI() {
 		if (gui == null) {

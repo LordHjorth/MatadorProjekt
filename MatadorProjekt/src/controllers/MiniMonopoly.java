@@ -12,6 +12,7 @@ import cards.GotoJail;
 import cards.Legat;
 import cards.PardonCard;
 import cards.PayPropertyTax;
+import cards.ReceiveMoneyFromOtherPlayers;
 import cards.Relativemove;
 import gameContent.Card;
 import gameContent.Game;
@@ -447,7 +448,7 @@ public class MiniMonopoly {
 		cards.add(equitiesTwo);
 
 		// TODO modtager penge fra hver enkelt spiller
-		CardReceiveMoneyFromBank birthday = new CardReceiveMoneyFromBank();
+		ReceiveMoneyFromOtherPlayers birthday = new ReceiveMoneyFromOtherPlayers();
 		birthday.setText("Det er deres fødselsdag. Modtag af hver medspiller kr. 200.");
 		birthday.setAmount(200);
 		cards.add(birthday);
@@ -466,12 +467,6 @@ public class MiniMonopoly {
 		salaryIncrease.setText("Grundet dyrtiden har De fået gageforhøjelse. Modtag kr. 1.000.");
 		salaryIncrease.setAmount(1000);
 		cards.add(salaryIncrease);
-
-		// TODO evt ny metode
-		// PayPropertyTax oilTax = new PayPropertyTax();
-		// oilTax.setText("Oliepriserne er steget, og De skal betale: kr. 500 pr. hus,
-		// kr. 2.000 pr. hotel.");
-		// cards.add(oilTax);
 
 		CardReceiveMoneyFromBank prize = new CardReceiveMoneyFromBank();
 		prize.setText("Deres præmieobligation er kommet ud. De modtager kr. 1.000 af banken.");

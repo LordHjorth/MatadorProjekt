@@ -244,8 +244,8 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="28" language="java" name="cards.ReceiveMoneyFromPlayer" project="MatadorProjekt" 
-    file="/MatadorProjekt/src/cards/ReceiveMoneyFromPlayer.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="28" language="java" name="cards.ReceiveMoneyFromOtherPlayers" project="MatadorProjekt" 
+    file="/MatadorProjekt/src/cards/ReceiveMoneyFromOtherPlayers.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="153" width="238" x="2511" y="1324"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      

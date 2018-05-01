@@ -77,10 +77,11 @@ public class GameController {
 	 * participating players. Right now, the creation of players is hard-coded. But
 	 * this should be done by interacting with the user.
 	 * 
-	 * @author gruppe25
+	 * @author gruppe B
+	 * Should be more defensive programming so players could not use the same name, as this makes errors occur with both
+	 * the gui and the database.
 	 */
 	public void createPlayers() {
-		// TODO the players should be created interactively
 		int NumberOfPlayers = gui.getUserInteger("Enter the amount of players (2-6)", 2, 6);
 		String color = "blue";
 		Object[][] data = new Object[NumberOfPlayers][];
@@ -142,6 +143,7 @@ public class GameController {
 		ResultSet rs = sql.LoadPlayers();
 		Object[][] data = new Object[AmountOfPlayers][];
 		int i = 0;
+		
 
 		try {
 			while (!rs.equals(null) && rs.next()) {
@@ -196,9 +198,7 @@ public class GameController {
 
 	/**
 	 * This method will initialize the GUI. It should be called after the players of
-	 * the game are created. As of now, the initialization assumes that the spaces
-	 * of the game fit to the fields of the GUI; this could eventually be changed,
-	 * by creating the GUI fields based on the underlying game's spaces (fields).
+	 * the game are created. 
 	 */
 	public void initializeGUI() {
 		this.view = new View(game);
@@ -824,6 +824,13 @@ public class GameController {
 
 	}
 
+	
+	public List<Player> getListOfPlayers() {
+		return game.getPlayers();
+	}
+	
+	
+	
 	/**
 	 * Method for disposing of this controller and cleaning up its resources.
 	 */

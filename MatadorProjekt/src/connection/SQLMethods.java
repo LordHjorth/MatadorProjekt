@@ -89,7 +89,7 @@ public class SQLMethods {
 			cst.setInt(POS_INDEX, player.getCurrentPosition().getIndex());
 			cst.setBoolean(PARDON, false); // pardon needs implementation for Player objects
 			cst.setInt(GAME_ID, 1); //gameID is always 1 at the moment - only one game at a time
-			cst.executeQuery();
+			cst.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

@@ -184,7 +184,7 @@ public class Player extends Subject {
 	}
 	/**
 	 * @author emil_
-	 * Method used in order to the method controller.getPlayerValue.
+	 * Method used in order to test the method controller.getPlayerValue.
 	 * @param property
 	 * @return property
 	 */

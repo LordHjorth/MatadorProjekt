@@ -5,7 +5,7 @@ import exceptions.PlayerBrokeException;
 import gameContent.Card;
 import gameContent.Player;
 
-public class ReceiveMoneyFromPlayer extends Card {
+public class ReceiveMoneyFromOtherPlayers extends Card {
 
 	private int amount;
 	
@@ -17,10 +17,16 @@ public class ReceiveMoneyFromPlayer extends Card {
 		this.amount = amount;
 	}
 	
-	public void doAction(GameController controller, Player player,Player receiver) throws PlayerBrokeException 
+	public void doAction(GameController controller, Player player) throws PlayerBrokeException 
 	{
 		try {
-			controller.payment(player, amount, receiver);
+			for(Player p:controller.getListOfPlayers()) {
+				if(!p.equals(player)) {
+					controller.payment(p, amount, player);
+				}
+				
+			}
+			
 		} finally {
 			// Make sure that the card is returned to the deck even when
 			// an Exception should occur!
