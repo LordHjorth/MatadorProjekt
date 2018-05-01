@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import designPatterns.Subject;
+import spaces.Property;
 
 /**
  * Represents a player and his current state in a Monopoly game.

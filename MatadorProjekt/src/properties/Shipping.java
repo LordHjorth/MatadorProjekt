@@ -5,7 +5,7 @@ import java.awt.Color;
 import controllers.GameController;
 import exceptions.PlayerBrokeException;
 import gameContent.Player;
-import gameContent.Property;
+import spaces.Property;
 /**
  * 
  * @author emil_

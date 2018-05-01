@@ -1,7 +1,9 @@
-package gameContent;
+package spaces;
 
 import controllers.GameController;
 import exceptions.PlayerBrokeException;
+import gameContent.Player;
+import gameContent.Space;
 
 public class Jail extends Space {
 	private boolean jail;

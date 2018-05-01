@@ -10,7 +10,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import gameContent.Player;
-import gameContent.Property;
+import spaces.Property;
 
 public class viewDB {
 

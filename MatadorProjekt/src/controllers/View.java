@@ -6,15 +6,9 @@ import java.util.Map;
 
 import designPatterns.Observer;
 import designPatterns.Subject;
-import gameContent.Chance;
 import gameContent.Game;
-import gameContent.Jail;
-import gameContent.Parking;
 import gameContent.Player;
-import gameContent.Property;
 import gameContent.Space;
-import gameContent.Start;
-import gameContent.Tax;
 import gui_fields.GUI_Brewery;
 import gui_fields.GUI_Car;
 import gui_fields.GUI_Car.Pattern;
@@ -32,6 +26,12 @@ import gui_main.GUI;
 import properties.Brewery;
 import properties.RealEstate;
 import properties.Shipping;
+import spaces.Chance;
+import spaces.Jail;
+import spaces.Parking;
+import spaces.Property;
+import spaces.Start;
+import spaces.Tax;
 
 /**
  * This class implements a view on the Monopoly game based on the original

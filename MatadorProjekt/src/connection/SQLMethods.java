@@ -9,8 +9,8 @@ import java.sql.Statement;
 import connection.Connector;
 
 import gameContent.Player;
-import gameContent.Property;
 import properties.RealEstate;
+import spaces.Property;
 
 /**
  * The Class SQLMethods.

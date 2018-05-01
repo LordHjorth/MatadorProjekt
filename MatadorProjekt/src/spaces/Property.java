@@ -1,7 +1,9 @@
-package gameContent;
+package spaces;
 
 import controllers.GameController;
 import exceptions.PlayerBrokeException;
+import gameContent.Player;
+import gameContent.Space;
 
 /**
  * A property which is a space that can be owned by a player.

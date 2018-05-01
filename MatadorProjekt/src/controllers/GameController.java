@@ -14,11 +14,11 @@ import connection.viewDB;
 import exceptions.PlayerBrokeException;
 import gameContent.Card;
 import gameContent.Game;
-import gameContent.Jail;
 import gameContent.Player;
-import gameContent.Property;
 import gameContent.Space;
 import properties.RealEstate;
+import spaces.Jail;
+import spaces.Property;
 
 /**
  * The overall controller of a Monopoly game. It provides access to all basic

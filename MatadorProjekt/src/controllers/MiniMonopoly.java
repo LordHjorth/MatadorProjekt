@@ -14,16 +14,16 @@ import cards.PardonCard;
 import cards.PayPropertyTax;
 import cards.Relativemove;
 import gameContent.Card;
-import gameContent.Chance;
 import gameContent.Game;
-import gameContent.Jail;
-import gameContent.Parking;
 import gameContent.Space;
-import gameContent.Start;
-import gameContent.Tax;
 import properties.Brewery;
 import properties.RealEstate;
 import properties.Shipping;
+import spaces.Chance;
+import spaces.Jail;
+import spaces.Parking;
+import spaces.Start;
+import spaces.Tax;
 
 /**
  * Main class for setting up and running a (Mini-)Monoploy game.

@@ -3,7 +3,7 @@ package properties;
 import controllers.GameController;
 import exceptions.PlayerBrokeException;
 import gameContent.Player;
-import gameContent.Property;
+import spaces.Property;
 
 /**
  * A specific property, which represents real estate on which houses and hotels
