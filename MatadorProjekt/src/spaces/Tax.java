@@ -12,18 +12,16 @@ import gameContent.Space;
  *
  */
 public class Tax extends Space {
-
+	
 	@Override
 	public void doAction(GameController controller, Player player) throws PlayerBrokeException {
-		// TODO note that tax concerns all assets an not just cash - should be fixed now
-		// andre værdi genstande end penge og grunde?
-		int payment = player.getBalance();
-		
-		for(Property p : player.getOwnedProperties()) {
-			payment += p.getCost();
+		if(player.getCurrentPosition()==controller.getSpaces().get(38)) {
+			controller.paymentToBank(player, 2000);
 		}
-		payment = payment / 10;
-		controller.paymentToBank(player, payment);
+		else if(player.getCurrentPosition()==controller.getSpaces().get(4)) {
+			 controller.paymentToBank(player,(controller.getPlayerValue(player)/10));
+		}
+		
 	}
 
 }

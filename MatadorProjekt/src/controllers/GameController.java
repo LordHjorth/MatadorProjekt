@@ -306,9 +306,9 @@ public class GameController {
 				}
 			} else if (gui.getUserLeftButtonPressed(
 					"Player " + player.getName() + " is in prison. Do you want to pay you out or cast a double",
-					"Pay 200", "roll dice") == true) {
+					"Pay 1000", "roll dice") == true) {
 				player.setInPrison(false);
-				player.payMoney(200);
+				player.payMoney(1000);
 			}
 		}
 
@@ -325,8 +325,7 @@ public class GameController {
 			} else if (player.isInPrison()) {
 				gui.showMessage("Player " + player.getName() + " stays in prison since he did not cast a double!");
 			}
-			// TODO note that the player could also pay to get out of prison,
-			// which is not yet implemented
+		
 			if (castDouble) {
 				doublesCount++;
 				if (doublesCount > 2) {
@@ -367,10 +366,6 @@ public class GameController {
 		player.setCurrentPosition(space);
 
 		if (posOld > player.getCurrentPosition().getIndex()) {
-
-			// TODO: the amount of 2000$ should not be a fixed constant here (could also
-			// be configured in the Game class.
-			// - like this?
 			gui.showMessage(
 					"Player " + player.getName() + " receives " + game.getMoneyForPassingGo() + " kr. for passing Go!");
 			this.paymentFromBank(player, game.getMoneyForPassingGo());
@@ -836,7 +831,7 @@ public class GameController {
 		if (!disposed) {
 			disposed = true;
 			view.dispose();
-			// TODO we should also dispose of the GUI here. But this works only
+			// we should also dispose of the GUI here. But this works only
 			// for my private version on the GUI and not for the GUI currently
 			// deployed via Maven (or other official versions)
 		}

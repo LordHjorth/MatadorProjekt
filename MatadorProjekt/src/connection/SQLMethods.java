@@ -41,7 +41,7 @@ public class SQLMethods {
 		try {
 			con = Connector.getConnection();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 	}

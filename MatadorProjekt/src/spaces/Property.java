@@ -11,7 +11,7 @@ import gameContent.Space;
  */
 public class Property extends Space {
 	
-	//TODO - add category for fields, so houses/hotels can be added.
+
 	protected int cost;
 	protected int rent;
 	protected String category;

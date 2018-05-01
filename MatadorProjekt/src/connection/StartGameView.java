@@ -95,7 +95,7 @@ public class StartGameView {
 
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
+				
 				super.run();
 
 				sql.resetDB();

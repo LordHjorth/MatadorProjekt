@@ -133,7 +133,8 @@ public class View implements Observer {
 					fields[i].setSubText(space.getName());
 					fields[i].setDescription("");
 				} else {
-					// TODO
+					System.out.println("Space instance not found, so could not be added by factory");
+				
 				}
 				space2GuiField.put(space, fields[i++]);
 			}

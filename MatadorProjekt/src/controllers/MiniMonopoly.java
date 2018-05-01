@@ -74,7 +74,7 @@ public class MiniMonopoly {
 		game.addSpace(p);
 
 		Tax t = new Tax();
-		t.setName("Betal indkomstskat");
+		t.setName("Betal indkomstskat: 10%");
 		game.addSpace(t);
 
 		Shipping s = new Shipping();
