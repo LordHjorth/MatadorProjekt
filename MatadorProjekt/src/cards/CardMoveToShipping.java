@@ -8,27 +8,34 @@ import gameContent.Card;
 import gameContent.Player;
 import gameContent.Space;
 
-public class Relativemove extends Card {
+public class CardMoveToShipping extends Card{
+
 
 	private Space target;
-	private int amount;
-
-	public void setAmountTomove(int amount) {
-		this.amount = amount;
-	}
+	
 
 	@Override
 	public void doAction(GameController controller, Player player) throws PlayerBrokeException {
 
 		try {
-
-			int temp = player.getCurrentPosition().getIndex() + amount;
-			if (temp < 0) {
-				temp = temp + 40;
-			}
 			List<Space> newspacelist = controller.getSpaces();
-			target = newspacelist.get(temp);
+			
+			int temp = player.getCurrentPosition().getIndex();
+			if ((4>=temp&&temp>=0)||(39>=temp&&temp>=36)) {
+				target = newspacelist.get(5);	
+			}
+			if ((14>=temp&&temp>=5)) {
+			     target = newspacelist.get(15);	
+			}
+			if ((24>=temp&&temp>=15)) {
+			     target = newspacelist.get(25);	
+			}
+			if ((34>=temp&&temp>=25)) {
+			     target = newspacelist.get(35);	
+			}
+			player.setChanceCardShipping(true);
 			controller.moveToSpace(player, target);
+			
 
 		} finally {
 			// Make sure that the card is returned to the deck even when
@@ -36,5 +43,6 @@ public class Relativemove extends Card {
 			super.doAction(controller, player);
 		}
 	}
-
+	
+	
 }

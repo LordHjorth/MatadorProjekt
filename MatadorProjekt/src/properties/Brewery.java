@@ -6,7 +6,11 @@ import controllers.GameController;
 import exceptions.PlayerBrokeException;
 import gameContent.Player;
 import gameContent.Property;
-
+/**
+ * 
+ * @author emil_
+ *Brewery class, used in order to calculate rent, depending on amount of breweries owned and the die throw used to land on the brewery.
+ */
 public class Brewery extends Property{
 	private Color color= new Color(154,205,50);
 	public Color getColor() {

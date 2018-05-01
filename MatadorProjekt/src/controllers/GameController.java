@@ -491,9 +491,9 @@ public class GameController {
 				throw e;
 			}
 			player.addOwnedProperty(property);
-			view.setBorderColor(player,property);
+			view.setBorderColor(player, property);
 			property.setOwner(player);
-			
+
 			return;
 		}
 
@@ -608,7 +608,7 @@ public class GameController {
 				winner.addOwnedProperty(property);
 				gui.showMessage("You've succesfully bought the property " + property.getName());
 				property.setOwner(winner);
-				view.setBorderColor(winner,property);
+				view.setBorderColor(winner, property);
 			} catch (PlayerBrokeException e) {
 				gui.showMessage(
 						"You haven't bought the property " + property.getName() + " You didn't have enough money");
@@ -665,7 +665,14 @@ public class GameController {
 		player.setBalance(0);
 		player.setBroke(true);
 
-		// TODO we also need to remove the houses and the mortgage from the properties
+		// TODO we also need to remove the mortgage from the properties
+
+		for (Property property : player.getOwnedProperties()) {
+			if (property instanceof RealEstate) {
+				RealEstate realtemp = (RealEstate) player.getProperty(property);
+				realtemp.removeAllHouses();
+			}
+		}
 
 		for (Property property : player.getOwnedProperties()) {
 			property.setOwner(null);
@@ -679,7 +686,15 @@ public class GameController {
 		}
 	}
 
-	// Method for buying houses - not done
+	/**
+	 * Method used to offer a player the oppertunity to buy houses on owned
+	 * properties. It should have been possible to buy a hotel after buying 4
+	 * houses, but for the sake of simplicity we only "work" in houses.
+	 * 
+	 * @author rasmus_
+	 * @param player
+	 * @param realestate
+	 */
 	public void buyHouse(Player player, RealEstate realestate) {
 		String choice = gui.getUserSelection(
 				"Player " + player.getName() + ": Do you want to buy houses? at " + realestate.getName(), "yes", "no");
@@ -709,6 +724,11 @@ public class GameController {
 		}
 	}
 
+	/**
+	 * @author emil_ Method used to create a list with categories and mapping them
+	 *         with strings.
+	 */
+
 	private void createcategoryList() {
 		for (Space space : game.getSpaces()) {
 			if (space instanceof Property) {
@@ -723,11 +743,24 @@ public class GameController {
 		}
 	}
 
+	/**
+	 * @author emil_
+	 * @param A
+	 *            string, determining the category
+	 * @return A list of all properties in the category.
+	 */
 	private List<Property> getAllPropertiesofCategory(String category) {
 		return new ArrayList<Property>(category2Properties.get(category));
 
 	}
 
+	/**
+	 * @author emil_
+	 * @param player
+	 * @param Property
+	 * @return returns the amount owned of a certain category group as an int. This
+	 *         method is used for rent calculations for ships and breweries.
+	 */
 	public int checkOwnershipAmount(Player player, Property p) {
 		List<Property> prop = this.getAllPropertiesofCategory(p.getCategory());
 		int i = 0;
@@ -738,6 +771,14 @@ public class GameController {
 		}
 		return i;
 	}
+
+	/**
+	 * @author emil_
+	 * @param player
+	 * @param realestate
+	 * @return boolean Method used in order to check if a player owns a category of
+	 *         realestate.
+	 */
 
 	public boolean checkOwnershipOfCategory(Player player, Property realestate) {
 		List<Property> l = this.getAllPropertiesofCategory(realestate.getCategory());
@@ -750,6 +791,8 @@ public class GameController {
 		return true;
 	}
 
+	// method to set and get diethrow, used in order to calculate brewery rent
+	// @emil_
 	private void setDieThrow(int i, int j) {
 		this.diethrow = i + j;
 	}
@@ -761,6 +804,26 @@ public class GameController {
 	public List<Space> getSpaces() {
 
 		return game.getSpaces();
+	}
+
+	/**
+	 * @author emil_
+	 * @param player
+	 * @return int Method used in order to calculate a players total value (current
+	 *         balance, houses, properties).
+	 */
+	public int getPlayerValue(Player player) {
+		int amount = player.getBalance();
+
+		for (Property property : player.getOwnedProperties()) {
+			amount += property.getCost();
+
+			if (property instanceof RealEstate) {
+				amount += (((RealEstate) property).getHouses() * (((RealEstate) property).getHouseCost()));
+			}
+		}
+		return amount;
+
 	}
 
 	/**

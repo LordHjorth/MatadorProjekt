@@ -30,11 +30,13 @@ public class Player extends Subject {
 	
 	private int ID = 0;
 	
-	private int balance = 2000000;
+	private int balance = 150000;
 	
 	private boolean inPrison = false;
 	
 	private boolean broke = false;
+	
+	private boolean chanceCardShipping=false;
 	
 	private Set<Property> ownedProperties = new HashSet<Property>();
 	
@@ -179,6 +181,25 @@ public class Player extends Subject {
 		notifyChange();
 		return result;
 	}
+	/**
+	 * @author emil_
+	 * Method used in order to the method controller.getPlayerValue.
+	 * @param property
+	 * @return property
+	 */
+
+	
+	public Property getProperty(Property property) {
+		if(ownedProperties.contains(property)) {
+			for(Property prop:ownedProperties) {
+				if(prop.equals(property))
+					return prop;
+			}
+		}
+		 
+		return null;
+		
+	}
 	
 	/**
 	 * Removes all properties from the player.
@@ -279,6 +300,14 @@ public class Player extends Subject {
 
 	public void setID(int iD) {
 		ID = iD;
+	}
+
+	public boolean isChanceCardShipping() {
+		return chanceCardShipping;
+	}
+
+	public void setChanceCardShipping(boolean chanceCardShipping) {
+		this.chanceCardShipping = chanceCardShipping;
 	}
 
 }

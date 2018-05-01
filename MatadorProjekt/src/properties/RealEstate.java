@@ -41,6 +41,14 @@ public class RealEstate extends Property {
 	}
 
 	/**
+	 * Method to remove all Houses on RealEstate.
+	 */
+	public void removeAllHouses() {
+		this.houses = 0;
+		notifyChange();
+	}
+
+	/**
 	 * @return the houseCost
 	 */
 	public int getHouseCost() {
@@ -82,7 +90,10 @@ public class RealEstate extends Property {
 
 		else if (!this.getOwner().equals(player)) {
 			// TODO also check whether the property is mortgaged
-			// TODO the computation of the actual rent could be delegated
+			/**
+			 * @author emil_ A check if all property of a category is owned, doubling rent
+			 *         if they are.
+			 */
 
 			if (controller.checkOwnershipOfCategory(owner, this))
 				controller.payment(player, this.getRent() * 2, this.getOwner());
@@ -90,8 +101,8 @@ public class RealEstate extends Property {
 				controller.payment(player, this.getRent(), this.getOwner());
 			}
 
-		}
-		if (this.getOwner().equals(player) && controller.checkOwnershipOfCategory(player, this)&&!(this.getHouses()==5)) {
+		} else if (this.getOwner().equals(player) && controller.checkOwnershipOfCategory(player, this)
+				&& !(this.getHouses() >= 5)) {
 			controller.buyHouse(player, this);
 		}
 	}
