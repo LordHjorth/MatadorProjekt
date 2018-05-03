@@ -36,7 +36,7 @@ public class Legat extends Card {
 		try {
 			
 			
-			if(controller.getPlayerValue(player)<=value) {
+			if(player.getPlayerValue()<=value) {
 			controller.paymentFromBank(player, amount);
 			}
 			

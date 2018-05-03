@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import designPatterns.Subject;
+import properties.RealEstate;
 import spaces.Property;
 
 /**
@@ -296,5 +297,26 @@ public class Player extends Subject {
 	public void setChanceCardShipping(boolean chanceCardShipping) {
 		this.chanceCardShipping = chanceCardShipping;
 	}
+	/**
+	 * @author emil_
+	 * @param player
+	 * @return int Method used in order to calculate a players total value (current
+	 *         balance, houses, properties).
+	 */
+	public int getPlayerValue() {
+		int amount = this.getBalance();
+
+		for (Property property : this.getOwnedProperties()) {
+			amount += property.getCost();
+
+			if (property instanceof RealEstate) {
+				amount += (((RealEstate) property).getHouses() * (((RealEstate) property).getHouseCost()));
+			}
+		}
+		return amount;
+
+	}
+	
+	
 
 }

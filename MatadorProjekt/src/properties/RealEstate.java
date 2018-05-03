@@ -101,10 +101,9 @@ public class RealEstate extends Property {
 				controller.payment(player, this.getRent(), this.getOwner());
 			}
 
-		} else if (this.getOwner().equals(player) && controller.checkOwnershipOfCategory(player, this)
-				&& !(this.getHouses() >= 5)) {
-			controller.buyHouse(player, this);
-		}
+		} 
+
+		
 	}
 
 }

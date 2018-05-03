@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class Connector {
 
 	/*
-	 * @author Gruppe 25
+	 * @author Gruppe B
 	 */
 	public static Connection getConnection() throws Exception {
 

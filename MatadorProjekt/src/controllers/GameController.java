@@ -4,7 +4,9 @@ import java.awt.Color;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -77,9 +79,9 @@ public class GameController {
 	 * participating players. Right now, the creation of players is hard-coded. But
 	 * this should be done by interacting with the user.
 	 * 
-	 * @author gruppe B
-	 * Should be more defensive programming so players could not use the same name, as this makes errors occur with both
-	 * the gui and the database.
+	 * @author gruppe B Should be more defensive programming so players could not
+	 *         use the same name, as this makes errors occur with both the gui and
+	 *         the database.
 	 */
 	public void createPlayers() {
 		int NumberOfPlayers = gui.getUserInteger("Enter the amount of players (2-6)", 2, 6);
@@ -143,7 +145,6 @@ public class GameController {
 		ResultSet rs = sql.LoadPlayers();
 		Object[][] data = new Object[AmountOfPlayers][];
 		int i = 0;
-		
 
 		try {
 			while (!rs.equals(null) && rs.next()) {
@@ -198,7 +199,7 @@ public class GameController {
 
 	/**
 	 * This method will initialize the GUI. It should be called after the players of
-	 * the game are created. 
+	 * the game are created.
 	 */
 	public void initializeGUI() {
 		this.view = new View(game);
@@ -254,6 +255,35 @@ public class GameController {
 				break;
 
 			}
+			// Offers a player to buy houses, if he has all the RealEstate in a category.
+
+			boolean offerrunning = true;
+			do {
+				String selection = gui.getUserButtonPressed("What do you want to do?", "Trade", "Buy Houses",
+						"Sell Houses", "Mortage Property", "Continue Game");
+				switch (selection) {
+				case "Trade":
+					// TODO
+					break;
+				case "Buy Houses":
+					this.offerToBuyHouse(player);
+					break;
+				case "Sell Houses":
+					// Offer to sell houses //TODO
+					break;
+				case "Mortage Property":
+					// offer to mortage property
+					break;
+				case "Continue Game":
+					offerrunning = false;
+					break;
+				default:
+					offerrunning = false;
+					break;
+
+				}
+
+			} while (offerrunning);
 
 			// TODO offer all players the options to trade etc.
 
@@ -261,8 +291,8 @@ public class GameController {
 			game.setCurrentPlayer(players.get(current));
 			vdb.updatePlayerView(game.getPlayers());
 			if (current == 0) {
-				String selection = gui.getUserSelection("A round is finished. Do you want to continue the game?", "yes",
-						"no");
+				String selection = gui.getUserButtonPressed("A round is finished. Do you want to continue the game?",
+						"yes", "no");
 				if (selection.equals("no")) {
 					terminated = true;
 				}
@@ -325,7 +355,7 @@ public class GameController {
 			} else if (player.isInPrison()) {
 				gui.showMessage("Player " + player.getName() + " stays in prison since he did not cast a double!");
 			}
-		
+
 			if (castDouble) {
 				doublesCount++;
 				if (doublesCount > 2) {
@@ -393,7 +423,7 @@ public class GameController {
 		}
 		player.setCurrentPosition(jailFields.get(0));
 		player.setInPrison(true);
-		
+
 	}
 
 	/**
@@ -465,8 +495,8 @@ public class GameController {
 		// the actual offer, to see whether he can free enough cash
 		// for the sale.
 
-		String choice = gui.getUserSelection("Player " + player.getName() + ": Do you want to buy " + property.getName()
-				+ " for " + property.getCost() + "$?", "yes", "no");
+		String choice = gui.getUserButtonPressed("Player " + player.getName() + ": Do you want to buy "
+				+ property.getName() + " for " + property.getCost() + "kr.?", "yes", "no");
 		if (choice.equals("yes")) {
 			try {
 				paymentToBank(player, property.getCost());
@@ -569,15 +599,14 @@ public class GameController {
 		NotGrantedPlayers.add(game.getCurrentPlayer());
 		int bid = 0;
 		Player winner = null;
-	
-		
+
 		for (Player biddingPlayer : AuctionGrantedPlayers) {
 			if (NotGrantedPlayers.contains(biddingPlayer) || biddingPlayer.isBroke()) {
 				continue;
 			} else {
 				int minimum = property.getCost() > bid + 1 ? property.getCost() : bid + 1; // makes sure to always use
 																							// the most recent bid
-				String answer = gui.getUserSelection(
+				String answer = gui.getUserButtonPressed(
 						"Would " + biddingPlayer.getName() + " like to bid? - the price is " + minimum, "Yes", "No");
 				if (answer.equals("Yes")) {
 					bid = gui.getUserInteger("Place your bid", minimum, 1000000000); // maximum bid of 1.000.000.000
@@ -676,46 +705,6 @@ public class GameController {
 	}
 
 	/**
-	 * Method used to offer a player the oppertunity to buy houses on owned
-	 * properties. It should have been possible to buy a hotel after buying 4
-	 * houses, but for the sake of simplicity we only "work" in houses.
-	 * 
-	 * @author rasmus_
-	 * @param player
-	 * @param realestate
-	 */
-	public void buyHouse(Player player, RealEstate realestate) {
-		String choice = gui.getUserSelection(
-				"Player " + player.getName() + ": Do you want to buy houses? at " + realestate.getName(), "yes", "no");
-		if (choice.equals("yes")) {
-
-			if (realestate.getHouses() >= 5) { // 5 is the maximum number of houses - hotels is not an option at
-												// this
-												// point.
-				gui.showMessage("You can't buy anymore houses.");
-				return;
-			} else {
-				int minimum = 1;
-				int maximum = 5 - realestate.getHouses();
-				int amount = gui.getUserInteger(
-						"How many houses du you want to buy? The price for one house is: " + realestate.getHouseCost(),
-						minimum, maximum);
-
-				realestate.addHouses(amount);
-				realestate.updateRent(amount);
-				try {
-					this.paymentToBank(player, realestate.getHouseCost() * amount);
-					sql.updateHouses(realestate, amount);
-					vdb.updPropertyView(realestate, player);
-				} catch (PlayerBrokeException e) {
-					e.printStackTrace();
-				}
-				view.update(realestate);
-			}
-		}
-	}
-
-	/**
 	 * @author emil_ Method used to create a list with categories and mapping them
 	 *         with strings.
 	 */
@@ -768,14 +757,14 @@ public class GameController {
 	 * @param player
 	 * @param realestate
 	 * @return boolean Method used in order to check if a player owns a category of
-	 *         realestate.
+	 *         realestate, used to double rent on owned realestate group.
 	 */
 
 	public boolean checkOwnershipOfCategory(Player player, Property realestate) {
 		List<Property> l = this.getAllPropertiesofCategory(realestate.getCategory());
 		for (Property property : l) {
 			if (!player.equals(property.getOwner())) {
-				gui.showMessage("You do not own all the properties.");
+
 				return false;
 			}
 		}
@@ -797,33 +786,226 @@ public class GameController {
 		return game.getSpaces();
 	}
 
-	/**
-	 * @author emil_
-	 * @param player
-	 * @return int Method used in order to calculate a players total value (current
-	 *         balance, houses, properties).
-	 */
-	public int getPlayerValue(Player player) {
-		int amount = player.getBalance();
-
-		for (Property property : player.getOwnedProperties()) {
-			amount += property.getCost();
-
-			if (property instanceof RealEstate) {
-				amount += (((RealEstate) property).getHouses() * (((RealEstate) property).getHouseCost()));
-			}
-		}
-		return amount;
-
-	}
-
-	
 	public List<Player> getListOfPlayers() {
 		return game.getPlayers();
 	}
-	
-	
-	
+
+	/**
+	 * @author emil_ Mortage
+	 */
+	private void mortageProperty(Player player, Property Property) {
+
+	}
+
+	/**
+	 * @author emil_ A check if mortage is allowed on a property.
+	 */
+
+	private boolean sellHousesInPropertyGroupToAllowMortage(Player player, RealEstate realestate) {
+		String s = realestate.getCategory();
+		boolean running = true;
+		while (running) {
+			int houseamount = 0;
+			RealEstate[] realestatearray = new RealEstate[this.getAllPropertiesofCategory(s).size()];
+
+			for (Property r : this.getAllPropertiesofCategory(s)) {
+				if (r instanceof RealEstate) {
+					int i = 0;
+					realestatearray[i] = (RealEstate) r;
+					houseamount += ((RealEstate) r).getHouses();
+				}
+
+			}
+			if (houseamount != 0) {
+				gui.showMessage("You must sell all houses in the realestate group first!");
+				for (int i = 0; i < realestatearray.length; i++) {
+					this.sellHouses(player, realestatearray[i]);
+				}
+
+			} else if (houseamount == 0) {
+				running = false;
+			}
+		}
+		return true;
+
+	}
+
+	/**
+	 * If a player owns all RealEstate in a category the player is offered to buy
+	 * houses at the end of the round.
+	 * 
+	 * @author emil_
+	 * @param player
+	 */
+	private void offerToBuyHouse(Player player) {
+
+		if (!this.getPlayerOwnedRealEstateOfCategories(player).isEmpty()) {
+			boolean running = true;
+			while (running) {
+				String select = gui.getUserButtonPressed("Do you want to buy houses?", "yes", "no");
+				if (select.equals("yes")) {
+					List<RealEstate> l = this.getPlayerOwnedRealEstateOfCategories(player);
+					RealEstate realstate = this.chooseRealEstate(player, l);
+					this.buyHouse(player, realstate);
+				} else if (select.equals("no")) {
+					running = false;
+				}
+
+			}
+		} else if (this.getPlayerOwnedRealEstateOfCategories(player).isEmpty()) {
+			gui.showMessage("You do not own any property groups");
+		}
+
+	}
+
+	/**
+	 * @author emil_
+	 * @param player
+	 * @return List<RealEstate> This method returns a list of realestate, provided a
+	 *         player owns all the realestate of a category. This is used in
+	 *         conjugation with the offer to buy houses.
+	 */
+
+	private List<RealEstate> getPlayerOwnedRealEstateOfCategories(Player player) {
+		Property[] k = new Property[player.getOwnedProperties().size()];
+		player.getOwnedProperties().toArray(k);
+		List<RealEstate> l = new ArrayList<RealEstate>();
+
+		for (int j = 0; j < player.getOwnedProperties().size(); j++) {
+			if (this.checkOwnershipOfCategory(player, k[j]) && k[j] instanceof RealEstate) {
+
+				l.add((RealEstate) k[j]);
+			}
+
+		}
+
+		return l;
+
+	}
+
+	/**
+	 * Method used to offer a player the oppertunity to buy houses on owned
+	 * properties. It should have been possible to buy a hotel after buying 4
+	 * houses, but for the sake of simplicity we only "work" in houses.
+	 * 
+	 * @author rasmus_
+	 * @param player
+	 * @param realestate
+	 */
+	public void buyHouse(Player player, RealEstate realestate) {
+
+		String choice = gui.getUserButtonPressed(
+				"Player " + player.getName() + ": Do you want to buy houses? at " + realestate.getName(), "yes", "no");
+		if (choice.equals("yes")) {
+
+			if (realestate.getHouses() >= 5) { // 5 is the maximum number of houses - hotels is not an option at
+												// this
+												// point.
+				gui.showMessage("You can't buy anymore houses.");
+				return;
+			} else {
+				int minimum = 1;
+				int maximum = 5 - realestate.getHouses();
+				int amount = gui.getUserInteger(
+						"How many houses du you want to buy? The price for one house is: " + realestate.getHouseCost(),
+						minimum, maximum);
+
+				realestate.addHouses(amount);
+				realestate.updateRent(amount);
+				try {
+					this.paymentToBank(player, realestate.getHouseCost() * amount);
+					sql.updateHouses(realestate, amount);
+					vdb.updPropertyView(realestate, player);
+				} catch (PlayerBrokeException e) {
+					e.printStackTrace();
+				}
+				view.update(realestate);
+			}
+		}
+	}
+
+	/**
+	 * @author emil_
+	 * @param player
+	 * @param realestate
+	 *            Method used in order to sell houses.
+	 */
+
+	private void sellHouses(Player player, RealEstate realestate) {
+		// String choice = gui.getUserButtonPressed(
+		// "Player " + player.getName() + ": Do you want to sell houses? at " +
+		// realestate.getName(), "yes", "no"); choice.equals("yes")&&
+		if (realestate.getHouses() != 0) {
+
+			int minimum = 1;
+			int maximum = realestate.getHouses();
+			int amount = gui.getUserInteger(
+					"How many houses du you want to sell? You are paid: " + (realestate.getHouseCost() / 2), minimum,
+					maximum);
+			int amount2 = maximum - amount;
+
+			realestate.removeHouses(amount);
+			realestate.updateRent(amount2);
+			this.paymentFromBank(player, (realestate.getHouseCost() / 2) * amount);
+
+			sql.updateHouses(realestate, amount2);
+			vdb.updPropertyView(realestate, player);
+			view.update(realestate);
+
+		}
+
+	}
+
+	/**
+	 * private method used in order to choose a piece of realestate, used in
+	 * offerToBuyhouse method.
+	 * 
+	 * @author emil_
+	 * @param player
+	 * @return
+	 */
+
+	private RealEstate chooseRealEstate(Player player, List<RealEstate> realestatelist) {
+		Collection<String> kategorier = new HashSet<String>();
+		for (RealEstate r : realestatelist) {
+			kategorier.add(r.getCategory());
+		}
+		String[] choose = new String[kategorier.size()];
+		kategorier.toArray(choose);
+
+		String chosencategory = gui.getUserButtonPressed("Hvilket område?", choose);
+		List<Property> nyliste = this.getAllPropertiesofCategory(chosencategory);
+
+		RealEstate realestate = null;
+		int i = 0;
+		int j = 0;
+
+		for (Property p : nyliste) {
+			if (p instanceof RealEstate) {
+				i++;
+			}
+		}
+		RealEstate[] ejendomme = new RealEstate[i];
+		String[] options = new String[i];
+		for (Property r : nyliste) {
+			if (r instanceof RealEstate) {
+				options[j] = r.getName();
+				ejendomme[j] = (RealEstate) r;
+				j++;
+			}
+		}
+
+		String chosenproperty = gui.getUserButtonPressed("Hvilken Grund?", options);
+
+		for (int n = 0; n < options.length; n++) {
+			if (chosenproperty.equals(ejendomme[n].getName())) {
+				realestate = ejendomme[n];
+			}
+		}
+		return realestate;
+
+	}
+
 	/**
 	 * Method for disposing of this controller and cleaning up its resources.
 	 */

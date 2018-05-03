@@ -102,5 +102,9 @@ public class Property extends Space {
 		this.category = category;
 	}
 
+	public String[] getCategories() {
+		return categories;
+		
+	}
 
 }

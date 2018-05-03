@@ -38,12 +38,12 @@ public class Test {
 		player.addOwnedProperty((RealEstate) feltliste.get(3)); //1200 kr grund
 		RealEstate rødovre= (RealEstate) feltliste.get(1); 
 		rødovre.addHouses(5); //120kr *5 huse =600kr 
-	    int test1= controller.getPlayerValue(player);
+	    int test1= player.getPlayerValue();
 		Assert.assertEquals("Wrong Value",16000,test1);//13000+1200+1200+600 = 16000
 		player.addOwnedProperty((RealEstate) feltliste.get(39)); //8000 kr grund
 		RealEstate rådhus= (RealEstate) feltliste.get(39); 
 		rådhus.addHouses(4); //800 kr* 4 huse = 3200 kr
-		int test2= controller.getPlayerValue(player);
+		int test2= player.getPlayerValue();
 		Assert.assertEquals("Wrong Value",27200,test2); //16000+8000+3200 
 		
 

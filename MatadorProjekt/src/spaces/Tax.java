@@ -19,7 +19,7 @@ public class Tax extends Space {
 			controller.paymentToBank(player, 2000);
 		}
 		else if(player.getCurrentPosition()==controller.getSpaces().get(4)) {
-			 controller.paymentToBank(player,(controller.getPlayerValue(player)/10));
+			 controller.paymentToBank(player,(player.getPlayerValue()/10));
 		}
 		
 	}
