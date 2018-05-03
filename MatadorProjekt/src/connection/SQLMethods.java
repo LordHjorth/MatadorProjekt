@@ -203,7 +203,7 @@ public class SQLMethods {
 	public void updateHouses(Property prop, int houses) {
 		try {
 			CallableStatement cst = con.prepareCall(" { call updateHouses(?,?) } ");
-			System.out.println(prop.getName() + " - " + prop.getIndex() + " - " + houses);
+			
 			cst.setInt(PROPERTY_ID, prop.getIndex());
 			cst.setInt(HOUSES, houses);
 			cst.execute();

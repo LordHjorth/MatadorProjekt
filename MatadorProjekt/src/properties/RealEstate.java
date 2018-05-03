@@ -88,8 +88,10 @@ public class RealEstate extends Property {
 
 		}
 
-		else if (!this.getOwner().equals(player)) {
-			// TODO also check whether the property is mortgaged
+		else if (!this.getOwner().equals(player)&&!this.isMortaged()==true) {
+			
+			
+			
 			/**
 			 * @author emil_ A check if all property of a category is owned, doubling rent
 			 *         if they are.

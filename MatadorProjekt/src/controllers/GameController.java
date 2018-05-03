@@ -244,7 +244,7 @@ public class GameController {
 				}
 			}
 			if (countActive == 1) {
-				gui.showMessage("Player " + winner.getName() + " has won with " + winner.getBalance() + "$.");
+				gui.showMessage("Player " + winner.getName() + " has won with " + winner.getBalance() + "kr.");
 				break;
 			} else if (countActive < 1) {
 				// This can actually happen in very rare conditions and only
@@ -255,7 +255,6 @@ public class GameController {
 				break;
 
 			}
-			// Offers a player to buy houses, if he has all the RealEstate in a category.
 
 			boolean offerrunning = true;
 			do {
@@ -263,16 +262,16 @@ public class GameController {
 						"Sell Houses", "Mortage Property", "Continue Game");
 				switch (selection) {
 				case "Trade":
-					// TODO
+					this.offerToTrade(player);
 					break;
 				case "Buy Houses":
 					this.offerToBuyHouse(player);
 					break;
 				case "Sell Houses":
-					// Offer to sell houses //TODO
+					this.offerToSellHouses(player);
 					break;
 				case "Mortage Property":
-					// offer to mortage property
+					this.offerToMortgageProperty(player);
 					break;
 				case "Continue Game":
 					offerrunning = false;
@@ -284,8 +283,6 @@ public class GameController {
 				}
 
 			} while (offerrunning);
-
-			// TODO offer all players the options to trade etc.
 
 			current = (current + 1) % players.size();
 			game.setCurrentPlayer(players.get(current));
@@ -474,7 +471,32 @@ public class GameController {
 	 *            the amount the player should have available after the act
 	 */
 	public void obtainCash(Player player, int amount) {
-		// TODO implement
+
+		boolean offerrunning = true;
+		do {
+			String selection = gui.getUserButtonPressed("How do you want to free money?", "Trade", "Sell Houses",
+					"Mortage Property", "I dont want to free money!");
+			switch (selection) {
+			case "Trade":
+				this.offerToTrade(player);
+				break;
+			case "Sell Houses":
+				this.offerToSellHouses(player);
+				break;
+			case "Mortage Property":
+				this.offerToMortgageProperty(player);
+				break;
+			case "I dont want to free money!":
+				offerrunning = false;
+				break;
+			default:
+				offerrunning = false;
+				break;
+
+			}
+
+		} while (offerrunning);
+
 	}
 
 	/**
@@ -491,9 +513,9 @@ public class GameController {
 	 *             when the player chooses to buy but could not afford it
 	 */
 	public void offerToBuy(Property property, Player player) throws PlayerBrokeException {
-		// TODO We might also allow the player to obtainCash before
-		// the actual offer, to see whether he can free enough cash
-		// for the sale.
+		if (player.getBalance() <= property.getCost()) {
+			this.obtainCash(player, property.getCost());
+		}
 
 		String choice = gui.getUserButtonPressed("Player " + player.getName() + ": Do you want to buy "
 				+ property.getName() + " for " + property.getCost() + "kr.?", "yes", "no");
@@ -517,7 +539,7 @@ public class GameController {
 		}
 
 		// In case the player does not buy the property an auction
-		// is started
+		// is started @rasmus.
 		auction(property, player);
 	}
 
@@ -544,7 +566,7 @@ public class GameController {
 				throw new PlayerBrokeException(payer);
 			}
 		}
-		gui.showMessage("Player " + payer.getName() + " pays " + amount + "$ to player " + receiver.getName() + ".");
+		gui.showMessage("Player " + payer.getName() + " pays " + amount + "kr. to player " + receiver.getName() + ".");
 		payer.payMoney(amount);
 		receiver.receiveMoney(amount);
 	}
@@ -559,6 +581,7 @@ public class GameController {
 	 */
 	public void paymentFromBank(Player player, int amount) {
 		player.receiveMoney(amount);
+		gui.showMessage("Player " + player.getName() + " receives " + amount + " kr from the bank.");
 	}
 
 	/**
@@ -581,7 +604,7 @@ public class GameController {
 				throw new PlayerBrokeException(player);
 			}
 		}
-		gui.showMessage("Player " + player.getName() + " pays " + amount + "$ to the bank.");
+		gui.showMessage("Player " + player.getName() + " pays " + amount + "kr to the bank.");
 		player.payMoney(amount);
 	}
 
@@ -592,7 +615,7 @@ public class GameController {
 	 *            the property which is for auction
 	 */
 	public void auction(Property property, Player player) {
-		gui.showMessage("Now, there would be an auction of " + property.getName() + " and the price will start at "
+		gui.showMessage("Now, there is an auction of " + property.getName() + " and the price will start at "
 				+ property.getCost());
 		List<Player> AuctionGrantedPlayers = new ArrayList<Player>(game.getPlayers());
 		List<Player> NotGrantedPlayers = new ArrayList<Player>();
@@ -683,9 +706,8 @@ public class GameController {
 		player.setBalance(0);
 		player.setBroke(true);
 
-		// TODO we also need to remove the mortgage from the properties
-
 		for (Property property : player.getOwnedProperties()) {
+			property.setMortgaged(false);
 			if (property instanceof RealEstate) {
 				RealEstate realtemp = (RealEstate) property;
 				realtemp.removeAllHouses();
@@ -791,24 +813,92 @@ public class GameController {
 	}
 
 	/**
-	 * @author emil_ Mortage
+	 * @author emil_ Mortgage offer
 	 */
-	private void mortageProperty(Player player, Property Property) {
+	private void offerToMortgageProperty(Player player) {
+		if (player.getOwnedProperties().isEmpty()) {
+			gui.showMessage("You do not own any properties");
+		} else if (!player.getOwnedProperties().isEmpty()) {
+			boolean running = true;
+			while (running) {
+				String select = gui.getUserButtonPressed("What do you want to do?", "Mortgage Property",
+						"Unmortgage Property", "Return");
+				switch (select) {
+				case "Mortgage Property":
 
+					Property[] k = new Property[player.getOwnedProperties().size()];
+					player.getOwnedProperties().toArray(k);
+					List<Property> l = new ArrayList<Property>();
+					for (int j = 0; j < player.getOwnedProperties().size(); j++) {
+						l.add(k[j]);
+					}
+
+					Property choosenp = this.chooseProperty(player, l);
+
+					if (this.sellHousesInPropertyGroupToAllowMortgage(player, choosenp)
+							&& choosenp.isMortaged() == false) {
+						this.paymentFromBank(player, choosenp.getCost() / 2);
+						choosenp.setMortgaged(true);
+						gui.showMessage("You have mortgaged: " + choosenp.getName());
+						view.update(choosenp);
+					} else if (choosenp.isMortaged() == true) {
+						gui.showMessage("That property is already mortgaged");
+					}
+
+					break;
+
+				case "Unmortgage Property":
+					Property[] k1 = new Property[player.getOwnedProperties().size()];
+					player.getOwnedProperties().toArray(k1);
+					List<Property> l1 = new ArrayList<Property>();
+					for (int j = 0; j < player.getOwnedProperties().size(); j++) {
+						l1.add(k1[j]);
+					}
+
+					Property choosenp1 = this.chooseProperty(player, l1);
+					if (choosenp1.isMortaged() == true) {
+						try {
+							this.paymentToBank(player, choosenp1.getCost() / 2);
+						} catch (PlayerBrokeException e) {
+
+							e.printStackTrace();
+						}
+						choosenp1.setMortgaged(false);
+						view.update(choosenp1);
+						gui.showMessage("You have unmortgaged: " + choosenp1.getName());
+					} else if (!choosenp1.isMortaged() == true) {
+						gui.showMessage(choosenp1.getName() + " is not mortgaged.");
+					}
+
+					break;
+				case "Return":
+					running = false;
+					break;
+				default:
+					running = false;
+					break;
+				}
+			}
+		}
 	}
 
 	/**
-	 * @author emil_ A check if mortage is allowed on a property.
+	 * @author emil_ A method that sells all houses on a property group to allow
+	 *         mortage;
+	 * @return returns true when all houses in a property group is sold, thereby
+	 *         allowing mortgage.
 	 */
 
-	private boolean sellHousesInPropertyGroupToAllowMortage(Player player, RealEstate realestate) {
-		String s = realestate.getCategory();
+	private boolean sellHousesInPropertyGroupToAllowMortgage(Player player, Property property) {
+		String s = property.getCategory();
 		boolean running = true;
 		while (running) {
 			int houseamount = 0;
+			List<Property> nyliste = this.getAllPropertiesofCategory(s);
+			nyliste.retainAll(player.getOwnedProperties());
 			RealEstate[] realestatearray = new RealEstate[this.getAllPropertiesofCategory(s).size()];
 
-			for (Property r : this.getAllPropertiesofCategory(s)) {
+			for (Property r : nyliste) {
 				if (r instanceof RealEstate) {
 					int i = 0;
 					realestatearray[i] = (RealEstate) r;
@@ -818,9 +908,8 @@ public class GameController {
 			}
 			if (houseamount != 0) {
 				gui.showMessage("You must sell all houses in the realestate group first!");
-				for (int i = 0; i < realestatearray.length; i++) {
-					this.sellHouses(player, realestatearray[i]);
-				}
+				Property p = this.chooseProperty(player, nyliste);
+				this.sellHouses(player, (RealEstate) p);
 
 			} else if (houseamount == 0) {
 				running = false;
@@ -844,9 +933,30 @@ public class GameController {
 			while (running) {
 				String select = gui.getUserButtonPressed("Do you want to buy houses?", "yes", "no");
 				if (select.equals("yes")) {
-					List<RealEstate> l = this.getPlayerOwnedRealEstateOfCategories(player);
-					RealEstate realstate = this.chooseRealEstate(player, l);
-					this.buyHouse(player, realstate);
+					List<Property> l = this.getPlayerOwnedRealEstateOfCategories(player);
+					Property realstate = this.chooseProperty(player, l);
+					this.buyHouse(player, (RealEstate) realstate);
+				} else if (select.equals("no")) {
+					running = false;
+				}
+
+			}
+		} else if (this.getPlayerOwnedRealEstateOfCategories(player).isEmpty()) {
+			gui.showMessage("You do not own any property groups");
+		}
+
+	}
+
+	private void offerToSellHouses(Player player) {
+
+		if (!this.getPlayerOwnedRealEstateOfCategories(player).isEmpty()) {
+			boolean running = true;
+			while (running) {
+				String select = gui.getUserButtonPressed("Do you want to sell houses?", "yes", "no");
+				if (select.equals("yes")) {
+					List<Property> l = this.getPlayerOwnedRealEstateOfCategories(player);
+					Property realstate = this.chooseProperty(player, l);
+					this.sellHouses(player, (RealEstate) realstate);
 				} else if (select.equals("no")) {
 					running = false;
 				}
@@ -866,10 +976,10 @@ public class GameController {
 	 *         conjugation with the offer to buy houses.
 	 */
 
-	private List<RealEstate> getPlayerOwnedRealEstateOfCategories(Player player) {
+	private List<Property> getPlayerOwnedRealEstateOfCategories(Player player) {
 		Property[] k = new Property[player.getOwnedProperties().size()];
 		player.getOwnedProperties().toArray(k);
-		List<RealEstate> l = new ArrayList<RealEstate>();
+		List<Property> l = new ArrayList<Property>();
 
 		for (int j = 0; j < player.getOwnedProperties().size(); j++) {
 			if (this.checkOwnershipOfCategory(player, k[j]) && k[j] instanceof RealEstate) {
@@ -892,7 +1002,7 @@ public class GameController {
 	 * @param player
 	 * @param realestate
 	 */
-	public void buyHouse(Player player, RealEstate realestate) {
+	private void buyHouse(Player player, RealEstate realestate) {
 
 		String choice = gui.getUserButtonPressed(
 				"Player " + player.getName() + ": Do you want to buy houses? at " + realestate.getName(), "yes", "no");
@@ -932,16 +1042,13 @@ public class GameController {
 	 */
 
 	private void sellHouses(Player player, RealEstate realestate) {
-		// String choice = gui.getUserButtonPressed(
-		// "Player " + player.getName() + ": Do you want to sell houses? at " +
-		// realestate.getName(), "yes", "no"); choice.equals("yes")&&
+
 		if (realestate.getHouses() != 0) {
 
 			int minimum = 1;
 			int maximum = realestate.getHouses();
-			int amount = gui.getUserInteger(
-					"How many houses du you want to sell? You are paid: " + (realestate.getHouseCost() / 2), minimum,
-					maximum);
+			int amount = gui.getUserInteger("How many houses du you want to sell? You are paid: "
+					+ (realestate.getHouseCost() / 2) + "pr. house.", minimum, maximum);
 			int amount2 = maximum - amount;
 
 			realestate.removeHouses(amount);
@@ -957,52 +1064,195 @@ public class GameController {
 	}
 
 	/**
-	 * private method used in order to choose a piece of realestate, used in
-	 * offerToBuyhouse method.
+	 * @author emil_ Method giving the player the oppertunity to trade.
+	 */
+	private void offerToTrade(Player player) {
+		if (player.getOwnedProperties().isEmpty()) {
+			gui.showMessage("You do not own any properties");
+		} else if (!player.getOwnedProperties().isEmpty()) {
+
+			boolean running = true;
+			while (running) {
+				String selection = gui.getUserButtonPressed("What do you want to trade in?", "Property", "Pardoncard",
+						"End Trading");
+				switch (selection) {
+				case "Property": {
+					if (player.getOwnedProperties().isEmpty()) {
+						gui.showMessage("You do not own any properties");
+						return;
+					}
+					Property[] k = new Property[player.getOwnedProperties().size()];
+					player.getOwnedProperties().toArray(k);
+					List<Property> l = new ArrayList<Property>();
+					for (int j = 0; j < player.getOwnedProperties().size(); j++) {
+						l.add(k[j]);
+					}
+
+					Property chosenproperty = this.chooseProperty(player, l);
+					int chosenamount = gui.getUserInteger("How much do you want for your property?");
+					this.tradeChoosenProperty(player, chosenproperty, chosenamount);
+
+				}
+					break;
+				case "Pardoncard": {
+					if (player.getOwnedCards().isEmpty()) {
+						gui.showMessage("You do not own a pardoncard");
+						return;
+					} else {
+						Card[] cards=new Card[player.getOwnedCards().size()];
+						player.getOwnedCards().toArray(cards);
+						int chosenamount = gui.getUserInteger("How much do you want for your pardoncard?");
+						this.tradePardonCard(player, cards[0], chosenamount);
+						
+					}
+
+				}
+				case "End Trading": {
+					running = false;
+				}
+					break;
+				default: {
+					running = false;
+				}
+				}
+
+			}
+		}
+	}
+
+	private void tradeChoosenProperty(Player player, Property property, int chosenamount) {
+		gui.showMessage(property.getName() + " is up for trade, and the price will start at " + chosenamount);
+		List<Player> tradeGrantedPlayers = new ArrayList<Player>(game.getPlayers());
+		List<Player> notGrantedPlayers = new ArrayList<Player>();
+		notGrantedPlayers.add(game.getCurrentPlayer());
+		int bid = 0;
+		Player winner = null;
+
+		for (Player biddingPlayer : tradeGrantedPlayers) {
+			if (notGrantedPlayers.contains(biddingPlayer) || biddingPlayer.isBroke()) {
+				continue;
+			} else {
+				int minimum = chosenamount > bid + 1 ? chosenamount : bid + 1; // makes sure to always use the most
+																				// recent bid
+
+				String answer = gui.getUserButtonPressed(
+						"Would " + biddingPlayer.getName() + " like to bid? - the price is " + minimum, "Yes", "No");
+				if (answer.equals("Yes")) {
+					bid = gui.getUserInteger("Place your bid", minimum, 1000000000); // maximum bid of 1.000.000.000
+					winner = biddingPlayer;
+				} else {
+					notGrantedPlayers.add(biddingPlayer);
+				}
+			}
+		}
+
+		if (winner != null) {
+			gui.showMessage(winner.getName() + " Bought the property");
+			try {
+				payment(winner, bid, player);
+				player.removeOwnedProperty(property);
+				winner.addOwnedProperty(property);
+				gui.showMessage("You've succesfully bought the property " + property.getName());
+				property.setOwner(winner);
+				view.setBorderColor(winner, property);
+				// vdb.updPropertyView(property, winner);
+				// sql.addPropertyToPlayer(property, winner);
+
+			} catch (PlayerBrokeException e) {
+				gui.showMessage(
+						"You haven't bought the property " + property.getName() + " You didn't have enough money");
+				e.printStackTrace();
+			}
+		} else {
+			gui.showMessage("Nobody wanted to buy the property!");
+		}
+	}
+
+	private void tradePardonCard(Player player, Card card, int chosenamount) {
+		gui.showMessage(card.getText() + " is up for trade, and the price will start at " + chosenamount);
+		List<Player> tradeGrantedPlayers = new ArrayList<Player>(game.getPlayers());
+		List<Player> notGrantedPlayers = new ArrayList<Player>();
+		notGrantedPlayers.add(game.getCurrentPlayer());
+		int bid = 0;
+		Player winner = null;
+
+		for (Player biddingPlayer : tradeGrantedPlayers) {
+			if (notGrantedPlayers.contains(biddingPlayer) || biddingPlayer.isBroke()) {
+				continue;
+			} else {
+				int minimum = chosenamount > bid + 1 ? chosenamount : bid + 1; // makes sure to always use the most
+																				// recent bid
+
+				String answer = gui.getUserButtonPressed(
+						"Would " + biddingPlayer.getName() + " like to bid? - the price is " + minimum, "Yes", "No");
+				if (answer.equals("Yes")) {
+					bid = gui.getUserInteger("Place your bid", minimum, 1000000000); // maximum bid of 1.000.000.000
+					winner = biddingPlayer;
+				} else {
+					notGrantedPlayers.add(biddingPlayer);
+				}
+			}
+		}
+
+		if (winner != null) {
+			gui.showMessage(winner.getName() + " Bought the Pardoncard");
+			try {
+				payment(winner, bid, player);
+				player.removeOwnedCard();
+				winner.setOwnedCard(card);
+				gui.showMessage("You've succesfully bought the Pardoncard");
+
+			} catch (PlayerBrokeException e) {
+				gui.showMessage(
+						"You haven't bought the Pardoncard, you didn't have enough money");
+				e.printStackTrace();
+			}
+		} else {
+			gui.showMessage("Nobody wanted to buy the Pardoncard!");
+		}
+	}
+	
+	
+	
+	/**
+	 * private method used in order to choose a piece of Property, used in a
+	 * trade/sellinghouses/buyinghouses/mortage. method.
 	 * 
 	 * @author emil_
 	 * @param player
 	 * @return
 	 */
 
-	private RealEstate chooseRealEstate(Player player, List<RealEstate> realestatelist) {
+	private Property chooseProperty(Player player, List<Property> realestatelist) {
 		Collection<String> kategorier = new HashSet<String>();
-		for (RealEstate r : realestatelist) {
+		for (Property r : realestatelist) {
 			kategorier.add(r.getCategory());
 		}
 		String[] choose = new String[kategorier.size()];
 		kategorier.toArray(choose);
-
 		String chosencategory = gui.getUserButtonPressed("Hvilket område?", choose);
+
 		List<Property> nyliste = this.getAllPropertiesofCategory(chosencategory);
+		nyliste.retainAll(realestatelist);
+		Property[] ejendomme = new Property[nyliste.size()];
+		String[] options = new String[nyliste.size()];
 
-		RealEstate realestate = null;
-		int i = 0;
 		int j = 0;
-
-		for (Property p : nyliste) {
-			if (p instanceof RealEstate) {
-				i++;
-			}
-		}
-		RealEstate[] ejendomme = new RealEstate[i];
-		String[] options = new String[i];
-		for (Property r : nyliste) {
-			if (r instanceof RealEstate) {
-				options[j] = r.getName();
-				ejendomme[j] = (RealEstate) r;
-				j++;
-			}
+		for (Property prop : nyliste) {
+			ejendomme[j] = prop;
+			options[j] = prop.getName();
+			j++;
 		}
 
 		String chosenproperty = gui.getUserButtonPressed("Hvilken Grund?", options);
-
+		Property prop = null;
 		for (int n = 0; n < options.length; n++) {
 			if (chosenproperty.equals(ejendomme[n].getName())) {
-				realestate = ejendomme[n];
+
+				prop = ejendomme[n];
 			}
 		}
-		return realestate;
+		return prop;
 
 	}
 

@@ -28,11 +28,11 @@ public class Shipping extends Property {
 			controller.offerToBuy(this, player);
 		}
 
-		else if ((!owner.equals(player))&&player.isChanceCardShipping()==true) {
+		else if ((!owner.equals(player))&&player.isChanceCardShipping()==true&&!this.isMortaged()==true) {
 			controller.payment(player,2* this.getRent()*controller.checkOwnershipAmount(owner, this), owner);
 			player.setChanceCardShipping(false);
 		}
-		else if (!owner.equals(player)) {
+		else if (!owner.equals(player)&&!this.isMortaged()==true) {
 			controller.payment(player, this.getRent()*controller.checkOwnershipAmount(owner, this), owner);
 		}
 	}

@@ -17,7 +17,16 @@ public class Property extends Space {
 	protected String category;
 	public final String[] categories = {"Ships", "Brewery", "Vestegnen", "Valby", "Frederiksberg", "Hellerup", "Østerbro", "Kongens Nytorv", "Indre By", "København K"};
 	protected Player owner = null;
+	protected boolean mortgaged=false;
 	
+
+	public boolean isMortaged() {
+		return mortgaged;
+	}
+
+	public void setMortgaged(boolean mortaged) {
+		this.mortgaged = mortaged;
+	}
 
 	/**
 	 * Returns the cost of this property.

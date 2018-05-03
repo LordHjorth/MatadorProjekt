@@ -28,7 +28,7 @@ public class Brewery extends Property{
 			
 		}
 
-		else if (!owner.equals(player)) {
+		else if (!owner.equals(player)&&!this.isMortaged()==true) {
 			controller.payment(player, this.getRent()*controller.getDieThrow()*controller.checkOwnershipAmount(owner, this), owner);
 		}
 

@@ -7,24 +7,23 @@ import java.util.List;
 import designPatterns.Subject;
 
 /**
- * Represents the top-level element of a Monopoly game's state. In order
- * to use this model with the MVC-pattern, it extends the
- * {@link designPatterns.Subject} of the observer
- * design pattern.
+ * Represents the top-level element of a Monopoly game's state. In order to use
+ * this model with the MVC-pattern, it extends the
+ * {@link designPatterns.Subject} of the observer design pattern.
  * 
  * @author Ekkart Kindler, ekki@dtu.dk
  *
  */
 public class Game extends Subject {
-	
+
 	private List<Space> spaces = new ArrayList<Space>();
-	
+
 	private List<Card> cardDeck = new ArrayList<Card>();
-	
+
 	private List<Player> players = new ArrayList<Player>();
-	
+
 	private Player current;
-	
+
 	private final int MoneyForPassingGo = 4000;
 
 	/**
@@ -37,21 +36,23 @@ public class Game extends Subject {
 	}
 
 	/**
-	 * Sets all the spaces of the game. Note that the provided
-	 * list of spaces is copied, so that they cannot be changed
-	 * without the game being aware of the change.
+	 * Sets all the spaces of the game. Note that the provided list of spaces is
+	 * copied, so that they cannot be changed without the game being aware of the
+	 * change.
 	 * 
-	 * @param spaces the list of spaces
+	 * @param spaces
+	 *            the list of spaces
 	 */
 	public void setSpaces(List<Space> spaces) {
 		this.spaces = new ArrayList<Space>(spaces);
 		notifyChange();
 	}
-	
+
 	/**
 	 * Adds a space to the game at the end.
 	 * 
-	 * @param space the added space
+	 * @param space
+	 *            the added space
 	 */
 	public void addSpace(Space space) {
 		space.setIndex(spaces.size());
@@ -67,24 +68,25 @@ public class Game extends Subject {
 	public List<Card> getCardDeck() {
 		return Collections.unmodifiableList(cardDeck);
 	}
-	
+
 	/**
 	 * Removes the topmost card from the deck and returns it.
 	 * 
 	 * @return the topmost card of the deck
 	 */
 	public Card drawCardFromDeck() {
-		// TODO should be more defensive
+
 		Card card = cardDeck.remove(0);
 		notifyChange();
 		return card;
-		
+
 	}
-	
+
 	/**
 	 * Add the given card to the bottom of the deck.
 	 * 
-	 * @param card the card added to the bottom of the deck.
+	 * @param card
+	 *            the card added to the bottom of the deck.
 	 */
 	public void returnCardToDeck(Card card) {
 		cardDeck.add(card);
@@ -92,17 +94,16 @@ public class Game extends Subject {
 	}
 
 	/**
-	 * Uses the provided list of cards as the new deck. The
-	 * list will be copied in order to avoid, changes on it
-	 * without the game being aware of it.
-	 *  
-	 * @param cardDeck the new deck of cards
+	 * Uses the provided list of cards as the new deck. The list will be copied in
+	 * order to avoid, changes on it without the game being aware of it.
+	 * 
+	 * @param cardDeck
+	 *            the new deck of cards
 	 */
 	public void setCardDeck(List<Card> cardDeck) {
 		this.cardDeck = new ArrayList<Card>(cardDeck);
 		notifyChange();
 	}
-	
 
 	/**
 	 * Shuffles the cards in the deck.
@@ -124,30 +125,31 @@ public class Game extends Subject {
 	}
 
 	/**
-	 * Sets the list of players. The list of players is actually copied
-	 * in order to avoid the list being modified without the game being
-	 * aware of it.
+	 * Sets the list of players. The list of players is actually copied in order to
+	 * avoid the list being modified without the game being aware of it.
 	 * 
-	 * @param players the list of players
+	 * @param players
+	 *            the list of players
 	 */
 	public void setPlayers(List<Player> players) {
 		this.players = new ArrayList<Player>(players);
 		notifyChange();
 	}
-	
+
 	/**
 	 * Adds a player to the game.
 	 * 
-	 * @param player the player to be added.
+	 * @param player
+	 *            the player to be added.
 	 */
 	public void addPlayer(Player player) {
 		players.add(player);
 		notifyChange();
 	}
-	
+
 	/**
-	 * Returns the current player of the game. This is the player
-	 * who's turn it is to do the next move (or currently is doing a move).
+	 * Returns the current player of the game. This is the player who's turn it is
+	 * to do the next move (or currently is doing a move).
 	 * 
 	 * @return the current player
 	 */
@@ -157,13 +159,13 @@ public class Game extends Subject {
 		}
 		return current;
 	}
-	
+
 	/**
-	 * Sets the current player. It is required that the player is a
-	 * player of the game already; otherwise an IllegalArumentException
-	 * will be thrown.
+	 * Sets the current player. It is required that the player is a player of the
+	 * game already; otherwise an IllegalArumentException will be thrown.
 	 * 
-	 * @param player the new current player
+	 * @param player
+	 *            the new current player
 	 */
 	public void setCurrentPlayer(Player player) {
 		if (player != null && players.contains(player)) {

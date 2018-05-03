@@ -344,6 +344,11 @@ public class MiniMonopoly {
 		 */
 		
 		List<Card> cards = new ArrayList<Card>();
+		PardonCard pardon = new PardonCard();
+		pardon.setText(
+				"I anledning af kongens fødselsdag benådes De herved for fængsel. Dette kort kan opbevares, indtil De får brug for det, eller De kan sælge det. ");
+		cards.add(pardon);
+		cards.add(pardon);
 		
 		PayPropertyTax propertytax = new PayPropertyTax();
 		propertytax.setText("Ejendomsskatterne er steget, ekstraudgifterne er: kr. 800 pr. hus");
@@ -407,12 +412,6 @@ public class MiniMonopoly {
 		ticket.setText("De har kørt frem for Fuld Stop. Betal kr. 1.000 i bøde.");
 		ticket.setAmount(1000);
 		cards.add(ticket);
-
-		PardonCard pardon = new PardonCard();
-		pardon.setText(
-				"I anledning af kongens fødselsdag benådes De herved for fængsel. Dette kort kan opbevares, indtil De får brug for det, eller De kan sælge det. ");
-		cards.add(pardon);
-		cards.add(pardon);
 
 		CardPayMoney cigarats = new CardPayMoney();
 		cigarats.setText("De har været en tur i udlandet og haft for mange cigaretter med hjem. Betal told kr. 200.");
