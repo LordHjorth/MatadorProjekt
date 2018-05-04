@@ -88,24 +88,23 @@ public class RealEstate extends Property {
 
 		}
 
-		else if (!this.getOwner().equals(player)&&!this.isMortaged()==true) {
-			
-			
-			
+		else if (!this.getOwner().equals(player) && !this.isMortaged() == true) {
+
 			/**
 			 * @author emil_ A check if all property of a category is owned, doubling rent
 			 *         if they are.
 			 */
 
-			if (controller.checkOwnershipOfCategory(owner, this))
-				controller.payment(player, this.getRent() * 2, this.getOwner());
-			else {
+			if (controller.checkOwnershipOfCategory(owner, this)) {
+				
+				controller.payment(player, this.getRent()*2, this.getOwner());
+				
+			} else {
 				controller.payment(player, this.getRent(), this.getOwner());
 			}
 
-		} 
+		}
 
-		
 	}
 
 }

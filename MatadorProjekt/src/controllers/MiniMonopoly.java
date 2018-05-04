@@ -490,7 +490,6 @@ public class MiniMonopoly {
 		cards.add(grønningen);
 
 		game.setCardDeck(cards);
-
 		return game;
 	}
 

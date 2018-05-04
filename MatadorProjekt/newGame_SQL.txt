@@ -1,7 +1,0 @@
-create table Game(id int primary key, time_start datetime, time_end datetime);
-
-create table Player(id int primary key, name nvarchar (30), carColor nvarchar(10), inPrison bit, balance int, havePardon bit,  gameID int, constraint Player_Info_CarColor_FK foreign key (carColor) references Car(color), constraint game_GameID_FK foreign key (GameID) references Game(id));
-
-create table Car(color nvarchar(10) primary key, position int);
-
-create table Property(id int primary key, owned bit not null, ownedBy int, houses int, constraint Property_PlayerID_FK foreign key (ownedBy) references Player(id));

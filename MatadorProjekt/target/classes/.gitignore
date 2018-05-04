@@ -1,9 +1,9 @@
-/test/
 /connection/
+
 /controllers/
-/gameContent/
-/spaces/
-/cards/
 /properties/
+/gameContent/
+/gui/
+/view/
 /main/
 /META-INF/

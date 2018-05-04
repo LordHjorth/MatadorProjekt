@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 import cards.PardonCard;
-import connection.SQLMethods;
-import connection.viewDB;
+import connection.DAL;
+import connection.DAO;
 import exceptions.PlayerBrokeException;
 import gameContent.Card;
 import gameContent.Game;
@@ -21,6 +21,8 @@ import gameContent.Space;
 import properties.RealEstate;
 import spaces.Jail;
 import spaces.Property;
+import view.View;
+import view.viewDB;
 
 /**
  * The overall controller of a Monopoly game. It provides access to all basic
@@ -56,8 +58,8 @@ public class GameController {
 	private viewDB vdb;
 	private int diethrow;
 	private boolean disposed = false;
+	private DAO dao;
 
-	private SQLMethods sql; // added by gruppe B
 
 	/**
 	 * Constructor for a controller of a game.
@@ -68,8 +70,8 @@ public class GameController {
 	public GameController(Game game) {
 		super();
 		this.game = game;
-		sql = new SQLMethods(); // Added by gruppe B
-		vdb = new viewDB();
+		dao = new DAO();
+		vdb = dao.getVDB();
 		this.createcategoryList();
 
 	}
@@ -123,16 +125,13 @@ public class GameController {
 				break;
 			}
 			game.addPlayer(p);
+			dao.createPlayerDB(p, i, color);
 
-			try {
-				sql.createPlayersInDB(p, i, color); // adds player to database
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 			// "GameID", "Name", "Position", "Balance", "Prisoner", "Pardon available",
 			// "CarColor"
 			data[i] = new Object[] { 1, p.getName(), 0, p.getBalance(), false, false, "" }; // gameID = 1 for now.
 		}
+		System.out.println(data.length + " \n " + data[0].length + "\n" + data[1].length);
 		vdb.createViewOfDB(data); // adds player info to a view
 		view.createPlayers();
 	}
@@ -140,61 +139,27 @@ public class GameController {
 	/**
 	 * Load players from DB to game logic and gui.
 	 */
-	public void LoadPlayers() {
-		int AmountOfPlayers = sql.getNumberOfPlayers();
-		ResultSet rs = sql.LoadPlayers();
-		Object[][] data = new Object[AmountOfPlayers][];
-		int i = 0;
+	/**
+	 * Load players and properties to the view.
+	 */
+	public void LoadPlayersAndProperties() {
+		int numberOfPlayers = dao.getNumberOfPlayers();
+		Object[][] data = new Object[numberOfPlayers][];
 
-		try {
-			while (!rs.equals(null) && rs.next()) {
-				Player p = new Player();
-				p.setID(rs.getInt("id"));
-				p.setName(rs.getString("name"));
-				p.setBalance(rs.getInt("balance"));
-				p.setCurrentPosition(game.getSpaces().get(rs.getInt("PosIndex")));
-				p.setInPrison(rs.getBoolean("inPrison"));
-
-				/*
-				 * - Not sure how to add a pardon card. if(rs.getBoolean("havePardon")==true) {
-				 * 
-				 * p.setOwnedCard(card); }
-				 */
-
-				String color = rs.getString("carColor");
-				switch (color) {
-				case "Blue":
-					p.setColor(Color.blue);
-					break;
-				case "Red":
-					p.setColor(Color.red);
-					break;
-				case "Black":
-					p.setColor(Color.black);
-					break;
-				case "Green":
-					p.setColor(Color.green);
-					break;
-				case "Yellow":
-					p.setColor(Color.yellow);
-					break;
-				case "Pink":
-					p.setColor(Color.pink);
-					break;
-				}
-				game.addPlayer(p);
-				data[i] = new Object[] { 1, p.getName(), 0, p.getBalance(), p.isInPrison(), false, color }; // gameID =
-																											// 1 for
-																											// now.
-				i++;
-
-			}
-			vdb.createViewOfDB(data); // adds player info to a view
-			view.createPlayers();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
+		Player player = dao.loadPlayer(game);
+		game.addPlayer(player);
+		
+		for(int i = 0; i<numberOfPlayers;i++) {
+			data[i] = new Object[] { 1, player.getName(), player.getCurrentPosition().getName(), player.getBalance(),
+					player.isInPrison(), player.getOwnedCards().isEmpty() ? 0 : player.getOwnedCards().size(),
+					player.getColor() };
 		}
+
+		//Loads properties to players.
+		dao.loadProperties(game);
+		
+		vdb.createViewOfDB(data); // adds player info to a view
+		view.createPlayers();
 	}
 
 	/**
@@ -315,23 +280,15 @@ public class GameController {
 		boolean castDouble;
 		int doublesCount = 0;
 
+		if (!player.getOwnedCards().isEmpty() && player.isInPrison()) {
+			if (gui.getUserLeftButtonPressed("Do you want to use your pardon card?", "Yes", "No") == true) {
+				player.setInPrison(false);
+				player.removeOwnedCard();
+
+			}
+		}
 		if (player.isInPrison()) {
-			if (!player.getOwnedCards().isEmpty()) {
-				if (gui.getUserLeftButtonPressed("Do you want to use your pardon card?", "Yes", "No") == true) {
-					int die1 = (int) (1 + 6.0 * Math.random());
-					int die2 = (int) (1 + 6.0 * Math.random());
-					player.setInPrison(false);
-					player.removeOwnedCard();
-					int pos = player.getCurrentPosition().getIndex();
-					List<Space> spaces = game.getSpaces();
-					int newPos = (pos + die1 + die2) % spaces.size();
-					this.setDieThrow(die1, die2);
-					Space space = spaces.get(newPos);
-
-					moveToSpace(player, space);
-
-				}
-			} else if (gui.getUserLeftButtonPressed(
+			if (gui.getUserLeftButtonPressed(
 					"Player " + player.getName() + " is in prison. Do you want to pay you out or cast a double",
 					"Pay 1000", "roll dice") == true) {
 				player.setInPrison(false);
@@ -531,10 +488,9 @@ public class GameController {
 				throw e;
 			}
 			player.addOwnedProperty(property);
-			view.setBorderColor(player, property);
 			property.setOwner(player);
+			dao.addPropertyToPlayer(property, player);
 			vdb.updPropertyView(property, player);
-			sql.addPropertyToPlayer(property, player);
 			return;
 		}
 
@@ -646,10 +602,9 @@ public class GameController {
 				paymentToBank(winner, bid);
 				winner.addOwnedProperty(property);
 				vdb.updPropertyView(property, winner);
-				sql.addPropertyToPlayer(property, winner);
+				dao.addPropertyToPlayer(property, winner);
 				gui.showMessage("You've succesfully bought the property " + property.getName());
 				property.setOwner(winner);
-				view.setBorderColor(winner, property);
 			} catch (PlayerBrokeException e) {
 				gui.showMessage(
 						"You haven't bought the property " + property.getName() + " You didn't have enough money");
@@ -1024,7 +979,7 @@ public class GameController {
 				realestate.updateRent(amount);
 				try {
 					this.paymentToBank(player, realestate.getHouseCost() * amount);
-					sql.updateHouses(realestate, amount);
+					dao.updateHouses(realestate, amount);
 					vdb.updPropertyView(realestate, player);
 				} catch (PlayerBrokeException e) {
 					e.printStackTrace();
@@ -1055,7 +1010,7 @@ public class GameController {
 			realestate.updateRent(amount2);
 			this.paymentFromBank(player, (realestate.getHouseCost() / 2) * amount);
 
-			sql.updateHouses(realestate, amount2);
+			dao.updateHouses(realestate, amount2);
 			vdb.updPropertyView(realestate, player);
 			view.update(realestate);
 
@@ -1099,11 +1054,11 @@ public class GameController {
 						gui.showMessage("You do not own a pardoncard");
 						return;
 					} else {
-						Card[] cards=new Card[player.getOwnedCards().size()];
+						Card[] cards = new Card[player.getOwnedCards().size()];
 						player.getOwnedCards().toArray(cards);
 						int chosenamount = gui.getUserInteger("How much do you want for your pardoncard?");
 						this.tradePardonCard(player, cards[0], chosenamount);
-						
+
 					}
 
 				}
@@ -1154,7 +1109,6 @@ public class GameController {
 				winner.addOwnedProperty(property);
 				gui.showMessage("You've succesfully bought the property " + property.getName());
 				property.setOwner(winner);
-				view.setBorderColor(winner, property);
 				// vdb.updPropertyView(property, winner);
 				// sql.addPropertyToPlayer(property, winner);
 
@@ -1203,17 +1157,14 @@ public class GameController {
 				gui.showMessage("You've succesfully bought the Pardoncard");
 
 			} catch (PlayerBrokeException e) {
-				gui.showMessage(
-						"You haven't bought the Pardoncard, you didn't have enough money");
+				gui.showMessage("You haven't bought the Pardoncard, you didn't have enough money");
 				e.printStackTrace();
 			}
 		} else {
 			gui.showMessage("Nobody wanted to buy the Pardoncard!");
 		}
 	}
-	
-	
-	
+
 	/**
 	 * private method used in order to choose a piece of Property, used in a
 	 * trade/sellinghouses/buyinghouses/mortage. method.
