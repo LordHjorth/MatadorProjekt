@@ -13,7 +13,7 @@ import spaces.Property;
  *
  */
 public class RealEstate extends Property {
-
+	
 	private int houses = 0;
 	private int houseCost;
 	private int rent;
@@ -62,19 +62,41 @@ public class RealEstate extends Property {
 
 	@Override
 	public void setRent(int rent) {
+
 		this.rent = rent;
+
 		notifyChange();
 	}
 
-	public void updateRent(int houses) {
-		if (houses == 0) {
-			this.rent = this.getRent();
-		} else {
-			this.rent = rent * houses;
+	
+	
+	@Override
+	public void setActualRent() {
+		if (owner.getOwnedPropertyCategories().contains(this.getCategory()) && !this.isMortaged() && !(this.getHouses() > 0)) {
+			this.actualrent=this.rent * 2;
 		}
-		notifyChange();
+		if (this.isMortaged()) {
+			this.actualrent=0;
+		}
+		if (owner.getOwnedPropertyCategories().contains(this.getCategory()) && !this.isMortaged() && (this.getHouses() > 0)) {
 
+		 this.actualrent= this.rent +(this.rent*this.getHouses()) ;
+		} else {
+			this.actualrent=this.rent;
+		}
+		
+		notifyChange();	
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
 
 	@Override
 	public int getRent() {
@@ -83,29 +105,16 @@ public class RealEstate extends Property {
 
 	@Override
 	public void doAction(GameController controller, Player player) throws PlayerBrokeException {
+
 		if (this.getOwner() == null) {
 			controller.offerToBuy(this, player);
+			
 
 		}
 
-		else if (!this.getOwner().equals(player)&&!this.isMortaged()==true) {
-			
-			
-			
-			/**
-			 * @author emil_ A check if all property of a category is owned, doubling rent
-			 *         if they are.
-			 */
+		else if (!this.getOwner().equals(player)) {
+			controller.payment(player, this.getActualRent(), this.getOwner());
+		}
 
-			if (controller.checkOwnershipOfCategory(owner, this))
-				controller.payment(player, this.getRent() * 2, this.getOwner());
-			else {
-				controller.payment(player, this.getRent(), this.getOwner());
-			}
-
-		} 
-
-		
 	}
-
 }

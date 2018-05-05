@@ -47,6 +47,7 @@ import spaces.Property;
  * @author Ekkart Kindler, ekki@dtu.dk
  *
  */
+
 public class GameController {
 
 	private Game game;
@@ -255,10 +256,12 @@ public class GameController {
 				break;
 
 			}
-
+			
+			this.updateOwnedCategories(player);
+			
 			boolean offerrunning = true;
 			do {
-				String selection = gui.getUserButtonPressed("What do you want to do?", "Trade", "Buy Houses",
+				String selection = gui.getUserButtonPressed("Player " +player.getName()+ ", what do you want to do?", "Trade", "Buy Houses",
 						"Sell Houses", "Mortage Property", "Continue Game");
 				switch (selection) {
 				case "Trade":
@@ -283,17 +286,18 @@ public class GameController {
 				}
 
 			} while (offerrunning);
-
+			this.updateBoard();
 			current = (current + 1) % players.size();
 			game.setCurrentPlayer(players.get(current));
 			vdb.updatePlayerView(game.getPlayers());
-			if (current == 0) {
-				String selection = gui.getUserButtonPressed("A round is finished. Do you want to continue the game?",
-						"yes", "no");
-				if (selection.equals("no")) {
-					terminated = true;
-				}
-			}
+			// if (current == 0) {
+			// String selection = gui.getUserButtonPressed("A round is finished. Do you want
+			// to continue the game?",
+			// "yes", "no");
+			// if (selection.equals("no")) {
+			// terminated = true;
+			// }
+			// }
 		}
 
 		dispose();
@@ -315,33 +319,28 @@ public class GameController {
 		boolean castDouble;
 		int doublesCount = 0;
 
+		if (!player.getOwnedCards().isEmpty() && player.isInPrison()) {
+			if (gui.getUserLeftButtonPressed("Do you want to use your pardon card?", "Yes", "No") == true) {
+
+				player.setInPrison(false);
+				player.removeOwnedCard();
+
+			}
+		}
 		if (player.isInPrison()) {
-			if (!player.getOwnedCards().isEmpty()) {
-				if (gui.getUserLeftButtonPressed("Do you want to use your pardon card?", "Yes", "No") == true) {
-					int die1 = (int) (1 + 6.0 * Math.random());
-					int die2 = (int) (1 + 6.0 * Math.random());
-					player.setInPrison(false);
-					player.removeOwnedCard();
-					int pos = player.getCurrentPosition().getIndex();
-					List<Space> spaces = game.getSpaces();
-					int newPos = (pos + die1 + die2) % spaces.size();
-					this.setDieThrow(die1, die2);
-					Space space = spaces.get(newPos);
-
-					moveToSpace(player, space);
-
-				}
-			} else if (gui.getUserLeftButtonPressed(
+			if (gui.getUserLeftButtonPressed(
 					"Player " + player.getName() + " is in prison. Do you want to pay you out or cast a double",
-					"Pay 1000", "roll dice") == true) {
+					"Pay 1000", "roll dice") == true)
+
+			{
 				player.setInPrison(false);
 				player.payMoney(1000);
 			}
 		}
 
 		do {
-			int die1 = (int) (1 + 6.0 * Math.random());
-			int die2 = (int) (1 + 6.0 * Math.random());
+			int die1 = 3;//(int) (1 + 6.0 * Math.random());
+			int die2 = 2;//(int) (1 + 6.0 * Math.random());
 			castDouble = (die1 == die2);
 			gui.setDice(die1, die2);
 			this.setDieThrow(die1, die2);
@@ -474,8 +473,8 @@ public class GameController {
 
 		boolean offerrunning = true;
 		do {
-			String selection = gui.getUserButtonPressed("How do you want to free money?", "Trade", "Sell Houses",
-					"Mortage Property", "I dont want to free money!");
+			String selection = gui.getUserButtonPressed("Player " + player.getName()+" How do you want to free money?", "Trade", "Sell Houses",
+					"Mortage Property", "Continue game");
 			switch (selection) {
 			case "Trade":
 				this.offerToTrade(player);
@@ -486,7 +485,7 @@ public class GameController {
 			case "Mortage Property":
 				this.offerToMortgageProperty(player);
 				break;
-			case "I dont want to free money!":
+			case "Continue game":
 				offerrunning = false;
 				break;
 			default:
@@ -531,7 +530,6 @@ public class GameController {
 				throw e;
 			}
 			player.addOwnedProperty(property);
-			view.setBorderColor(player, property);
 			property.setOwner(player);
 			vdb.updPropertyView(property, player);
 			sql.addPropertyToPlayer(property, player);
@@ -649,7 +647,8 @@ public class GameController {
 				sql.addPropertyToPlayer(property, winner);
 				gui.showMessage("You've succesfully bought the property " + property.getName());
 				property.setOwner(winner);
-				view.setBorderColor(winner, property);
+				property.setActualRent();
+				this.updateOwnedCategories(winner);
 			} catch (PlayerBrokeException e) {
 				gui.showMessage(
 						"You haven't bought the property " + property.getName() + " You didn't have enough money");
@@ -751,46 +750,9 @@ public class GameController {
 	 *            string, determining the category
 	 * @return A list of all properties in the category.
 	 */
-	private List<Property> getAllPropertiesofCategory(String category) {
+	public List<Property> getAllPropertiesofCategory(String category) {
 		return new ArrayList<Property>(category2Properties.get(category));
 
-	}
-
-	/**
-	 * @author emil_
-	 * @param player
-	 * @param Property
-	 * @return returns the amount owned of a certain category group as an int. This
-	 *         method is used for rent calculations for ships and breweries.
-	 */
-	public int checkOwnershipAmount(Player player, Property p) {
-		List<Property> prop = this.getAllPropertiesofCategory(p.getCategory());
-		int i = 0;
-		for (Property property : prop) {
-			if (player.equals(property.getOwner())) {
-				i++;
-			}
-		}
-		return i;
-	}
-
-	/**
-	 * @author emil_
-	 * @param player
-	 * @param realestate
-	 * @return boolean Method used in order to check if a player owns a category of
-	 *         realestate, used to double rent on owned realestate group.
-	 */
-
-	public boolean checkOwnershipOfCategory(Player player, Property realestate) {
-		List<Property> l = this.getAllPropertiesofCategory(realestate.getCategory());
-		for (Property property : l) {
-			if (!player.equals(property.getOwner())) {
-
-				return false;
-			}
-		}
-		return true;
 	}
 
 	// method to set and get diethrow, used in order to calculate brewery rent
@@ -839,8 +801,9 @@ public class GameController {
 							&& choosenp.isMortaged() == false) {
 						this.paymentFromBank(player, choosenp.getCost() / 2);
 						choosenp.setMortgaged(true);
+						choosenp.setActualRent();
 						gui.showMessage("You have mortgaged: " + choosenp.getName());
-						view.update(choosenp);
+						//view.update(choosenp);
 					} else if (choosenp.isMortaged() == true) {
 						gui.showMessage("That property is already mortgaged");
 					}
@@ -864,7 +827,8 @@ public class GameController {
 							e.printStackTrace();
 						}
 						choosenp1.setMortgaged(false);
-						view.update(choosenp1);
+						choosenp1.setActualRent();
+						//view.update(choosenp1);
 						gui.showMessage("You have unmortgaged: " + choosenp1.getName());
 					} else if (!choosenp1.isMortaged() == true) {
 						gui.showMessage(choosenp1.getName() + " is not mortgaged.");
@@ -934,8 +898,8 @@ public class GameController {
 				String select = gui.getUserButtonPressed("Do you want to buy houses?", "yes", "no");
 				if (select.equals("yes")) {
 					List<Property> l = this.getPlayerOwnedRealEstateOfCategories(player);
-					Property realstate = this.chooseProperty(player, l);
-					this.buyHouse(player, (RealEstate) realstate);
+					Property realestate = this.chooseProperty(player, l);
+					this.buyHouse(player, (RealEstate) realestate);
 				} else if (select.equals("no")) {
 					running = false;
 				}
@@ -955,8 +919,8 @@ public class GameController {
 				String select = gui.getUserButtonPressed("Do you want to sell houses?", "yes", "no");
 				if (select.equals("yes")) {
 					List<Property> l = this.getPlayerOwnedRealEstateOfCategories(player);
-					Property realstate = this.chooseProperty(player, l);
-					this.sellHouses(player, (RealEstate) realstate);
+					Property realestate = this.chooseProperty(player, l);
+					this.sellHouses(player, (RealEstate) realestate);
 				} else if (select.equals("no")) {
 					running = false;
 				}
@@ -965,31 +929,6 @@ public class GameController {
 		} else if (this.getPlayerOwnedRealEstateOfCategories(player).isEmpty()) {
 			gui.showMessage("You do not own any property groups");
 		}
-
-	}
-
-	/**
-	 * @author emil_
-	 * @param player
-	 * @return List<RealEstate> This method returns a list of realestate, provided a
-	 *         player owns all the realestate of a category. This is used in
-	 *         conjugation with the offer to buy houses.
-	 */
-
-	private List<Property> getPlayerOwnedRealEstateOfCategories(Player player) {
-		Property[] k = new Property[player.getOwnedProperties().size()];
-		player.getOwnedProperties().toArray(k);
-		List<Property> l = new ArrayList<Property>();
-
-		for (int j = 0; j < player.getOwnedProperties().size(); j++) {
-			if (this.checkOwnershipOfCategory(player, k[j]) && k[j] instanceof RealEstate) {
-
-				l.add((RealEstate) k[j]);
-			}
-
-		}
-
-		return l;
 
 	}
 
@@ -1021,7 +960,8 @@ public class GameController {
 						minimum, maximum);
 
 				realestate.addHouses(amount);
-				realestate.updateRent(amount);
+				realestate.setActualRent();
+
 				try {
 					this.paymentToBank(player, realestate.getHouseCost() * amount);
 					sql.updateHouses(realestate, amount);
@@ -1029,7 +969,7 @@ public class GameController {
 				} catch (PlayerBrokeException e) {
 					e.printStackTrace();
 				}
-				view.update(realestate);
+				//view.update(realestate);
 			}
 		}
 	}
@@ -1052,12 +992,13 @@ public class GameController {
 			int amount2 = maximum - amount;
 
 			realestate.removeHouses(amount);
-			realestate.updateRent(amount2);
+			realestate.setActualRent();
+
 			this.paymentFromBank(player, (realestate.getHouseCost() / 2) * amount);
 
 			sql.updateHouses(realestate, amount2);
 			vdb.updPropertyView(realestate, player);
-			view.update(realestate);
+			//view.update(realestate);
 
 		}
 
@@ -1073,7 +1014,7 @@ public class GameController {
 
 			boolean running = true;
 			while (running) {
-				String selection = gui.getUserButtonPressed("What do you want to trade in?", "Property", "Pardoncard",
+				String selection = gui.getUserButtonPressed("Player "+player.getName()+", what do you want to trade in?", "Property", "Pardoncard",
 						"End Trading");
 				switch (selection) {
 				case "Property": {
@@ -1090,7 +1031,11 @@ public class GameController {
 
 					Property chosenproperty = this.chooseProperty(player, l);
 					int chosenamount = gui.getUserInteger("How much do you want for your property?");
-					this.tradeChoosenProperty(player, chosenproperty, chosenamount);
+					String sel= gui.getUserButtonPressed("Are you sure you want to trade " +chosenproperty.getName()+"?", "yes","no");
+					if(sel.equals("yes")) {
+						this.tradeChoosenProperty(player, chosenproperty, chosenamount);	
+					}
+		
 
 				}
 					break;
@@ -1099,11 +1044,11 @@ public class GameController {
 						gui.showMessage("You do not own a pardoncard");
 						return;
 					} else {
-						Card[] cards=new Card[player.getOwnedCards().size()];
+						Card[] cards = new Card[player.getOwnedCards().size()];
 						player.getOwnedCards().toArray(cards);
 						int chosenamount = gui.getUserInteger("How much do you want for your pardoncard?");
 						this.tradePardonCard(player, cards[0], chosenamount);
-						
+
 					}
 
 				}
@@ -1154,7 +1099,8 @@ public class GameController {
 				winner.addOwnedProperty(property);
 				gui.showMessage("You've succesfully bought the property " + property.getName());
 				property.setOwner(winner);
-				view.setBorderColor(winner, property);
+				this.updateOwnedCategories(winner);
+				property.setActualRent();
 				// vdb.updPropertyView(property, winner);
 				// sql.addPropertyToPlayer(property, winner);
 
@@ -1168,8 +1114,15 @@ public class GameController {
 		}
 	}
 
+	/**
+	 * 
+	 * @param player
+	 * @param card
+	 * @param chosenamount
+	 */
+	
 	private void tradePardonCard(Player player, Card card, int chosenamount) {
-		gui.showMessage(card.getText() + " is up for trade, and the price will start at " + chosenamount);
+		gui.showMessage("A pardoncard is up for trade, and the price will start at " + chosenamount);
 		List<Player> tradeGrantedPlayers = new ArrayList<Player>(game.getPlayers());
 		List<Player> notGrantedPlayers = new ArrayList<Player>();
 		notGrantedPlayers.add(game.getCurrentPlayer());
@@ -1195,25 +1148,22 @@ public class GameController {
 		}
 
 		if (winner != null) {
-			gui.showMessage(winner.getName() + " Bought the Pardoncard");
+			gui.showMessage(winner.getName() + " Bought the pardoncard");
 			try {
 				payment(winner, bid, player);
 				player.removeOwnedCard();
 				winner.setOwnedCard(card);
-				gui.showMessage("You've succesfully bought the Pardoncard");
+				gui.showMessage("You've succesfully bought the pardoncard");
 
 			} catch (PlayerBrokeException e) {
-				gui.showMessage(
-						"You haven't bought the Pardoncard, you didn't have enough money");
+				gui.showMessage("You haven't bought the pardoncard, you didn't have enough money");
 				e.printStackTrace();
 			}
 		} else {
-			gui.showMessage("Nobody wanted to buy the Pardoncard!");
+			gui.showMessage("Nobody wanted to buy the pardoncard!");
 		}
 	}
-	
-	
-	
+
 	/**
 	 * private method used in order to choose a piece of Property, used in a
 	 * trade/sellinghouses/buyinghouses/mortage. method.
@@ -1254,6 +1204,101 @@ public class GameController {
 		}
 		return prop;
 
+	}
+
+	/**
+	 * @author emil_
+	 * @param player
+	 * @return List<RealEstate> This method returns a list of realestate, provided a
+	 *         player owns all the realestate of a category. This is used in
+	 *         conjugation with the offer to buy houses.
+	 */
+
+	private List<Property> getPlayerOwnedRealEstateOfCategories(Player player) {
+		Property[] k = new Property[player.getOwnedProperties().size()];
+		player.getOwnedProperties().toArray(k);
+		List<Property> l = new ArrayList<Property>();
+
+		for (int j = 0; j < player.getOwnedProperties().size(); j++) {
+			if (this.checkOwnershipOfCategory(player, k[j]) && k[j] instanceof RealEstate) {
+
+				l.add((RealEstate) k[j]);
+			}
+
+		}
+
+		return l;
+
+	}
+
+	/**
+	 * @author emil_
+	 * @param player
+	 * @param Property
+	 * @return returns the amount owned of a certain category group as an int. This
+	 *         method is used for rent calculations for ships and breweries.
+	 */
+	public int checkOwnershipAmount(Player player, Property p) {
+		List<Property> prop = this.getAllPropertiesofCategory(p.getCategory());
+		int i = 0;
+		for (Property property : prop) {
+			if (player.equals(property.getOwner())) {
+				i++;
+			}
+		}
+		return i;
+	}
+
+	/**
+	 * @author emil_
+	 * @param player
+	 * @param realestate
+	 * @return boolean Method used in order to check if a player owns a category of
+	 *         realestate, used to double rent on owned realestate group.
+	 */
+
+	public boolean checkOwnershipOfCategory(Player player, Property realestate) {
+		List<Property> l = this.getAllPropertiesofCategory(realestate.getCategory());
+		for (Property property : l) {
+			if (!player.equals(property.getOwner())) {
+
+				return false;
+			}
+		}
+		return true;
+	}
+/**
+ * 
+ *@author emil_
+ * @param player
+ * Method to update the categories a player own. 
+ */
+	
+	
+	private void updateOwnedCategories(Player player) {
+
+		for (Property p : player.getOwnedProperties()) {
+			if(this.checkOwnershipOfCategory(player, p)) {
+				player.addOwnedPropertyCategories(p.getCategory());
+			}
+		
+		}
+
+	}
+	private void updateBoard() {
+		
+		for(Space space:game.getSpaces()) {
+			if(space instanceof Property) {
+				for(Player player:game.getPlayers()){
+					if(player.equals(((Property) space).getOwner())) {
+						((Property) space).setActualRent();;
+					}
+				}
+				
+			}
+		
+		}
+		
 	}
 
 	/**

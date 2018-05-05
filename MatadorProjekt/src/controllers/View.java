@@ -32,7 +32,6 @@ import spaces.Parking;
 import spaces.Property;
 import spaces.Start;
 import spaces.Tax;
-
 /**
  * This class implements a view on the Monopoly game based on the original
  * Matador GUI; it serves as a kind of adapter to the Matador GUI. This class
@@ -67,14 +66,8 @@ public class View implements Observer {
 	 */
 	public View(Game game) {
 		this.game = game;
-		
 
 	}
-	/**
-	 * @author emil_, Simone_,Monica_
-	 * This method creates the gui, from the already 
-	 * @return the gui
-	 */
 
 	public GUI createGUI() {
 		if (gui == null) {
@@ -101,7 +94,8 @@ public class View implements Observer {
 					fields[i].setBackGroundColor(space.getColor());
 
 				} else if (space instanceof Chance) {
-					fields[i] = new GUI_Chance(((Chance) space).getIcon(),space.getName(),"",Color.BLACK,Color.WHITE);
+					fields[i] = new GUI_Chance(((Chance) space).getIcon(), space.getName(), "", Color.BLACK,
+							Color.WHITE);
 
 				} else if (space instanceof Shipping) {
 					String cost = "Cost: " + ((Shipping) space).getCost() + "";
@@ -113,14 +107,14 @@ public class View implements Observer {
 					fields[i].setBackGroundColor(space.getColor());
 
 				} else if (space instanceof Start) {
-					fields[i] = new GUI_Start(space.getName(), space.getName(), "", Color.RED,Color.black);
-					
+					fields[i] = new GUI_Start(space.getName(), space.getName(), "", Color.RED, Color.black);
+
 				} else if (space instanceof Tax) {
 					fields[i] = new GUI_Tax();
 					fields[i].setTitle(space.getName());
 					fields[i].setDescription("");
 					fields[i].setSubText("");
-					
+
 				} else if (space instanceof Jail) {
 					fields[i] = new GUI_Jail();
 					fields[i].setTitle(space.getName());
@@ -134,12 +128,12 @@ public class View implements Observer {
 					fields[i].setDescription("");
 				} else {
 					System.out.println("Space instance not found, so could not be added by factory");
-				
+
 				}
 				space2GuiField.put(space, fields[i++]);
+				space.attach(this);
 			}
 			gui = new GUI(fields);
-
 		}
 		return gui;
 	}
@@ -162,14 +156,10 @@ public class View implements Observer {
 			if (subject instanceof Player) {
 				updatePlayer((Player) subject);
 			}
-			if(subject instanceof Property) {
-				fields[((Property) subject).getIndex()].setDescription(((Property) subject).getRent() + "");;
-				
+			if (subject instanceof Property) {
+				updateProperty((Property) subject);
+
 			}
-
-			// TODO update other subjects in the GUI
-			// in particular properties (sold, houses, ...)
-
 		}
 	}
 
@@ -195,13 +185,16 @@ public class View implements Observer {
 			if (pos < guiFields.length) {
 				player2position.put(player, pos);
 				guiFields[pos].setCar(guiPlayer, true);
+				
 			}
 
 			String label = null;
 			if (player.isBroke()) {
 				label = player.getName() + " (broke)";
+
 			} else if (player.isInPrison()) {
 				label = player.getName() + " (in prison)";
+
 			} else {
 				label = player.getName();
 			}
@@ -210,16 +203,46 @@ public class View implements Observer {
 			}
 		}
 	}
-	
-	public void setBorderColor(Player player,Property property){
-		int i= property.getIndex();
-		GUI_Field[] field=this.gui.getFields();
-		field[i].setSubText("Owner: " +player.getName());
-		field[i].setForeGroundColor(player.getColor());
-		updatePlayer(player);
-	
+
+	private void updateProperty(Property property) {
 		
+		GUI_Field guiField = space2GuiField.get(property);
+		if (guiField != null) {
+			if (property.hasOwner()&&!property.isMortaged()) {
+				
+				guiField.setSubText("owner: " + property.getOwner().getName());
+				guiField.setDescription("Rent: "+ property.getActualRent());
+				guiField.setForeGroundColor(property.getOwner().getColor());	
+				guiField.setBackGroundColor(property.getColor());
+				
+			}else if((property.hasOwner()&&property.isMortaged())) {
+				guiField.setSubText("owner: " + property.getOwner().getName());
+				guiField.setDescription("Mortgaged");
+				guiField.setForeGroundColor(property.getOwner().getColor());
+				guiField.setBackGroundColor(Color.gray);
+				
+				
+			}
+			
+
+			if (property instanceof RealEstate) {
+				guiField.setSubText(
+						"owner: " + property.getOwner().getName() + ", houses: " + ((RealEstate) property).getHouses());
+				guiField.setDescription("Rent: " + property.getActualRent());
+				if((property.hasOwner()&&property.isMortaged())) {
+					guiField.setSubText("owner: " + property.getOwner().getName());
+					guiField.setDescription("Mortgaged" );
+					guiField.setForeGroundColor(property.getOwner().getColor());
+					guiField.setBackGroundColor(Color.gray);
+				
+				}
+				
+			}
+			
+		}
 	}
+
+
 
 	void dispose() {
 		if (!disposed) {
@@ -227,6 +250,10 @@ public class View implements Observer {
 			for (Player player : game.getPlayers()) {
 				// unregister from the player as observer
 				player.detach(this);
+			}
+			for (Space property : game.getSpaces()) {
+				// unregister from the player as observer
+				property.detach(this);
 			}
 		}
 	}

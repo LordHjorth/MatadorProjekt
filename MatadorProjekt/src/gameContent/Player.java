@@ -32,13 +32,15 @@ public class Player extends Subject {
 	
 	private int ID = 0;
 	
-	private int balance = 15000;
+	private int balance = 150000;
 	
 	private boolean inPrison = false;
 	
 	private boolean broke = false;
 	
 	private boolean chanceCardShipping=false;
+	
+	private Set<String> ownedPropertyCategories= new HashSet<String>();
 	
 	private Set<Property> ownedProperties = new HashSet<Property>();
 	
@@ -315,6 +317,14 @@ public class Player extends Subject {
 		}
 		return amount;
 
+	}
+
+	public Set<String> getOwnedPropertyCategories() {
+		return ownedPropertyCategories;
+	}
+
+	public void addOwnedPropertyCategories(String string) {
+		this.ownedPropertyCategories.add(string);
 	}
 	
 	

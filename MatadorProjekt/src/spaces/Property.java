@@ -10,15 +10,15 @@ import gameContent.Space;
  *
  */
 public class Property extends Space {
-	
 
 	protected int cost;
 	protected int rent;
 	protected String category;
-	public final String[] categories = {"Ships", "Brewery", "Vestegnen", "Valby", "Frederiksberg", "Hellerup", "Østerbro", "Kongens Nytorv", "Indre By", "København K"};
+	public final String[] categories = { "Ships", "Brewery", "Vestegnen", "Valby", "Frederiksberg", "Hellerup",
+			"Østerbro", "Kongens Nytorv", "Indre By", "København K" };
 	protected Player owner = null;
-	protected boolean mortgaged=false;
-	
+	protected boolean mortgaged = false;
+	protected int actualrent;
 
 	public boolean isMortaged() {
 		return mortgaged;
@@ -26,6 +26,7 @@ public class Property extends Space {
 
 	public void setMortgaged(boolean mortaged) {
 		this.mortgaged = mortaged;
+		notifyChange();
 	}
 
 	/**
@@ -40,7 +41,8 @@ public class Property extends Space {
 	/**
 	 * Sets the cost of this property.
 	 * 
-	 * @param cost the new cost of this property
+	 * @param cost
+	 *            the new cost of this property
 	 */
 	public void setCost(int cost) {
 		this.cost = cost;
@@ -52,7 +54,7 @@ public class Property extends Space {
 	 * 
 	 * @return the rent for this property
 	 */
-	
+
 	public int getRent() {
 		return rent;
 	}
@@ -60,7 +62,8 @@ public class Property extends Space {
 	/**
 	 * Sets the rent for this property.
 	 * 
-	 * @param rent the new rent for this property
+	 * @param rent
+	 *            the new rent for this property
 	 */
 	public void setRent(int rent) {
 		this.rent = rent;
@@ -68,29 +71,29 @@ public class Property extends Space {
 	}
 
 	/**
-	 * Returns the owner of this property. The value is <code>null</code>,
-	 * if the property currently does not have an owner.
+	 * Returns the owner of this property. The value is <code>null</code>, if the
+	 * property currently does not have an owner.
 	 * 
 	 * @return the owner of the property or <code>null</code>
 	 */
 	public Player getOwner() {
 		return owner;
 	}
-	
+
 	public boolean hasOwner() {
-		if(owner == null) {
+		if (owner == null) {
 			return false;
-		}
-		else {
+		} else {
 			return true;
 		}
 	}
 
 	/**
-	 * Sets the owner of this property  to the given owner (which can be 
+	 * Sets the owner of this property to the given owner (which can be
 	 * <code>null</code>).
 	 * 
-	 * @param player the new owner of the property
+	 * @param player
+	 *            the new owner of the property
 	 */
 	public void setOwner(Player player) {
 		this.owner = player;
@@ -105,7 +108,8 @@ public class Property extends Space {
 	}
 
 	/**
-	 * @param category the category to set
+	 * @param category
+	 *            the category to set
 	 */
 	public void setCategory(String category) {
 		this.category = category;
@@ -113,7 +117,28 @@ public class Property extends Space {
 
 	public String[] getCategories() {
 		return categories;
-		
+
 	}
 
+	public void setActualRent() {
+		
+		if (owner.getOwnedPropertyCategories().contains(this.getCategory()) && !this.isMortaged()) {
+			this.actualrent=this.rent * 2;
+			
+		}
+		if (this.isMortaged()) {
+			this.actualrent=0;
+			
+		} else {
+			this.actualrent=this.rent;
+		}
+		notifyChange();	
+	}
+		
+		
+	
+	
+	public int getActualRent() {
+		return this.actualrent;
+	}
 }
