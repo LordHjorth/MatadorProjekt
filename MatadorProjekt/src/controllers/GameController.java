@@ -900,7 +900,7 @@ public class GameController {
 		if (!this.getPlayerOwnedRealEstateOfCategories(player).isEmpty()) {
 			boolean running = true;
 			while (running) {
-				String select = gui.getUserButtonPressed("Do you want to buy houses?", "yes", "no");
+				String select = gui.getUserButtonPressed("Do you want to develope a property? ", "yes", "no");
 				if (select.equals("yes")) {
 					List<Property> l = this.getPlayerOwnedRealEstateOfCategories(player);
 					Property realestate = this.chooseProperty(player, l);
@@ -921,7 +921,7 @@ public class GameController {
 		if (!this.getPlayerOwnedRealEstateOfCategories(player).isEmpty()) {
 			boolean running = true;
 			while (running) {
-				String select = gui.getUserButtonPressed("Do you want to sell houses?", "yes", "no");
+				String select = gui.getUserButtonPressed("Do you want to sell buildings?", "yes", "no");
 				if (select.equals("yes")) {
 					List<Property> l = this.getPlayerOwnedRealEstateOfCategories(player);
 					Property realestate = this.chooseProperty(player, l);
@@ -1019,7 +1019,7 @@ public class GameController {
 		}
 
 		if (realestate.getHouses() != 0) {
-			String select = gui.getUserButtonPressed("Do you want to sell your hotel? You are paid: "
+			String select = gui.getUserButtonPressed("Do you want to sell your houses? You are paid: "
 					+ (realestate.getHotelCost() / 2), "yes", "no");
 			if(select.equals("yes")) {
 			int minimum = 1;

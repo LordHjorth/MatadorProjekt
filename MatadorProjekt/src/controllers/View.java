@@ -242,19 +242,14 @@ public class View implements Observer {
 				
 				
 				
-				
-				if((property.hasOwner()&&property.isMortaged())) {
-					guiField.setSubText("owner: " + property.getOwner().getName());
-					guiField.setDescription("Mortgaged" );
-					guiField.setForeGroundColor(property.getOwner().getColor());
-					guiField.setBackGroundColor(Color.gray);
+		
 				
 				}
 				
 			}
 			
 		}
-	}
+	
 
 
 
