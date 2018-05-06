@@ -83,16 +83,16 @@ public class RealEstate extends Property {
 		
 		
 		this.actualrent=this.rent;
-		if (owner.getOwnedPropertyCategories().contains(this.getCategory()) && !this.isMortaged() && (this.getHouses()==0)&&hotel) {
+		if (owner.getOwnedPropertyCategories().contains(this.getCategory()) && !this.isMortgaged() && (this.getHouses()==0)&&hotel) {
 			this.actualrent=this.rent * 10;
 		}
-		if (owner.getOwnedPropertyCategories().contains(this.getCategory()) && !this.isMortaged() && (this.getHouses()==0)&&!hotel) {
+		if (owner.getOwnedPropertyCategories().contains(this.getCategory()) && !this.isMortgaged() && (this.getHouses()==0)&&!hotel) {
 			this.actualrent=this.rent * 2;
 		}
-		if (this.isMortaged()||owner.isInPrison()) {
+		if (this.isMortgaged()||owner.isInPrison()) {
 			this.actualrent=0;
 		}
-		if (owner.getOwnedPropertyCategories().contains(this.getCategory()) && !this.isMortaged() && (this.getHouses() > 0)) {
+		if (owner.getOwnedPropertyCategories().contains(this.getCategory()) && !this.isMortgaged() && (this.getHouses() > 0)) {
 
 		 this.actualrent= this.rent +(this.rent*this.getHouses()) ;
 		} 

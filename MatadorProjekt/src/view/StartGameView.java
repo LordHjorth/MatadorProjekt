@@ -1,4 +1,4 @@
-package connection;
+package view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
+import connection.DAL;
 import controllers.GameController;
 import controllers.MiniMonopoly;
 import gameContent.Game;
@@ -16,13 +17,11 @@ public class StartGameView {
 	 private JFrame frame;
 	 private JButton Load;
 	 private JButton New;
-	 private SQLMethods sql;
 	 
 	 public StartGameView() {
 		 frame = new JFrame();
 		 Load = new JButton();
 		 New = new JButton();
-		 sql = new SQLMethods();
 	 }
 	
 	public void loadOrStartNewGame() {
@@ -71,8 +70,11 @@ public class StartGameView {
 				
 				GameController controller = new GameController(game);
 				controller.initializeGUI();
-				controller.LoadPlayers();
+				System.out.println("1");
+				controller.LoadPlayersAndProperties();
+				System.out.println("2");
 				controller.play();
+				System.out.println("3");
 				
 				/*
 				 * TODO: new CreatePlayers in GameController as LoadPlayers - get data from DB
@@ -95,7 +97,6 @@ public class StartGameView {
 				
 				super.run();
 
-				sql.resetDB();
 				System.out.println("NEW GAME");
 
 				Game game = MiniMonopoly.createGame();

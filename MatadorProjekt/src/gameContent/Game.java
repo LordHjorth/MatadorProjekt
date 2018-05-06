@@ -81,6 +81,11 @@ public class Game extends Subject {
 		return card;
 
 	}
+	
+	public void removeSpecificCard(Card card) {
+		cardDeck.remove(card);
+		notifyChange();
+	}
 
 	/**
 	 * Add the given card to the bottom of the deck.

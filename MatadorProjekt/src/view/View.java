@@ -1,4 +1,4 @@
-package controllers;
+package view;
 
 import java.awt.Color;
 import java.util.HashMap;
@@ -208,14 +208,14 @@ public class View implements Observer {
 		
 		GUI_Field guiField = space2GuiField.get(property);
 		if (guiField != null) {
-			if (property.hasOwner()&&!property.isMortaged()) {
+			if (property.hasOwner()&&!property.isMortgaged()) {
 				
 				guiField.setSubText("owner: " + property.getOwner().getName());
 				guiField.setDescription("Rent: "+ property.getActualRent());
 				guiField.setForeGroundColor(property.getOwner().getColor());	
 				guiField.setBackGroundColor(property.getColor());
 				
-			}else if((property.hasOwner()&&property.isMortaged())) {
+			}else if((property.hasOwner()&&property.isMortgaged())) {
 				guiField.setSubText("owner: " + property.getOwner().getName());
 				guiField.setDescription("Mortgaged");
 				guiField.setForeGroundColor(property.getOwner().getColor());
@@ -228,12 +228,12 @@ public class View implements Observer {
 			if (property instanceof RealEstate) {
 				
 				
-				if(property.hasOwner()&&!((RealEstate)property).hasHotel()) {
+				if(property.hasOwner()&&!((RealEstate)property).hasHotel()&&!property.isMortgaged()) {
 					guiField.setSubText(
 							"owner: " + property.getOwner().getName() + ", houses: " + ((RealEstate) property).getHouses());
 					guiField.setDescription("Rent: " + property.getActualRent());
 					
-				}else if(property.hasOwner()&&((RealEstate)property).hasHotel()) {
+				}else if(property.hasOwner()&&((RealEstate)property).hasHotel()&&!property.isMortgaged()) {
 					
 					guiField.setSubText(
 							"owner: " + property.getOwner().getName() + ", Hotel: " + 1);
@@ -253,7 +253,7 @@ public class View implements Observer {
 
 
 
-	void dispose() {
+	public void dispose() {
 		if (!disposed) {
 			disposed = true;
 			for (Player player : game.getPlayers()) {

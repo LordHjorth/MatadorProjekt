@@ -1,6 +1,6 @@
 package main;
 
-import connection.StartGameView;
+import view.StartGameView;
 
 public class Main {
 

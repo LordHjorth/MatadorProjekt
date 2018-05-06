@@ -20,12 +20,12 @@ public class Property extends Space {
 	protected boolean mortgaged = false;
 	protected int actualrent;
 
-	public boolean isMortaged() {
+	public boolean isMortgaged() {
 		return mortgaged;
 	}
 
-	public void setMortgaged(boolean mortaged) {
-		this.mortgaged = mortaged;
+	public void setMortgaged(boolean mortgaged) {
+		this.mortgaged = mortgaged;
 		notifyChange();
 	}
 
@@ -122,11 +122,11 @@ public class Property extends Space {
 
 	public void setActualRent() {
 		this.actualrent=this.rent;
-		if (owner.getOwnedPropertyCategories().contains(this.getCategory()) && !this.isMortaged()) {
+		if (owner.getOwnedPropertyCategories().contains(this.getCategory()) && !this.isMortgaged()) {
 			this.actualrent=this.rent * 2;
 			
 		}
-		if (this.isMortaged()||owner.isInPrison()) {
+		if (this.isMortgaged()||owner.isInPrison()) {
 			this.actualrent=0;
 			
 		}

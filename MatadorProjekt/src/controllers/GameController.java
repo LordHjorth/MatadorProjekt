@@ -1,8 +1,6 @@
 package controllers;
 
 import java.awt.Color;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -11,8 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import cards.PardonCard;
-import connection.SQLMethods;
-import connection.viewDB;
+import connection.DAO;
 import exceptions.PlayerBrokeException;
 import gameContent.Card;
 import gameContent.Game;
@@ -21,6 +18,8 @@ import gameContent.Space;
 import properties.RealEstate;
 import spaces.Jail;
 import spaces.Property;
+import view.View;
+import view.viewDB;
 
 /**
  * The overall controller of a Monopoly game. It provides access to all basic
@@ -57,8 +56,7 @@ public class GameController {
 	private viewDB vdb;
 	private int diethrow;
 	private boolean disposed = false;
-
-	private SQLMethods sql; // added by gruppe B
+	private DAO dao;
 
 	/**
 	 * Constructor for a controller of a game.
@@ -69,8 +67,8 @@ public class GameController {
 	public GameController(Game game) {
 		super();
 		this.game = game;
-		sql = new SQLMethods(); // Added by gruppe B
-		vdb = new viewDB();
+		dao = new DAO();
+		vdb = dao.getVDB();
 		this.createcategoryList();
 
 	}
@@ -88,7 +86,8 @@ public class GameController {
 		int NumberOfPlayers = gui.getUserInteger("Enter the amount of players (2-6)", 2, 6);
 		String color = "blue";
 		Object[][] data = new Object[NumberOfPlayers][];
-
+		dao.resetDB();
+		
 		for (int i = 0; i < NumberOfPlayers; i++) {
 			Player p = new Player();
 			int playerNumber = i + 1;
@@ -124,12 +123,8 @@ public class GameController {
 				break;
 			}
 			game.addPlayer(p);
+			dao.createPlayerDB(p, i, color);
 
-			try {
-				sql.createPlayersInDB(p, i, color); // adds player to database
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 			// "GameID", "Name", "Position", "Balance", "Prisoner", "Pardon available",
 			// "CarColor"
 			data[i] = new Object[] { 1, p.getName(), 0, p.getBalance(), false, false, "" }; // gameID = 1 for now.
@@ -141,61 +136,25 @@ public class GameController {
 	/**
 	 * Load players from DB to game logic and gui.
 	 */
-	public void LoadPlayers() {
-		int AmountOfPlayers = sql.getNumberOfPlayers();
-		ResultSet rs = sql.LoadPlayers();
-		Object[][] data = new Object[AmountOfPlayers][];
-		int i = 0;
+	public void LoadPlayersAndProperties() {
+		int numberOfPlayers = dao.getNumberOfPlayers();
+		Object[][] data = new Object[numberOfPlayers][];
 
-		try {
-			while (!rs.equals(null) && rs.next()) {
-				Player p = new Player();
-				p.setID(rs.getInt("id"));
-				p.setName(rs.getString("name"));
-				p.setBalance(rs.getInt("balance"));
-				p.setCurrentPosition(game.getSpaces().get(rs.getInt("PosIndex")));
-				p.setInPrison(rs.getBoolean("inPrison"));
-
-				/*
-				 * - Not sure how to add a pardon card. if(rs.getBoolean("havePardon")==true) {
-				 * 
-				 * p.setOwnedCard(card); }
-				 */
-
-				String color = rs.getString("carColor");
-				switch (color) {
-				case "Blue":
-					p.setColor(Color.blue);
-					break;
-				case "Red":
-					p.setColor(Color.red);
-					break;
-				case "Black":
-					p.setColor(Color.black);
-					break;
-				case "Green":
-					p.setColor(Color.green);
-					break;
-				case "Yellow":
-					p.setColor(Color.yellow);
-					break;
-				case "Pink":
-					p.setColor(Color.pink);
-					break;
-				}
-				game.addPlayer(p);
-				data[i] = new Object[] { 1, p.getName(), 0, p.getBalance(), p.isInPrison(), false, color }; // gameID =
-																											// 1 for
-																											// now.
-				i++;
-
-			}
-			vdb.createViewOfDB(data); // adds player info to a view
-			view.createPlayers();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
+		for(int i = 0; i<numberOfPlayers; i++) {
+			Player player = dao.loadPlayer(game, i);
+			game.addPlayer(player);
+			
+			data[i] = new Object[] { 1, player.getName(), player.getCurrentPosition().getName(), player.getBalance(),
+					player.isInPrison(), player.getOwnedCards().isEmpty() ? 0 : player.getOwnedCards().size(),
+					player.getColor() };
 		}
+
+		//Loads properties to players.
+		dao.loadProperties(game);
+		
+		vdb.createViewOfDB(data); // adds player info to a view
+		vdb.updPropertyView();
+		view.createPlayers();
 	}
 
 	/**
@@ -263,7 +222,7 @@ public class GameController {
 			boolean offerrunning = true;
 			do {
 				String selection = gui.getUserButtonPressed("Player " +player.getName()+ ", what do you want to do?", "Trade", "Buy Houses",
-						"Sell Houses", "Mortage Property", "Continue Game");
+						"Sell Houses", "Mortgage Property", "Continue Game");
 				switch (selection) {
 				case "Trade":
 					this.offerToTrade(player);
@@ -274,7 +233,7 @@ public class GameController {
 				case "Sell Houses":
 					this.offerToSellHouses(player);
 					break;
-				case "Mortage Property":
+				case "Mortgage Property":
 					this.offerToMortgageProperty(player);
 					break;
 				case "Continue Game":
@@ -290,7 +249,7 @@ public class GameController {
 			this.updateBoard();
 			current = (current + 1) % players.size();
 			game.setCurrentPlayer(players.get(current));
-			vdb.updatePlayerView(game.getPlayers());
+			vdb.updatePlayerView(game.getPlayers(), game);
 			// if (current == 0) {
 			// String selection = gui.getUserButtonPressed("A round is finished. Do you want
 			// to continue the game?",
@@ -477,7 +436,7 @@ public class GameController {
 		boolean offerrunning = true;
 		do {
 			String selection = gui.getUserButtonPressed("Player " + player.getName()+" How do you want to free money?", "Trade", "Sell Houses",
-					"Mortage Property", "Continue game");
+					"Mortgage Property", "Continue game");
 			switch (selection) {
 			case "Trade":
 				this.offerToTrade(player);
@@ -485,7 +444,7 @@ public class GameController {
 			case "Sell Houses":
 				this.offerToSellHouses(player);
 				break;
-			case "Mortage Property":
+			case "Mortgage Property":
 				this.offerToMortgageProperty(player);
 				break;
 			case "Continue game":
@@ -534,8 +493,7 @@ public class GameController {
 			}
 			player.addOwnedProperty(property);
 			property.setOwner(player);
-			vdb.updPropertyView(property, player);
-			sql.addPropertyToPlayer(property, player);
+			dao.addPropertyToPlayer(property, player);
 			return;
 		}
 
@@ -646,8 +604,7 @@ public class GameController {
 			try {
 				paymentToBank(winner, bid);
 				winner.addOwnedProperty(property);
-				vdb.updPropertyView(property, winner);
-				sql.addPropertyToPlayer(property, winner);
+				dao.addPropertyToPlayer(property, winner);
 				gui.showMessage("You've succesfully bought the property " + property.getName());
 				property.setOwner(winner);
 				property.setActualRent();
@@ -798,19 +755,19 @@ public class GameController {
 						l.add(k[j]);
 					}
 
-					Property choosenp = this.chooseProperty(player, l);
+					Property chosenp = this.chooseProperty(player, l);
 
-					if (this.sellHousesInPropertyGroupToAllowMortgage(player, choosenp)
-							&& choosenp.isMortaged() == false) {
-						this.paymentFromBank(player, choosenp.getCost() / 2);
-						choosenp.setMortgaged(true);
-						choosenp.setActualRent();
+					if (this.sellHousesInPropertyGroupToAllowMortgage(player, chosenp)
+							&& chosenp.isMortgaged() == false) {
+						this.paymentFromBank(player, chosenp.getCost() / 2);
+						chosenp.setMortgaged(true);
+						chosenp.setActualRent();
 						this.updateOwnedCategories(player);
-						gui.showMessage("You have mortgaged: " + choosenp.getName());
-						//view.update(choosenp);
-					} else if (choosenp.isMortaged() == true) {
+						gui.showMessage("You have mortgaged: " + chosenp.getName());
+					} else if (chosenp.isMortgaged() == true) {
 						gui.showMessage("That property is already mortgaged");
 					}
+					dao.updatePropertyMortgage(chosenp);
 
 					break;
 
@@ -822,22 +779,22 @@ public class GameController {
 						l1.add(k1[j]);
 					}
 
-					Property choosenp1 = this.chooseProperty(player, l1);
-					if (choosenp1.isMortaged() == true) {
+					Property chosenp1 = this.chooseProperty(player, l1);
+					if (chosenp1.isMortgaged() == true) {
 						try {
-							this.paymentToBank(player, choosenp1.getCost() / 2);
+							this.paymentToBank(player, chosenp1.getCost() / 2);
 						} catch (PlayerBrokeException e) {
 
 							e.printStackTrace();
 						}
-						choosenp1.setMortgaged(false);
-						choosenp1.setActualRent();
+						chosenp1.setMortgaged(false);
+						chosenp1.setActualRent();
 						this.updateOwnedCategories(player);
-						//view.update(choosenp1);
-						gui.showMessage("You have unmortgaged: " + choosenp1.getName());
-					} else if (!choosenp1.isMortaged() == true) {
-						gui.showMessage(choosenp1.getName() + " is not mortgaged.");
+						gui.showMessage("You have unmortgaged: " + chosenp1.getName());
+					} else if (!chosenp1.isMortgaged() == true) {
+						gui.showMessage(chosenp1.getName() + " is not mortgaged.");
 					}
+					dao.updatePropertyMortgage(chosenp1);
 
 					break;
 				case "Return":
@@ -853,7 +810,7 @@ public class GameController {
 
 	/**
 	 * @author emil_ A method that sells all houses on a property group to allow
-	 *         mortage;
+	 *         mortgage;
 	 * @return returns true when all houses in a property group is sold, thereby
 	 *         allowing mortgage.
 	 */
@@ -966,7 +923,7 @@ public class GameController {
 						realestate.removeAllHouses();
 						realestate.addHotel();
 						realestate.setActualRent();
-						
+						dao.updateHouses(realestate);
 					} catch (PlayerBrokeException e) {
 						e.printStackTrace();
 					}
@@ -988,8 +945,7 @@ public class GameController {
 
 				try {
 					this.paymentToBank(player, realestate.getHouseCost() * amount);
-					sql.updateHouses(realestate, amount);
-					vdb.updPropertyView(realestate, player);
+					dao.updateHouses(realestate);
 				} catch (PlayerBrokeException e) {
 					e.printStackTrace();
 				}
@@ -1026,16 +982,13 @@ public class GameController {
 			int maximum = realestate.getHouses();
 			int amount = gui.getUserInteger("How many houses du you want to sell? You are paid: "
 					+ (realestate.getHouseCost() / 2) + "pr. house.", minimum, maximum);
-			int amount2 = maximum - amount;
 
 			realestate.removeHouses(amount);
 			realestate.setActualRent();
 
 			this.paymentFromBank(player, (realestate.getHouseCost() / 2) * amount);
 
-			sql.updateHouses(realestate, amount2);
-			vdb.updPropertyView(realestate, player);
-			//view.update(realestate);
+			dao.updateHouses(realestate);
 			}
 			
 			
@@ -1072,7 +1025,7 @@ public class GameController {
 					int chosenamount = gui.getUserInteger("How much do you want for your property?");
 					String sel= gui.getUserButtonPressed("Are you sure you want to trade " +chosenproperty.getName()+"?", "yes","no");
 					if(sel.equals("yes")) {
-						this.tradeChoosenProperty(player, chosenproperty, chosenamount);	
+						this.tradeChosenProperty(player, chosenproperty, chosenamount);	
 					}
 		
 
@@ -1103,8 +1056,17 @@ public class GameController {
 			}
 		}
 	}
+	/**
+	 * 
+	 *@author emil_
+	 * @param player
+	 * @param property
+	 * @param chosenamount
+	 * This method allow you to trade a chosen property for the amount chosen.
+	 */
+	
 
-	private void tradeChoosenProperty(Player player, Property property, int chosenamount) {
+	private void tradeChosenProperty(Player player, Property property, int chosenamount) {
 		gui.showMessage(property.getName() + " is up for trade, and the price will start at " + chosenamount);
 		List<Player> tradeGrantedPlayers = new ArrayList<Player>(game.getPlayers());
 		List<Player> notGrantedPlayers = new ArrayList<Player>();
@@ -1140,6 +1102,7 @@ public class GameController {
 				property.setOwner(winner);
 				this.updateOwnedCategories(winner);
 				property.setActualRent();
+				dao.updatePropertyOwner(winner, property);
 				// vdb.updPropertyView(property, winner);
 				// sql.addPropertyToPlayer(property, winner);
 
@@ -1205,7 +1168,7 @@ public class GameController {
 
 	/**
 	 * private method used in order to choose a piece of Property, used in a
-	 * trade/sellinghouses/buyinghouses/mortage. method.
+	 * trade/sellinghouses/buyinghouses/mortgage. method.
 	 * 
 	 * @author emil_
 	 * @param player
@@ -1299,7 +1262,7 @@ public class GameController {
 	public boolean checkOwnershipOfCategory(Player player, Property realestate) {
 		List<Property> l = this.getAllPropertiesofCategory(realestate.getCategory());
 		for (Property property : l) {
-			if (!player.equals(property.getOwner())||property.isMortaged()) {
+			if (!player.equals(property.getOwner())||property.isMortgaged()) {
 
 				return false;
 			}
