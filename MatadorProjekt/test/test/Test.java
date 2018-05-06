@@ -55,15 +55,20 @@ public class Test {
 
 	@org.junit.Test
 	public void testgetPlayerValue() {
+		
 		player1.addOwnedProperty((RealEstate) feltliste.get(1)); // 1200 kr grund
+		
 		player1.addOwnedProperty((RealEstate) feltliste.get(3)); // 1200 kr grund
 		RealEstate rødovre = (RealEstate) feltliste.get(1);
+		
 		rødovre.addHouses(5); // 120kr *5 huse =600kr
+		System.out.println(player1.getPlayerValue());
 		int test1 = player1.getPlayerValue();
 		Assert.assertEquals("Wrong Value", 16000, test1);// 13000+1200+1200+600 = 16000
 		player1.addOwnedProperty((RealEstate) feltliste.get(39)); // 8000 kr grund
 		RealEstate rådhus = (RealEstate) feltliste.get(39);
 		rådhus.addHouses(4); // 800 kr* 4 huse = 3200 kr
+		System.out.println(player1.getPlayerValue());
 		int test2 = player1.getPlayerValue();
 		Assert.assertEquals("Wrong Value", 27200, test2); // 16000+8000+3200
 

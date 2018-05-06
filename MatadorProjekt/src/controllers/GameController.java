@@ -229,6 +229,7 @@ public class GameController {
 			Player player = players.get(current);
 			if (!player.isBroke()) {
 				try {
+					
 					this.makeMove(player);
 				} catch (PlayerBrokeException e) {
 					// We could react to the player having gone broke
@@ -339,8 +340,8 @@ public class GameController {
 		}
 
 		do {
-			int die1 = 3;//(int) (1 + 6.0 * Math.random());
-			int die2 = 2;//(int) (1 + 6.0 * Math.random());
+			int die1 =  (int) (1 + 6.0 * Math.random());
+			int die2 =  (int) (1 + 6.0 * Math.random());
 			castDouble = (die1 == die2);
 			gui.setDice(die1, die2);
 			this.setDieThrow(die1, die2);
@@ -363,11 +364,12 @@ public class GameController {
 			if (!player.isInPrison()) {
 				// make the actual move by computing the new position and then
 				// executing the action moving the player to that space
+				
 				int pos = player.getCurrentPosition().getIndex();
 				List<Space> spaces = game.getSpaces();
 				int newPos = (pos + die1 + die2) % spaces.size();
 				Space space = spaces.get(newPos);
-
+				this.updateBoard();
 				moveToSpace(player, space);
 				if (castDouble) {
 					gui.showMessage("Player " + player.getName() + " cast a double and makes another move.");
@@ -419,6 +421,7 @@ public class GameController {
 		}
 		player.setCurrentPosition(jailFields.get(0));
 		player.setInPrison(true);
+		this.updateBoard();
 
 	}
 
@@ -802,6 +805,7 @@ public class GameController {
 						this.paymentFromBank(player, choosenp.getCost() / 2);
 						choosenp.setMortgaged(true);
 						choosenp.setActualRent();
+						this.updateOwnedCategories(player);
 						gui.showMessage("You have mortgaged: " + choosenp.getName());
 						//view.update(choosenp);
 					} else if (choosenp.isMortaged() == true) {
@@ -828,6 +832,7 @@ public class GameController {
 						}
 						choosenp1.setMortgaged(false);
 						choosenp1.setActualRent();
+						this.updateOwnedCategories(player);
 						//view.update(choosenp1);
 						gui.showMessage("You have unmortgaged: " + choosenp1.getName());
 					} else if (!choosenp1.isMortaged() == true) {
@@ -946,15 +951,34 @@ public class GameController {
 		String choice = gui.getUserButtonPressed(
 				"Player " + player.getName() + ": Do you want to buy houses? at " + realestate.getName(), "yes", "no");
 		if (choice.equals("yes")) {
-
-			if (realestate.getHouses() >= 5) { // 5 is the maximum number of houses - hotels is not an option at
-												// this
-												// point.
-				gui.showMessage("You can't buy anymore houses.");
+			if(realestate.hasHotel()) {
+				gui.showMessage("You already have a hotel on " + realestate.getName());
 				return;
+			}
+
+			if (realestate.getHouses() == 4&&!realestate.hasHotel()) { // 4 is the maximum number of houses 
+				String choice2 = gui.getUserButtonPressed(
+						"Player " + player.getName() + ": Do you want to buy a hotel? at " + realestate.getName(), "yes", "no");						
+				if(choice2.equals("yes")) {
+					
+					try {
+						this.paymentToBank(player, realestate.getHotelCost());
+						realestate.removeAllHouses();
+						realestate.addHotel();
+						realestate.setActualRent();
+						
+					} catch (PlayerBrokeException e) {
+						e.printStackTrace();
+					}
+					
+				}
+				if(choice2.equals("no")) {
+					return;
+				}
+				
 			} else {
 				int minimum = 1;
-				int maximum = 5 - realestate.getHouses();
+				int maximum = 4 - realestate.getHouses();
 				int amount = gui.getUserInteger(
 						"How many houses du you want to buy? The price for one house is: " + realestate.getHouseCost(),
 						minimum, maximum);
@@ -982,9 +1006,22 @@ public class GameController {
 	 */
 
 	private void sellHouses(Player player, RealEstate realestate) {
+		if(realestate.hasHotel()&&realestate.getHouses() == 0) {
+			String select = gui.getUserButtonPressed("Do you want to sell your hotel? You are paid: "
+					+ (realestate.getHotelCost() / 2), "yes", "no");
+			if(select.equals("yes")) {
+				realestate.removeHotel();
+				realestate.setActualRent();
+				realestate.addHouses(4);
+				this.paymentFromBank(player, (realestate.getHotelCost() / 2));
+				
+			}
+		}
 
 		if (realestate.getHouses() != 0) {
-
+			String select = gui.getUserButtonPressed("Do you want to sell your hotel? You are paid: "
+					+ (realestate.getHotelCost() / 2), "yes", "no");
+			if(select.equals("yes")) {
 			int minimum = 1;
 			int maximum = realestate.getHouses();
 			int amount = gui.getUserInteger("How many houses du you want to sell? You are paid: "
@@ -999,7 +1036,9 @@ public class GameController {
 			sql.updateHouses(realestate, amount2);
 			vdb.updPropertyView(realestate, player);
 			//view.update(realestate);
-
+			}
+			
+			
 		}
 
 	}
@@ -1260,7 +1299,7 @@ public class GameController {
 	public boolean checkOwnershipOfCategory(Player player, Property realestate) {
 		List<Property> l = this.getAllPropertiesofCategory(realestate.getCategory());
 		for (Property property : l) {
-			if (!player.equals(property.getOwner())) {
+			if (!player.equals(property.getOwner())||property.isMortaged()) {
 
 				return false;
 			}
@@ -1280,18 +1319,23 @@ public class GameController {
 		for (Property p : player.getOwnedProperties()) {
 			if(this.checkOwnershipOfCategory(player, p)) {
 				player.addOwnedPropertyCategories(p.getCategory());
+			}else if(!this.checkOwnershipOfCategory(player, p)) {
+				player.removeOwnedPropertyCategories(p.getCategory());
 			}
 		
 		}
 
 	}
 	private void updateBoard() {
+
+		for (Space space : game.getSpaces()) {
 		
-		for(Space space:game.getSpaces()) {
+			
 			if(space instanceof Property) {
+				
 				for(Player player:game.getPlayers()){
 					if(player.equals(((Property) space).getOwner())) {
-						((Property) space).setActualRent();;
+						((Property) space).setActualRent();
 					}
 				}
 				
@@ -1300,6 +1344,7 @@ public class GameController {
 		}
 		
 	}
+
 
 	/**
 	 * Method for disposing of this controller and cleaning up its resources.

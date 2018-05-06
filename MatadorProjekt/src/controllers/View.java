@@ -226,9 +226,23 @@ public class View implements Observer {
 			
 
 			if (property instanceof RealEstate) {
-				guiField.setSubText(
-						"owner: " + property.getOwner().getName() + ", houses: " + ((RealEstate) property).getHouses());
-				guiField.setDescription("Rent: " + property.getActualRent());
+				
+				
+				if(property.hasOwner()&&!((RealEstate)property).hasHotel()) {
+					guiField.setSubText(
+							"owner: " + property.getOwner().getName() + ", houses: " + ((RealEstate) property).getHouses());
+					guiField.setDescription("Rent: " + property.getActualRent());
+					
+				}else if(property.hasOwner()&&((RealEstate)property).hasHotel()) {
+					
+					guiField.setSubText(
+							"owner: " + property.getOwner().getName() + ", Hotel: " + 1);
+					guiField.setDescription("Rent: " + property.getActualRent());
+				}
+				
+				
+				
+				
 				if((property.hasOwner()&&property.isMortaged())) {
 					guiField.setSubText("owner: " + property.getOwner().getName());
 					guiField.setDescription("Mortgaged" );

@@ -27,7 +27,7 @@ public class Shipping extends Property {
 		this.actualrent=this.rent;
 
 		for (Property p : owner.getOwnedProperties()) {
-			if (p instanceof Shipping) {
+			if (p instanceof Shipping&&!p.isMortaged()) {
 				modifier++;
 			}
 

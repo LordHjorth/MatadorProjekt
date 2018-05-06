@@ -121,16 +121,14 @@ public class Property extends Space {
 	}
 
 	public void setActualRent() {
-		
+		this.actualrent=this.rent;
 		if (owner.getOwnedPropertyCategories().contains(this.getCategory()) && !this.isMortaged()) {
 			this.actualrent=this.rent * 2;
 			
 		}
-		if (this.isMortaged()) {
+		if (this.isMortaged()||owner.isInPrison()) {
 			this.actualrent=0;
 			
-		} else {
-			this.actualrent=this.rent;
 		}
 		notifyChange();	
 	}

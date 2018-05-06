@@ -39,7 +39,7 @@ public class Player extends Subject {
 	private boolean broke = false;
 	
 	private boolean chanceCardShipping=false;
-	
+		
 	private Set<String> ownedPropertyCategories= new HashSet<String>();
 	
 	private Set<Property> ownedProperties = new HashSet<Property>();
@@ -302,7 +302,8 @@ public class Player extends Subject {
 	/**
 	 * @author emil_
 	 * @param player
-	 * @return int Method used in order to calculate a players total value (current
+	 * @return int 
+	 * Method used in order to calculate a players total value (current
 	 *         balance, houses, properties).
 	 */
 	public int getPlayerValue() {
@@ -323,6 +324,10 @@ public class Player extends Subject {
 		return ownedPropertyCategories;
 	}
 
+	public void removeOwnedPropertyCategories(String string) {
+		this.ownedPropertyCategories.remove(string);
+	}
+	
 	public void addOwnedPropertyCategories(String string) {
 		this.ownedPropertyCategories.add(string);
 	}

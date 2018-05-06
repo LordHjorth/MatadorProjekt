@@ -71,11 +71,8 @@ public class StartGameView {
 				
 				GameController controller = new GameController(game);
 				controller.initializeGUI();
-				System.out.println("1");
 				controller.LoadPlayers();
-				System.out.println("2");
 				controller.play();
-				System.out.println("3");
 				
 				/*
 				 * TODO: new CreatePlayers in GameController as LoadPlayers - get data from DB
@@ -106,9 +103,7 @@ public class StartGameView {
 
 				GameController controller = new GameController(game);
 				controller.initializeGUI();
-				System.out.println("1");
 				controller.createPlayers();
-				System.out.println("2");
 				controller.play();
 			}
 			
