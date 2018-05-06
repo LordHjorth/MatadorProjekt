@@ -72,6 +72,7 @@ public class RealEstate extends Property {
 	
 	@Override
 	public void setActualRent() {
+		this.actualrent=this.rent;
 		if (owner.getOwnedPropertyCategories().contains(this.getCategory()) && !this.isMortaged() && !(this.getHouses() > 0)) {
 			this.actualrent=this.rent * 2;
 		}
@@ -81,21 +82,12 @@ public class RealEstate extends Property {
 		if (owner.getOwnedPropertyCategories().contains(this.getCategory()) && !this.isMortaged() && (this.getHouses() > 0)) {
 
 		 this.actualrent= this.rent +(this.rent*this.getHouses()) ;
-		} else {
-			this.actualrent=this.rent;
-		}
+		} 
 		
 		notifyChange();	
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
+
 
 
 	@Override
