@@ -82,6 +82,11 @@ public class Game extends Subject {
 
 	}
 	
+	/**
+	 * Removes the specific card.
+	 * @author emil_, Rasmus
+	 * @param card the card
+	 */
 	public void removeSpecificCard(Card card) {
 		cardDeck.remove(card);
 		notifyChange();

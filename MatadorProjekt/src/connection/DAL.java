@@ -16,13 +16,12 @@ import connection.Constants;
 /**
  * The Class SQLMethods.
  *
- * @author Gruppe 25
+ * @author Rasmus
  */
 public class DAL {
 	
 	/** The connector. */
 	private Connection con;
-	private Constants constant = new Constants();
 	
 	/**
 	 * Instantiates a new SQL methods.
@@ -46,14 +45,14 @@ public class DAL {
 	public void createPlayersInDB(Player player, int ID, String color) throws Exception {
 		try {
 			CallableStatement cst = con.prepareCall("{ call CreatePlayerID(?, ?, ?, ?, ?, ?, ?, ?) }");
-			cst.setInt(constant.PLAYER_ID, player.getID()); //id
-			cst.setString(constant.NAME, player.getName()); //name
-			cst.setString(constant.COLOR, color); //color
-			cst.setInt(constant.POS_INDEX, player.getCurrentPosition().getIndex());
-			cst.setBoolean(constant.IN_PRISON, player.isInPrison()); // is in prison
-			cst.setInt(constant.BALANCE, player.getBalance()); // balance 
-			cst.setInt(constant.PARDON, player.getOwnedCards().size()); // pardon needs implementation for Player objects
-			cst.setInt(constant.GAME_ID, 1); //gameID
+			cst.setInt(Constants.PLAYER_ID.toString(), player.getID()); //id
+			cst.setString(Constants.NAME.toString(), player.getName()); //name
+			cst.setString(Constants.COLOR.toString(), color); //color
+			cst.setInt(Constants.POS_INDEX.toString(), player.getCurrentPosition().getIndex());
+			cst.setBoolean(Constants.IN_PRISON.toString(), player.isInPrison()); // is in prison
+			cst.setInt(Constants.BALANCE.toString(), player.getBalance()); // balance 
+			cst.setInt(Constants.PARDON.toString(), player.getOwnedCards().size()); // pardon needs implementation for Player objects
+			cst.setInt(Constants.GAME_ID.toString(), 1); //gameID
 			cst.execute();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -69,12 +68,12 @@ public class DAL {
 	public ResultSet updateViewEndTurn(Player player) {
 		try {
 			CallableStatement cst = con.prepareCall("{ call UpdatePlayer(?, ?, ?, ?, ?, ?) }");
-			cst.setString(constant.NAME, player.getName());
-			cst.setBoolean(constant.IN_PRISON, player.isInPrison());
-			cst.setInt(constant.BALANCE, player.getBalance());
-			cst.setInt(constant.POS_INDEX, player.getCurrentPosition().getIndex());
-			cst.setInt(constant.PARDON, player.getOwnedCards().size()); // pardon needs implementation for Player objects
-			cst.setInt(constant.GAME_ID, 1); //gameID is always 1 at the moment - only one game at a time
+			cst.setString(Constants.NAME.toString(), player.getName());
+			cst.setBoolean(Constants.IN_PRISON.toString(), player.isInPrison());
+			cst.setInt(Constants.BALANCE.toString(), player.getBalance());
+			cst.setInt(Constants.POS_INDEX.toString(), player.getCurrentPosition().getIndex());
+			cst.setInt(Constants.PARDON.toString(), player.getOwnedCards().size()); // pardon needs implementation for Player objects
+			cst.setInt(Constants.GAME_ID.toString(), 1); //gameID is always 1 at the moment - only one game at a time
 			cst.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -126,6 +125,11 @@ public class DAL {
 		return 0;
 	}
 	
+	/**
+	 * Gets the number of owned properties.
+	 *
+	 * @return the number of owned properties
+	 */
 	public int getNumberOfOwnedProperties() {
 		try {
 			Statement st = con.createStatement();
@@ -161,16 +165,17 @@ public class DAL {
 	 */
 	public void addPropertyToPlayer(Property prop, Player player) {
 		int houses = 0;
-		try {																	//Property ID, Property Name, Player ID, Player Name
+		try {													
+			//Property ID, Property Name, Player ID, Player Name
 			CallableStatement cst = con.prepareCall("{ call AddNewPropertyToPlayer(?,?,?,?,?) }");
-			cst.setInt(constant.PROPERTY_ID, prop.getIndex());
-			cst.setString(constant.PROPERTY_NAME, prop.getName());
-			cst.setInt(constant.PLAYER_ID, player.getID());
+			cst.setInt(Constants.PROPERTY_ID.toString(), prop.getIndex());
+			cst.setString(Constants.PROPERTY_NAME.toString(), prop.getName());
+			cst.setInt(Constants.PLAYER_ID.toString(), player.getID());
 			if(prop instanceof RealEstate) {
 				houses = ((RealEstate) prop).getHouses();
 			}
-			cst.setInt(constant.HOUSES, houses);
-			cst.setBoolean(constant.MORTGAGE, prop.isMortgaged());
+			cst.setInt(Constants.HOUSES.toString(), houses);
+			cst.setBoolean(Constants.MORTGAGE.toString(), prop.isMortgaged());
 			cst.execute();
 		} catch(SQLException e) {
 			e.printStackTrace();
@@ -201,21 +206,26 @@ public class DAL {
 	public void updateHouses(Property prop) {
 		try {
 			CallableStatement cst = con.prepareCall(" { call updateHouses(?, ?, ?) } ");
-			
-			cst.setInt(constant.PROPERTY_ID, prop.getIndex());
-			cst.setInt(constant.HOUSES, ((RealEstate) prop).getHouses());
-			cst.setBoolean(constant.HOTEL, ((RealEstate) prop).hasHotel());
+			cst.setInt(Constants.PROPERTY_ID.toString(), prop.getIndex());
+			cst.setInt(Constants.HOUSES.toString(), ((RealEstate) prop).getHouses());
+			cst.setBoolean(Constants.HOTEL.toString(), ((RealEstate) prop).hasHotel());
 			cst.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
+	/**
+	 * Gets the properties.
+	 *
+	 * @param player the player
+	 * @return the properties
+	 */
 	public ResultSet getProperties(Player player) {
 
 		try {
 			CallableStatement cst = con.prepareCall(" { call getPropertiesForPlayer(?) } ");
-			cst.setInt(constant.PLAYER_ID, player.getID());
+			cst.setInt(Constants.PLAYER_ID.toString(), player.getID());
 			return cst.executeQuery();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -225,33 +235,37 @@ public class DAL {
 
 	}
 	
+	/**
+	 * Update property owner.
+	 *
+	 * @param player the player
+	 * @param property the property
+	 */
 	public void updatePropertyOwner(Player player, Property property) {
 		try {
 			CallableStatement cst = con.prepareCall(" { call tradeProperty(?,?) } ");
-			cst.setInt(constant.POS_INDEX, property.getIndex());
-			cst.setInt(constant.PLAYER_ID, player.getID());
+			cst.setInt(Constants.POS_INDEX.toString(), property.getIndex());
+			cst.setInt(Constants.PLAYER_ID.toString(), player.getID());
 			cst.execute();
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
+	/**
+	 * Update property mortgage.
+	 *
+	 * @param property the property
+	 */
 	public void updatePropertyMortgage(Property property) {
 		try {
 			CallableStatement cst = con.prepareCall(" { call mortgageProperty(?,?) } ");
-			cst.setInt(constant.POS_INDEX, property.getIndex());
-			cst.setBoolean(constant.MORTGAGE, property.isMortgaged());
+			cst.setInt(Constants.POS_INDEX.toString(), property.getIndex());
+			cst.setBoolean(Constants.MORTGAGE.toString(), property.isMortgaged());
 			cst.execute();
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	//TODO: 
-	//New game (see newGame_SQL.txt)
-	//Update players after each turn
-	//Move player
-	//Transaction
-	//
 
 }

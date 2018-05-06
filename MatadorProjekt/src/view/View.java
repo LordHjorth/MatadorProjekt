@@ -32,6 +32,7 @@ import spaces.Parking;
 import spaces.Property;
 import spaces.Start;
 import spaces.Tax;
+
 /**
  * This class implements a view on the Monopoly game based on the original
  * Matador GUI; it serves as a kind of adapter to the Matador GUI. This class
@@ -69,6 +70,12 @@ public class View implements Observer {
 
 	}
 
+	/**
+	 * Creates the GUI.
+	 * 
+	 * @author emil_ Monica, Emil, Simone - added changes
+	 * @return the gui
+	 */
 	public GUI createGUI() {
 		if (gui == null) {
 			fields = new GUI_Field[game.getSpaces().size()];
@@ -185,7 +192,7 @@ public class View implements Observer {
 			if (pos < guiFields.length) {
 				player2position.put(player, pos);
 				guiFields[pos].setCar(guiPlayer, true);
-				
+
 			}
 
 			String label = null;
@@ -204,54 +211,45 @@ public class View implements Observer {
 		}
 	}
 
+	/**
+	 * Update property.
+	 * 
+	 * @author Simone, Monica
+	 * @param property
+	 *            the property
+	 */
 	private void updateProperty(Property property) {
-		
+
 		GUI_Field guiField = space2GuiField.get(property);
 		if (guiField != null) {
-			if (property.hasOwner()&&!property.isMortgaged()) {
-				
+			if (property.hasOwner() && !property.isMortgaged()) {
+
 				guiField.setSubText("owner: " + property.getOwner().getName());
-				guiField.setDescription("Rent: "+ property.getActualRent());
-				guiField.setForeGroundColor(property.getOwner().getColor());	
+				guiField.setDescription("Rent: " + property.getActualRent());
+				guiField.setForeGroundColor(property.getOwner().getColor());
 				guiField.setBackGroundColor(property.getColor());
-				
-			}else if((property.hasOwner()&&property.isMortgaged())) {
+
+			} else if ((property.hasOwner() && property.isMortgaged())) {
 				guiField.setSubText("owner: " + property.getOwner().getName());
 				guiField.setDescription("Mortgaged");
 				guiField.setForeGroundColor(property.getOwner().getColor());
 				guiField.setBackGroundColor(Color.gray);
-				
-				
 			}
-			
 
 			if (property instanceof RealEstate) {
-				
-				
-				if(property.hasOwner()&&!((RealEstate)property).hasHotel()&&!property.isMortgaged()) {
-					guiField.setSubText(
-							"owner: " + property.getOwner().getName() + ", houses: " + ((RealEstate) property).getHouses());
+				if (property.hasOwner() && !((RealEstate) property).hasHotel() && !property.isMortgaged()) {
+					guiField.setSubText("owner: " + property.getOwner().getName() + ", houses: "
+							+ ((RealEstate) property).getHouses());
 					guiField.setDescription("Rent: " + property.getActualRent());
-					
-				}else if(property.hasOwner()&&((RealEstate)property).hasHotel()&&!property.isMortgaged()) {
-					
-					guiField.setSubText(
-							"owner: " + property.getOwner().getName() + ", Hotel: " + 1);
+
+				} else if (property.hasOwner() && ((RealEstate) property).hasHotel() && !property.isMortgaged()) {
+
+					guiField.setSubText("owner: " + property.getOwner().getName() + ", Hotel: " + 1);
 					guiField.setDescription("Rent: " + property.getActualRent());
 				}
-				
-				
-				
-		
-				
-				}
-				
 			}
-			
 		}
-	
-
-
+	}
 
 	public void dispose() {
 		if (!disposed) {

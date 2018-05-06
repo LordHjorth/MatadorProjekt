@@ -20,10 +20,20 @@ public class Property extends Space {
 	protected boolean mortgaged = false;
 	protected int actualrent;
 
+	/**
+	 * Checks if is mortgaged.
+	 * @author emil_, Nicolas
+	 * @return true, if is mortgaged
+	 */
 	public boolean isMortgaged() {
 		return mortgaged;
 	}
 
+	/**
+	 * Sets the mortgaged.
+	 *@author emil_, Nicolas
+	 * @param mortgaged the new mortgaged
+	 */
 	public void setMortgaged(boolean mortgaged) {
 		this.mortgaged = mortgaged;
 		notifyChange();
@@ -80,6 +90,11 @@ public class Property extends Space {
 		return owner;
 	}
 
+	/**
+	 * Checks for owner.
+	 * @author emil_
+	 * @return true, if successful
+	 */
 	public boolean hasOwner() {
 		if (owner == null) {
 			return false;
@@ -101,6 +116,7 @@ public class Property extends Space {
 	}
 
 	/**
+	 * @author emil_
 	 * @return the category
 	 */
 	public String getCategory() {
@@ -108,6 +124,7 @@ public class Property extends Space {
 	}
 
 	/**
+	 * @author emil_
 	 * @param category
 	 *            the category to set
 	 */
@@ -115,11 +132,20 @@ public class Property extends Space {
 		this.category = category;
 	}
 
+	/**
+	 * Gets the categories.
+	 *@author emil_
+	 * @return the categories
+	 */
 	public String[] getCategories() {
 		return categories;
 
 	}
 
+	/**
+	 * Sets the actual rent
+	 * @author emil_, Simone.
+	 */
 	public void setActualRent() {
 		this.actualrent=this.rent;
 		if (owner.getOwnedPropertyCategories().contains(this.getCategory()) && !this.isMortgaged()) {
@@ -136,6 +162,11 @@ public class Property extends Space {
 		
 	
 	
+	/**
+	 * Gets the actual rent.
+	 *@author emil_, Simone
+	 * @return the actual rent
+	 */
 	public int getActualRent() {
 		return this.actualrent;
 	}

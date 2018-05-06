@@ -39,12 +39,12 @@ public class MiniMonopoly {
 	 * players are not created here, and the chance cards are not shuffled here.
 	 * 
 	 * @return the initial game board and (not shuffled) deck of chance cards
+	 * 
+	 * @author Simone_, Monica, Emil - added Changes
 	 */
 	public static Game createGame() {
 		// Create the initial Game set up
-/**
- * @author Simone_
- */
+
 		Game game = new Game();
 
 		Start go = new Start();
@@ -205,7 +205,7 @@ public class MiniMonopoly {
 		game.addSpace(p);
 
 		p = new RealEstate();
-		p.setName("Grønningen");
+		p.setName("Groeningen");
 		p.setCost(4800);
 		p.setRent(450);
 		p.setColor(new Color(255, 105, 180));
@@ -313,12 +313,6 @@ public class MiniMonopoly {
 		p.setColor(new Color(151, 46, 172));
 		p.setCategory(p.categories[9]); // København K
 		game.addSpace(p);
-
-		
-		/**
-		 * Chancecards
-		 * @monica_
-		 */
 		
 		List<Card> cards = new ArrayList<Card>();
 		PardonCard pardon = new PardonCard();
@@ -461,10 +455,10 @@ public class MiniMonopoly {
 		prize.setAmount(1000);
 		cards.add(prize);
 
-		CardMove grønningen = new CardMove();
-		grønningen.setTarget(game.getSpaces().get(24));
-		grønningen.setText("Ryk frem til Grønningen. Hvis De passerer Start, indkassér da kr. 4.000.");
-		cards.add(grønningen);
+		CardMove groenningen = new CardMove();
+		groenningen.setTarget(game.getSpaces().get(24));
+		groenningen.setText("Ryk frem til Grønningen. Hvis De passerer Start, indkassér da kr. 4.000.");
+		cards.add(groenningen);
 
 		game.setCardDeck(cards);
 

@@ -5,9 +5,17 @@ import exceptions.PlayerBrokeException;
 import gameContent.Card;
 import gameContent.Player;
 
+/**
+ * The Class Legat.
+ * 
+ * @author Simone
+ */
 public class Legat extends Card {
 
+	/** The amount. */
 	private int amount;
+	
+	/** The value. */
 	private int value;
 
 	/**
@@ -27,10 +35,19 @@ public class Legat extends Card {
 	public void setPaymentAmount(int amount) {
 		this.amount = amount;
 	}
+	
+	/**
+	 * Sets the value limit.
+	 *
+	 * @param value the new value limit
+	 */
 	public void setValueLimit(int value) {
 		this.value = value;
 	}
 
+	/* (non-Javadoc)
+	 * @see gameContent.Card#doAction(controllers.GameController, gameContent.Player)
+	 */
 	@Override
 	public void doAction(GameController controller, Player player) throws PlayerBrokeException {
 		try {

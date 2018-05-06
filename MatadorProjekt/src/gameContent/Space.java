@@ -62,13 +62,22 @@ public class Space extends Subject {
 		notifyChange();
 	}
 
+	/**
+	 * Sets the color.
+	 * @author emil_
+	 * @param color the new color
+	 */
 	public void setColor(Color color) {
 		this.color = color;
 
 	}
 
+	/**
+	 * Gets the color.
+	 * @author emil_
+	 * @return the color
+	 */
 	public Color getColor() {
-
 		return color;
 	}
 	

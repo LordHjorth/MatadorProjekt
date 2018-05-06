@@ -16,28 +16,49 @@ import properties.RealEstate;
 import spaces.Property;
 import view.viewDB;
 
-public class DAO implements IdataAccesObject {
+/**
+ * The Class DAO.
+ * 
+ * @author Rasmus, Simone, Monica
+ */
+public class DAO {
 
 	private DAL dal;
 	private viewDB vdb;
-	private Constants constant;
 
+	/**
+	 * Instantiates a new dao.
+	 */
 	public DAO() {
 
 		dal = new DAL();
 		vdb = new viewDB(this);
-		constant = new Constants();
 
 	}
 
+	/**
+	 * Gets the vdb.
+	 *
+	 * @return the vdb
+	 */
 	public viewDB getVDB() {
 		return vdb;
 	}
 
+	/**
+	 * Reset DB.
+	 */
 	public void resetDB() {
 		dal.resetDB();
 	}
 
+	/**
+	 * Creates the player DB.
+	 *
+	 * @param p the p
+	 * @param ID the id
+	 * @param color the color
+	 */
 	public void createPlayerDB(Player p, int ID, String color) {
 
 		try {
@@ -47,24 +68,36 @@ public class DAO implements IdataAccesObject {
 		}
 	}
 
+	/**
+	 * Update player view.
+	 *
+	 * @param player the player
+	 * @param game the game
+	 * @return the object[]
+	 */
 	public Object[] updatePlayerView(Player player, Game game) {
 		ResultSet rs = dal.updateViewEndTurn(player);
 		List<Space> spaces = game.getSpaces();
 		Object[] data = new Object[5];
 		try {
 			rs.absolute(player.getID());
-			data[0] = spaces.get(rs.getInt(constant.POS_INDEX)).getName();
-			data[1] = rs.getInt(constant.BALANCE);
-			data[2] = rs.getBoolean(constant.IN_PRISON);
-			data[3] = rs.getInt(constant.PARDON);
+			data[0] = spaces.get(rs.getInt(Constants.POS_INDEX.toString())).getName();
+			data[1] = rs.getInt(Constants.BALANCE.toString());
+			data[2] = rs.getBoolean(Constants.IN_PRISON.toString());
+			data[3] = rs.getInt(Constants.PARDON.toString());
 			System.out.println(data[3].toString());
-			data[4] = rs.getString(constant.COLOR);
+			data[4] = rs.getString(Constants.COLOR.toString());
 		} catch (SQLException e) {
 
 		}
 		return data;
 	}
 
+	/**
+	 * Update property view.
+	 *
+	 * @return the object[][]
+	 */
 	public Object[][] updatePropertyView() {
 		int numberOfProperties = dal.getNumberOfOwnedProperties();
 		Object[][] data = new Object[numberOfProperties][5];
@@ -73,11 +106,11 @@ public class DAO implements IdataAccesObject {
 			int i = 0;
 			while (rs.next()) {
 				// data[i] = new Object[3];
-				data[i][0] = rs.getString(constant.PROPERTY_NAME);
-				data[i][1] = rs.getString(constant.NAME);
-				data[i][2] = rs.getInt(constant.HOUSES);
-				data[i][3] = rs.getInt(constant.HOTEL);
-				data[i][4] = rs.getBoolean(constant.MORTGAGE);
+				data[i][0] = rs.getString(Constants.PROPERTY_NAME.toString());
+				data[i][1] = rs.getString(Constants.NAME.toString());
+				data[i][2] = rs.getInt(Constants.HOUSES.toString());
+				data[i][3] = rs.getInt(Constants.HOTEL.toString());
+				data[i][4] = rs.getBoolean(Constants.MORTGAGE.toString());
 				i++;
 			}
 		} catch (SQLException e) {
@@ -86,10 +119,22 @@ public class DAO implements IdataAccesObject {
 		return data;
 	}
 
+	/**
+	 * Gets the number of players.
+	 *
+	 * @return the number of players
+	 */
 	public int getNumberOfPlayers() {
 		return dal.getNumberOfPlayers();
 	}
 
+	/**
+	 * Load player.
+	 *
+	 * @param game the game
+	 * @param ID the id
+	 * @return the player
+	 */
 	public Player loadPlayer(Game game, int ID) {
 		List<Space> properties = game.getSpaces();
 		List<Card> ownedCards = new ArrayList<Card>();
@@ -98,12 +143,12 @@ public class DAO implements IdataAccesObject {
 		Player player = new Player();
 		try {
 			rs.absolute(ID + 1);
-			player.setID(rs.getInt(constant.PLAYER_ID));
-			player.setName(rs.getString(constant.NAME));
-			player.setBalance(rs.getInt(constant.BALANCE));
-			player.setCurrentPosition(properties.get(rs.getInt(constant.POS_INDEX)));
-			player.setInPrison(rs.getBoolean(constant.IN_PRISON));
-			String color = rs.getString(constant.CAR_COLOR);
+			player.setID(rs.getInt(Constants.PLAYER_ID.toString()));
+			player.setName(rs.getString(Constants.NAME.toString()));
+			player.setBalance(rs.getInt(Constants.BALANCE.toString()));
+			player.setCurrentPosition(properties.get(rs.getInt(Constants.POS_INDEX.toString())));
+			player.setInPrison(rs.getBoolean(Constants.IN_PRISON.toString()));
+			String color = rs.getString(Constants.CAR_COLOR.toString());
 			switch (color) {
 			case "Blue":
 				player.setColor(Color.blue);
@@ -128,7 +173,7 @@ public class DAO implements IdataAccesObject {
 			int i = 0;
 			for (Card card : cards) {
 				if (card instanceof PardonCard) {
-					if (i < rs.getInt(constant.PARDON)) {
+					if (i < rs.getInt(Constants.PARDON.toString())) {
 						ownedCards.add(card);
 					}
 					i++;
@@ -137,21 +182,19 @@ public class DAO implements IdataAccesObject {
 			for(Card card : ownedCards) {
 				game.removeSpecificCard(card);
 			}
-			
 			player.setOwnedCards(ownedCards);
 			
-			/*
-			 * List<Card> cards = game.getPardonCards(); for (int k = 0; k <
-			 * rs.getInt(sql.PARDON); k++) { if (!cards.isEmpty()) {
-			 * p.setOwnedCard(cards.get(k)); } }
-			 */
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return player;
 	}
 
+	/**
+	 * Load properties.
+	 *
+	 * @param game the game
+	 */
 	public void loadProperties(Game game) {
 
 		List<Player> players = game.getPlayers();
@@ -160,12 +203,12 @@ public class DAO implements IdataAccesObject {
 			for (Player player : players) {
 				ResultSet props = dal.getProperties(player);
 				while (props.next()) {
-					Property p = ((Property) properties.get(props.getInt(constant.PLAYER_ID)));
+					Property p = ((Property) properties.get(props.getInt(Constants.PLAYER_ID.toString())));
 					player.addOwnedProperty(p);
 					p.setOwner(player);
-					p.setMortgaged(props.getBoolean(constant.MORTGAGE));
+					p.setMortgaged(props.getBoolean(Constants.MORTGAGE.toString()));
 					if (p instanceof RealEstate) {
-						((RealEstate) p).addHouses(props.getInt(constant.HOUSES));
+						((RealEstate) p).addHouses(props.getInt(Constants.HOUSES.toString()));
 					}
 				}
 			}
@@ -174,23 +217,43 @@ public class DAO implements IdataAccesObject {
 		}
 	}
 
+	/**
+	 * Update property owner.
+	 *
+	 * @param player the player
+	 * @param property the property
+	 */
 	public void updatePropertyOwner(Player player, Property property) {
 		dal.updatePropertyOwner(player, property);
 		vdb.updPropertyView();
 	}
 
+	/**
+	 * Update property mortgage.
+	 *
+	 * @param property the property
+	 */
 	public void updatePropertyMortgage(Property property) {
 		dal.updatePropertyMortgage(property);
 		vdb.updPropertyView();
 	}
 
-	// SEPERATED HERE!
-
+	/**
+	 * Adds the property to player.
+	 *
+	 * @param property the property
+	 * @param player the player
+	 */
 	public void addPropertyToPlayer(Property property, Player player) {
 		dal.addPropertyToPlayer(property, player);
 		vdb.updPropertyView();
 	}
 
+	/**
+	 * Update houses.
+	 *
+	 * @param p the p
+	 */
 	public void updateHouses(Property p) {
 		dal.updateHouses(p);
 		vdb.updPropertyView();

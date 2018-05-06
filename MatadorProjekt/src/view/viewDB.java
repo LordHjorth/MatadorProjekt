@@ -14,9 +14,12 @@ import gameContent.Player;
 import spaces.Property;
 import gameContent.Game;
 
+/**
+ * The Class viewDB.
+ * @author Rasmus, Nicolas
+ */
 public class viewDB {
-
-	private Constants constant;
+	
 	private DAO dao;
 	private JFrame view;
 	private JTable tablePlayers;
@@ -34,11 +37,10 @@ public class viewDB {
 	 */
 	public viewDB(DAO dao) {
 		view = new JFrame();
-		constant = new Constants();
 		this.dao = dao;
-		columnsPlayers = new Object[] { constant.GAME_ID, constant.NAME, constant.POSITION, constant.BALANCE,
-				constant.IN_PRISON, constant.PARDON, constant.COLOR };
-		columnsProperties = new Object[] { constant.PROPERTY_NAME, constant.NAME, constant.HOUSES, constant.HOTEL, constant.MORTGAGE };
+		columnsPlayers = new Object[] { Constants.GAME_ID.toString(), Constants.NAME.toString(), Constants.POSITION.toString(), Constants.BALANCE.toString(),
+				Constants.IN_PRISON.toString(), Constants.PARDON.toString(), Constants.COLOR.toString() };
+		columnsProperties = new Object[] { Constants.PROPERTY_NAME.toString(), Constants.NAME.toString(), Constants.HOUSES.toString(), Constants.HOTEL.toString(), Constants.MORTGAGE.toString() };
 	}
 	
 	/**

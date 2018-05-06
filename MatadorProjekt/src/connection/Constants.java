@@ -1,21 +1,45 @@
 package connection;
 
-public class Constants {
-	
-	public final String PLAYER_ID = "id";
-	public final String NAME = "name";
-	public final String BALANCE = "balance";
-	public final String POSITION = "position";
-	public final String POS_INDEX = "PosIndex";
-	public final String IN_PRISON = "inPrison";
-	public final String COLOR = "color";
-	public final String CAR_COLOR = "carColor";
-	public final String PARDON = "pardon";
-	public final String GAME_ID = "gameID";
-	public final String PROPERTY_ID = "PropID";
-	public final String PROPERTY_NAME = "PropertyName";
-	public final String HOUSES="houses";
-	public final String MORTGAGE = "isMortaged";
-	public final String HOTEL = "Hotel";
+/**
+ * The Class Constants.
+ * 
+ * @author Rasmus
+ */
+public enum Constants {
 
+	PLAYER_ID("id"),
+	NAME("name"),
+	BALANCE("balance"),
+	POSITION("position"),
+	POS_INDEX("PosIndex"),
+	IN_PRISON("inPrison"),
+	COLOR("color"),
+	CAR_COLOR("carColor"),
+	PARDON("pardon"),
+	GAME_ID("gameID"),
+	PROPERTY_ID("PropID"),
+	PROPERTY_NAME("PropertyName"),
+	HOUSES("houses"),
+	MORTGAGE("isMortaged"),
+	HOTEL("Hotel");
+	
+	private final String s;
+	
+	/**
+	 * Instantiates a new constants.
+	 *
+	 * @param s the s
+	 */
+	Constants(String s){
+		this.s = s;
+	}
+
+	/**
+	 * Overrides toString() and return the String value of the enum.
+	 */
+	@Override
+	public String toString() {
+		return s;
+	}
 }
+

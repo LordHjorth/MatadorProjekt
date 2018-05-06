@@ -5,17 +5,33 @@ import exceptions.PlayerBrokeException;
 import gameContent.Card;
 import gameContent.Player;
 
+/**
+ * The Class CardPayMoney.
+ * 
+ * @author emil_
+ */
 public class CardPayMoney extends Card {
 	
 	private int amount;
 	
+	/**
+	 * Gets the amount.
+	 *
+	 * @return the amount
+	 */
 	public int getAmount() {
 		return amount;
 	}
 	
+	/**
+	 * Sets the amount.
+	 *
+	 * @param amount the new amount
+	 */
 	public void setAmount(int amount) {
 		this.amount = amount;
 	}
+	
 	@Override
 	public void doAction(GameController controller, Player player) throws PlayerBrokeException {
 		try {

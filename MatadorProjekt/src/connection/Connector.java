@@ -4,10 +4,18 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * The Class Connector.
+ * 
+ * @author Rasmus
+ */
 public class Connector {
 
-	/*
-	 * @author Gruppe B
+	/**
+	 * Gets the connection.
+	 *
+	 * @return the connection
+	 * @throws Exception the exception
 	 */
 	public static Connection getConnection() throws Exception {
 

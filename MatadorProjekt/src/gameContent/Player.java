@@ -11,6 +11,7 @@ import designPatterns.Subject;
 import properties.RealEstate;
 import spaces.Property;
 
+// TODO: Auto-generated Javadoc
 /**
  * Represents a player and his current state in a Monopoly game.
  * This includes the player's position, owned money and properties
@@ -24,26 +25,37 @@ import spaces.Property;
  */
 public class Player extends Subject {
 	
+	/** The name. */
 	private String name;
 	
+	/** The color. */
 	private Color color;
 	
+	/** The current position. */
 	private Space currentPosition;
 	
+	/** The id. */
 	private int ID = 0;
 	
+	/** The balance. */
 	private int balance = 150000;
 	
+	/** The in prison. */
 	private boolean inPrison = false;
 	
+	/** The broke. */
 	private boolean broke = false;
 	
+	/** The chance card shipping. */
 	private boolean chanceCardShipping=false;
 		
+	/** The owned property categories. */
 	private Set<String> ownedPropertyCategories= new HashSet<String>();
 	
+	/** The owned properties. */
 	private Set<Property> ownedProperties = new HashSet<Property>();
 	
+	/** The owned cards. */
 	private List<Card> ownedCards = new ArrayList<Card>();
 
 	/**
@@ -216,6 +228,11 @@ public class Player extends Subject {
 		notifyChange();
 	}
 	
+	/**
+	 * Amount of pardon cards.
+	 *
+	 * @return the int
+	 */
 	public int amountOfPardonCards() {
 		return ownedCards.size();
 		
@@ -223,8 +240,7 @@ public class Player extends Subject {
 	
 	/**
 	 * Removes a card from the owned cards.
-	 * 
-	 * @param card the card to be removed
+	 *
 	 * @return returns true if the card was owned and is removed by the method
 	 */
 	public void removeOwnedCard() {
@@ -234,6 +250,11 @@ public class Player extends Subject {
 
 	}
 
+	/**
+	 * Sets the owned card.
+	 *
+	 * @param card the new owned card
+	 */
 	public void setOwnedCard(Card card) {
 		if (this.ownedCards.add(card)) {
 			notifyChange();
@@ -284,25 +305,47 @@ public class Player extends Subject {
 		}
 	}
 
+	/**
+	 * Gets the id.
+	 * @author Rasmus
+	 * @return the id
+	 */
 	public int getID() {
 		return ID;
 	}
 
+	/**
+	 * Sets the id.
+	 * @author Rasmus
+	 * @param iD the new id
+	 */
 	public void setID(int iD) {
 		ID = iD;
 	}
 
+	/**
+	 * Checks if is chance card shipping.
+	 * @author emil_
+	 * @return true, if is chance card shipping
+	 */
 	public boolean isChanceCardShipping() {
 		return chanceCardShipping;
 	}
 
+	/**
+	 * Sets the chance card shipping.
+	 * @author emil_
+	 * @param chanceCardShipping the new chance card shipping
+	 */
 	public void setChanceCardShipping(boolean chanceCardShipping) {
 		this.chanceCardShipping = chanceCardShipping;
 	}
+	
 	/**
+	 * Gets the player value.
+	 *
 	 * @author emil_
-	 * @param player
-	 * @return int 
+	 * @return int
 	 * Method used in order to calculate a players total value (current
 	 *         balance, houses, properties).
 	 */
@@ -320,14 +363,29 @@ public class Player extends Subject {
 
 	}
 
+	/**
+	 * Gets the owned property categories.
+	 *
+	 * @return the owned property categories
+	 */
 	public Set<String> getOwnedPropertyCategories() {
 		return ownedPropertyCategories;
 	}
 
+	/**
+	 * Removes the owned property categories.
+	 *
+	 * @param string the string
+	 */
 	public void removeOwnedPropertyCategories(String string) {
 		this.ownedPropertyCategories.remove(string);
 	}
 	
+	/**
+	 * Adds the owned property categories.
+	 *
+	 * @param string the string
+	 */
 	public void addOwnedPropertyCategories(String string) {
 		this.ownedPropertyCategories.add(string);
 	}

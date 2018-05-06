@@ -20,6 +20,11 @@ public class Chance extends Space {
 	
 	private String Icon;
 
+	/**
+	 * Gets the icon.
+	 * @author emil
+	 * @return the icon
+	 */
 	public String getIcon(){
 		Icon="?";
 		return Icon;

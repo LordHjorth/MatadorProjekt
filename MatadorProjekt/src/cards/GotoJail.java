@@ -5,6 +5,11 @@ import exceptions.PlayerBrokeException;
 import gameContent.Card;
 import gameContent.Player;
 
+/**
+ * The Class GotoJail.
+ * 
+ * @author simone_
+ */
 public class GotoJail extends Card{
 
 	

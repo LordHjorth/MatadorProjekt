@@ -13,6 +13,9 @@ import gameContent.Space;
  */
 public class Tax extends Space {
 	
+	/**
+	 * @author emil_ - added some changes to an existing method
+	 */
 	@Override
 	public void doAction(GameController controller, Player player) throws PlayerBrokeException {
 		if(player.getCurrentPosition()==controller.getSpaces().get(38)) {

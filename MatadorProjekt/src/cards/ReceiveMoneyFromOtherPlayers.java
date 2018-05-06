@@ -8,14 +8,28 @@ import exceptions.PlayerBrokeException;
 import gameContent.Card;
 import gameContent.Player;
 
+/**
+ * The Class ReceiveMoneyFromOtherPlayers.
+ * @author emil_
+ */
 public class ReceiveMoneyFromOtherPlayers extends Card {
 
 	private int amount;
 	
+	/**
+	 * Gets the amount.
+	 *
+	 * @return the amount
+	 */
 	public int getAmount() {
 		return amount;
 	}
 	
+	/**
+	 * Sets the amount.
+	 *
+	 * @param amount the new amount
+	 */
 	public void setAmount(int amount) {
 		this.amount = amount;
 	}

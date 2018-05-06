@@ -11,6 +11,11 @@ import gameContent.Card;
 import gameContent.Player;
 import gameContent.Space;
 
+/**
+ * The Class CardMoveToShipping.
+ * 
+ * @author emil_
+ */
 public class CardMoveToShipping extends Card{
 
 

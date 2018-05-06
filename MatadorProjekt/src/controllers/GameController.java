@@ -44,6 +44,7 @@ import view.viewDB;
  * updating the GUI.
  * 
  * @author Ekkart Kindler, ekki@dtu.dk
+ * 
  *
  */
 
@@ -78,9 +79,11 @@ public class GameController {
 	 * participating players. Right now, the creation of players is hard-coded. But
 	 * this should be done by interacting with the user.
 	 * 
-	 * @author gruppe B Should be more defensive programming so players could not
-	 *         use the same name, as this makes errors occur with both the gui and
-	 *         the database.
+	 * @author Rasmus, Monica - creating players in DB
+	 * 
+	 *  Should be more defensive programming so players could not
+	 *  use the same name, as this makes errors occur with both the gui and
+	 *  the database.
 	 */
 	public void createPlayers() {
 		int NumberOfPlayers = gui.getUserInteger("Enter the amount of players (2-6)", 2, 6);
@@ -125,8 +128,7 @@ public class GameController {
 			game.addPlayer(p);
 			dao.createPlayerDB(p, i, color);
 
-			// "GameID", "Name", "Position", "Balance", "Prisoner", "Pardon available",
-			// "CarColor"
+			// "GameID", "Name", "Position", "Balance", "Prisoner", "Pardon available", "CarColor"
 			data[i] = new Object[] { 1, p.getName(), 0, p.getBalance(), false, false, "" }; // gameID = 1 for now.
 		}
 		vdb.createViewOfDB(data); // adds player info to a view
@@ -135,6 +137,8 @@ public class GameController {
 
 	/**
 	 * Load players from DB to game logic and gui.
+	 * 
+	 * @Rasmus
 	 */
 	public void LoadPlayersAndProperties() {
 		int numberOfPlayers = dao.getNumberOfPlayers();
@@ -170,6 +174,8 @@ public class GameController {
 	 * The main method to start the game with the given player. The game is started
 	 * with the current player of the game; this makes it possible to resume a game
 	 * at any point.
+	 * 
+	 * @author emil_, Simone - different kinds of offer.
 	 */
 	public void play() {
 		List<Player> players = game.getPlayers();
@@ -250,14 +256,6 @@ public class GameController {
 			current = (current + 1) % players.size();
 			game.setCurrentPlayer(players.get(current));
 			vdb.updatePlayerView(game.getPlayers(), game);
-			// if (current == 0) {
-			// String selection = gui.getUserButtonPressed("A round is finished. Do you want
-			// to continue the game?",
-			// "yes", "no");
-			// if (selection.equals("no")) {
-			// terminated = true;
-			// }
-			// }
 		}
 
 		dispose();
@@ -273,6 +271,8 @@ public class GameController {
 	 *            the player making the move
 	 * @throws PlayerBrokeException
 	 *             if the player goes broke during the move
+	 *             
+	 * @author Simone - Prison Logic.
 	 */
 	public void makeMove(Player player) throws PlayerBrokeException {
 
@@ -370,6 +370,8 @@ public class GameController {
 	 * 
 	 * @param player
 	 *            the player going to jail
+	 * 
+	 *  @author Simone - minor changes
 	 */
 	public void gotoJail(Player player) {
 		List<Jail> jailFields = new ArrayList<>();
@@ -426,6 +428,8 @@ public class GameController {
 	 * given amount of money, he will be broke; this is to help the player make the
 	 * right choices to free enough money.
 	 * 
+	 * @author emil_
+	 * 
 	 * @param player
 	 *            the player
 	 * @param amount
@@ -465,6 +469,8 @@ public class GameController {
 	 * This is typically triggered by a player arriving on an property that is not
 	 * sold yet. If the player chooses not to buy, the property will be set for
 	 * auction.
+	 * 
+	 * @author Rasmus, Emil database change
 	 * 
 	 * @param property
 	 *            the property to be sold
@@ -572,6 +578,7 @@ public class GameController {
 	 * 
 	 * @param property
 	 *            the property which is for auction
+	 * @author Nicolas, Rasmus, Monica
 	 */
 	public void auction(Property property, Player player) {
 		gui.showMessage("Now, there is an auction of " + property.getName() + " and the price will start at "
@@ -689,7 +696,6 @@ public class GameController {
 	 * @author emil_ Method used to create a list with categories and mapping them
 	 *         with strings.
 	 */
-
 	private void createcategoryList() {
 		for (Space space : game.getSpaces()) {
 			if (space instanceof Property) {
@@ -715,27 +721,47 @@ public class GameController {
 
 	}
 
-	// method to set and get diethrow, used in order to calculate brewery rent
-	// @emil_
+
+	/**
+	 * method to set and get diethrow, used in order to calculate brewery rent
+	 * @author emil_
+	 * @param i the i
+	 * @param j the j
+	 */
 	private void setDieThrow(int i, int j) {
 		this.diethrow = i + j;
 	}
 
+	/**
+	 * Gets the die throw.
+	 *@author emil_
+	 * @return the die throw
+	 */
 	public int getDieThrow() {
 		return diethrow;
 	}
 
+	/**
+	 * Gets the spaces.
+	 * @author emil_
+	 * @return the spaces
+	 */
 	public List<Space> getSpaces() {
 
 		return game.getSpaces();
 	}
-
+	
+	/**
+	 * Gets the list of players.
+	 * @author emil_
+	 * @return the list of players
+	 */
 	public List<Player> getListOfPlayers() {
 		return game.getPlayers();
 	}
 
 	/**
-	 * @author emil_ Mortgage offer
+	 * @author emil_, Nicolas Mortgage offer
 	 */
 	private void offerToMortgageProperty(Player player) {
 		if (player.getOwnedProperties().isEmpty()) {
@@ -809,12 +835,11 @@ public class GameController {
 	}
 
 	/**
-	 * @author emil_ A method that sells all houses on a property group to allow
+	 * @author emil_ , Monica A method that sells all houses on a property group to allow
 	 *         mortgage;
 	 * @return returns true when all houses in a property group is sold, thereby
 	 *         allowing mortgage.
 	 */
-
 	private boolean sellHousesInPropertyGroupToAllowMortgage(Player player, Property property) {
 		String s = property.getCategory();
 		boolean running = true;
@@ -873,6 +898,11 @@ public class GameController {
 
 	}
 
+	/**
+	 * Offer to sell houses.
+	 * @author emil_, Monica
+	 * @param player the player
+	 */
 	private void offerToSellHouses(Player player) {
 
 		if (!this.getPlayerOwnedRealEstateOfCategories(player).isEmpty()) {
@@ -899,7 +929,7 @@ public class GameController {
 	 * properties. It should have been possible to buy a hotel after buying 4
 	 * houses, but for the sake of simplicity we only "work" in houses.
 	 * 
-	 * @author rasmus_
+	 * @author rasmus_, nicolas, Emil
 	 * @param player
 	 * @param realestate
 	 */
@@ -955,12 +985,11 @@ public class GameController {
 	}
 
 	/**
-	 * @author emil_
+	 * @author emil_, Monica
 	 * @param player
 	 * @param realestate
 	 *            Method used in order to sell houses.
 	 */
-
 	private void sellHouses(Player player, RealEstate realestate) {
 		if(realestate.hasHotel()&&realestate.getHouses() == 0) {
 			String select = gui.getUserButtonPressed("Do you want to sell your hotel? You are paid: "
@@ -1056,16 +1085,14 @@ public class GameController {
 			}
 		}
 	}
+	
 	/**
-	 * 
 	 *@author emil_
 	 * @param player
 	 * @param property
 	 * @param chosenamount
 	 * This method allow you to trade a chosen property for the amount chosen.
 	 */
-	
-
 	private void tradeChosenProperty(Player player, Property property, int chosenamount) {
 		gui.showMessage(property.getName() + " is up for trade, and the price will start at " + chosenamount);
 		List<Player> tradeGrantedPlayers = new ArrayList<Player>(game.getPlayers());
@@ -1103,8 +1130,6 @@ public class GameController {
 				this.updateOwnedCategories(winner);
 				property.setActualRent();
 				dao.updatePropertyOwner(winner, property);
-				// vdb.updPropertyView(property, winner);
-				// sql.addPropertyToPlayer(property, winner);
 
 			} catch (PlayerBrokeException e) {
 				gui.showMessage(
@@ -1117,12 +1142,11 @@ public class GameController {
 	}
 
 	/**
-	 * 
+	 * @author emil_, Simone
 	 * @param player
 	 * @param card
 	 * @param chosenamount
 	 */
-	
 	private void tradePardonCard(Player player, Card card, int chosenamount) {
 		gui.showMessage("A pardoncard is up for trade, and the price will start at " + chosenamount);
 		List<Player> tradeGrantedPlayers = new ArrayList<Player>(game.getPlayers());
@@ -1170,11 +1194,10 @@ public class GameController {
 	 * private method used in order to choose a piece of Property, used in a
 	 * trade/sellinghouses/buyinghouses/mortgage. method.
 	 * 
-	 * @author emil_
+	 * @author emil_, Simone
 	 * @param player
 	 * @return
 	 */
-
 	private Property chooseProperty(Player player, List<Property> realestatelist) {
 		Collection<String> kategorier = new HashSet<String>();
 		for (Property r : realestatelist) {
@@ -1215,7 +1238,6 @@ public class GameController {
 	 *         player owns all the realestate of a category. This is used in
 	 *         conjugation with the offer to buy houses.
 	 */
-
 	private List<Property> getPlayerOwnedRealEstateOfCategories(Player player) {
 		Property[] k = new Property[player.getOwnedProperties().size()];
 		player.getOwnedProperties().toArray(k);
@@ -1223,14 +1245,10 @@ public class GameController {
 
 		for (int j = 0; j < player.getOwnedProperties().size(); j++) {
 			if (this.checkOwnershipOfCategory(player, k[j]) && k[j] instanceof RealEstate) {
-
 				l.add((RealEstate) k[j]);
 			}
-
 		}
-
 		return l;
-
 	}
 
 	/**
@@ -1258,7 +1276,6 @@ public class GameController {
 	 * @return boolean Method used in order to check if a player owns a category of
 	 *         realestate, used to double rent on owned realestate group.
 	 */
-
 	public boolean checkOwnershipOfCategory(Player player, Property realestate) {
 		List<Property> l = this.getAllPropertiesofCategory(realestate.getCategory());
 		for (Property property : l) {
@@ -1269,43 +1286,37 @@ public class GameController {
 		}
 		return true;
 	}
-/**
- * 
- *@author emil_
- * @param player
- * Method to update the categories a player own. 
- */
 	
-	
+	/**
+	 * 
+	 *@author emil_
+	 * @param player
+	 * Method to update the categories a player own. 
+	 */
 	private void updateOwnedCategories(Player player) {
-
 		for (Property p : player.getOwnedProperties()) {
 			if(this.checkOwnershipOfCategory(player, p)) {
 				player.addOwnedPropertyCategories(p.getCategory());
 			}else if(!this.checkOwnershipOfCategory(player, p)) {
 				player.removeOwnedPropertyCategories(p.getCategory());
 			}
-		
 		}
-
 	}
-	private void updateBoard() {
-
-		for (Space space : game.getSpaces()) {
 		
-			
+	/**
+	 * Update board.
+	 * @author emil_ 
+	 */
+	private void updateBoard() {
+		for (Space space : game.getSpaces()) {
 			if(space instanceof Property) {
-				
 				for(Player player:game.getPlayers()){
 					if(player.equals(((Property) space).getOwner())) {
 						((Property) space).setActualRent();
 					}
 				}
-				
 			}
-		
 		}
-		
 	}
 
 

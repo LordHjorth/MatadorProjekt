@@ -1,7 +1,4 @@
 package cards;
-/**
- * @author emil_
- */
 import java.util.List;
 
 import controllers.GameController;
@@ -10,11 +7,21 @@ import gameContent.Card;
 import gameContent.Player;
 import gameContent.Space;
 
+/**
+ * The Class Relativemove.
+ * 
+ * @author emil_
+ */
 public class Relativemove extends Card {
 
 	private Space target;
 	private int amount;
 
+	/**
+	 * Sets the amount tomove.
+	 *
+	 * @param amount the new amount tomove
+	 */
 	public void setAmountTomove(int amount) {
 		this.amount = amount;
 	}

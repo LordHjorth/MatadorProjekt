@@ -10,6 +10,8 @@ public class Main {
 	 * 
 	 * @param args
 	 *            not used
+	 *            
+	 *  @author Rasmus
 	 */
 	public static void main(String[] args) {
 

@@ -5,6 +5,10 @@ import exceptions.PlayerBrokeException;
 import gameContent.Player;
 import gameContent.Space;
 
+/**
+ * The Class Jail.
+ * @author SImone
+ */
 public class Jail extends Space {
 	private boolean jail;
 
