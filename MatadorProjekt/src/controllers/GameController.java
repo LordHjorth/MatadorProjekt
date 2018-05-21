@@ -138,7 +138,7 @@ public class GameController {
 	/**
 	 * Load players from DB to game logic and gui.
 	 * 
-	 * @Rasmus
+	 * @author rasmus_
 	 */
 	public void LoadPlayersAndProperties() {
 		int numberOfPlayers = dao.getNumberOfPlayers();
@@ -577,7 +577,9 @@ public class GameController {
 	 * This method implements the activity of auctioning a property.
 	 * 
 	 * @param property
-	 *            the property which is for auction
+	 * The property which is for auction
+	 * @param player
+	 *         
 	 * @author Nicolas, Rasmus, Monica
 	 */
 	public void auction(Property property, Player player) {
@@ -712,9 +714,10 @@ public class GameController {
 
 	/**
 	 * @author emil_
-	 * @param A
+	 * @param category
+	 * @return ArrayList<Property> 
 	 *            string, determining the category
-	 * @return A list of all properties in the category.
+	 * 
 	 */
 	public List<Property> getAllPropertiesofCategory(String category) {
 		return new ArrayList<Property>(category2Properties.get(category));
@@ -761,7 +764,10 @@ public class GameController {
 	}
 
 	/**
-	 * @author emil_, Nicolas Mortgage offer
+	 * @author emil_
+	 * @author nicolas_
+	 * @param player
+	 * Mortgage offer
 	 */
 	private void offerToMortgageProperty(Player player) {
 		if (player.getOwnedProperties().isEmpty()) {
@@ -837,6 +843,8 @@ public class GameController {
 	/**
 	 * @author emil_ , Monica A method that sells all houses on a property group to allow
 	 *         mortgage;
+	 * @param property
+	 * @param player        
 	 * @return returns true when all houses in a property group is sold, thereby
 	 *         allowing mortgage.
 	 */
@@ -871,11 +879,12 @@ public class GameController {
 	}
 
 	/**
-	 * If a player owns all RealEstate in a category the player is offered to buy
-	 * houses at the end of the round.
+	 * 
 	 * 
 	 * @author emil_
 	 * @param player
+	 * If a player owns all RealEstate in a category the player is offered to buy
+	 * houses at the end of the round.
 	 */
 	private void offerToBuyHouse(Player player) {
 
@@ -925,13 +934,12 @@ public class GameController {
 	}
 
 	/**
-	 * Method used to offer a player the oppertunity to buy houses on owned
-	 * properties. It should have been possible to buy a hotel after buying 4
-	 * houses, but for the sake of simplicity we only "work" in houses.
-	 * 
 	 * @author rasmus_, nicolas, Emil
 	 * @param player
 	 * @param realestate
+	 * Method used to offer a player the oppertunity to buy houses on owned
+	 * properties. It should have been possible to buy a hotel after buying 4
+	 * houses, but for the sake of simplicity we only "work" in houses.
 	 */
 	private void buyHouse(Player player, RealEstate realestate) {
 
@@ -979,7 +987,6 @@ public class GameController {
 				} catch (PlayerBrokeException e) {
 					e.printStackTrace();
 				}
-				//view.update(realestate);
 			}
 		}
 	}
@@ -988,7 +995,7 @@ public class GameController {
 	 * @author emil_, Monica
 	 * @param player
 	 * @param realestate
-	 *            Method used in order to sell houses.
+	 * Method used in order to sell houses.
 	 */
 	private void sellHouses(Player player, RealEstate realestate) {
 		if(realestate.hasHotel()&&realestate.getHouses() == 0) {
@@ -1026,7 +1033,10 @@ public class GameController {
 	}
 
 	/**
-	 * @author emil_ Method giving the player the oppertunity to trade.
+	 * @author emil_ 
+	 * @param player
+	 * 
+	 * Method giving the player the oppertunity to trade.
 	 */
 	private void offerToTrade(Player player) {
 		if (player.getOwnedProperties().isEmpty()) {
@@ -1191,13 +1201,17 @@ public class GameController {
 	}
 
 	/**
+	 * @author emil_, Simone
+	 * @param player
+	 * @param realestatelist
+	 * @return Property
 	 * private method used in order to choose a piece of Property, used in a
 	 * trade/sellinghouses/buyinghouses/mortgage. method.
 	 * 
-	 * @author emil_, Simone
-	 * @param player
-	 * @return
 	 */
+	
+	
+	
 	private Property chooseProperty(Player player, List<Property> realestatelist) {
 		Collection<String> kategorier = new HashSet<String>();
 		for (Property r : realestatelist) {
@@ -1234,7 +1248,8 @@ public class GameController {
 	/**
 	 * @author emil_
 	 * @param player
-	 * @return List<RealEstate> This method returns a list of realestate, provided a
+	 * @return List<Property> 
+	 * This method returns a list of realestate, provided a
 	 *         player owns all the realestate of a category. This is used in
 	 *         conjugation with the offer to buy houses.
 	 */
@@ -1254,9 +1269,10 @@ public class GameController {
 	/**
 	 * @author emil_
 	 * @param player
-	 * @param Property
-	 * @return returns the amount owned of a certain category group as an int. This
-	 *         method is used for rent calculations for ships and breweries.
+	 * @param p 
+	 * @return int   
+	 * This methodreturns the amount owned of a certain category group as an int. This
+	 *  method is used for rent calculations for ships and breweries.
 	 */
 	public int checkOwnershipAmount(Player player, Property p) {
 		List<Property> prop = this.getAllPropertiesofCategory(p.getCategory());

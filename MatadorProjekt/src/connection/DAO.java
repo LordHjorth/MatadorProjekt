@@ -85,7 +85,6 @@ public class DAO {
 			data[1] = rs.getInt(Constants.BALANCE.toString());
 			data[2] = rs.getBoolean(Constants.IN_PRISON.toString());
 			data[3] = rs.getInt(Constants.PARDON.toString());
-			System.out.println(data[3].toString());
 			data[4] = rs.getString(Constants.COLOR.toString());
 		} catch (SQLException e) {
 

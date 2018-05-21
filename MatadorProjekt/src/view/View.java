@@ -62,8 +62,8 @@ public class View implements Observer {
 	 * 
 	 * @param game
 	 *            the game
-	 * @param gui
-	 *            the GUI
+	 * 
+	 *            
 	 */
 	public View(Game game) {
 		this.game = game;

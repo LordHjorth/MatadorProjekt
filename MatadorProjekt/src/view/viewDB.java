@@ -5,14 +5,15 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import connection.Constants;
 import connection.DAO;
-import gameContent.Player;
-import spaces.Property;
 import gameContent.Game;
+import gameContent.Player;
 
 /**
  * The Class viewDB.
@@ -34,6 +35,8 @@ public class viewDB {
 
 	/**
 	 * Instantiates a new view DB.
+	 * @param dao
+	 * 	
 	 */
 	public viewDB(DAO dao) {
 		view = new JFrame();
@@ -83,6 +86,8 @@ public class viewDB {
 	 *
 	 * @param players
 	 *            the players
+	 * @param game
+	 * 			the game           
 	 */
 	public void updatePlayerView(List<Player> players, Game game) {
 		// Updates values in DB and shows it in a view.
@@ -98,12 +103,12 @@ public class viewDB {
 	}
 
 	/**
-	 * Inserts properties to view.
+	 * update the property view
 	 *
-	 * @param prop
-	 *            the prop
-	 * @param player
-	 *            the player
+	 * 
+	 *           
+	 * 
+	 *            
 	 */
 	public void updPropertyView() {
 

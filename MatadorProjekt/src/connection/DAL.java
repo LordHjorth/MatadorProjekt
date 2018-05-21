@@ -201,7 +201,7 @@ public class DAL {
 	 * Update houses.
 	 *
 	 * @param prop the prop
-	 * @param houses the houses
+	 * 
 	 */
 	public void updateHouses(Property prop) {
 		try {

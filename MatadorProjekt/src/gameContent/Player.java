@@ -241,7 +241,7 @@ public class Player extends Subject {
 	/**
 	 * Removes a card from the owned cards.
 	 *
-	 * @return returns true if the card was owned and is removed by the method
+	 * 
 	 */
 	public void removeOwnedCard() {
 		if (!ownedCards.isEmpty()) {
